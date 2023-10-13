@@ -18,7 +18,7 @@
 
   /* colors */
   --link-hover-color: #136ff6;
-  --background-color: #fff;
+  --background-color: #f7f7f7;
   --overlay-background-color: #eee;
   --highlight-background-color: #ccc;
   --text-color: #293e40;
@@ -44,7 +44,6 @@
 
   /* nav height */
   --nav-height: 64px;
-
 }
 
 @font-face {
@@ -136,9 +135,29 @@ h1, h2 {
 }
 
 h3 {
+  display: block;
   font-size: 2.8rem;
   line-height: 3.64rem;
+  margin-bottom: 3rem;
+}
+
+h3 span {
+  font: inherit;
+  padding-right: 2rem;
+}
+
+p + h3 {
   margin-top: 3rem;
+}
+
+.sidebar h3 {
+  background-image: url('/images/header-bar-h3.gif');
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+}
+
+.sidebar h3 span {
+  background-color: var(--background-color);
 }
 
 dl, ol, ul, pre, blockquote {
@@ -202,7 +221,7 @@ a:hover {
     background-size: 100% 100%;
 }
 
-.section.sidebar a:any-link {
+.sidebar a:any-link {
   background: none;
 }
 
@@ -319,4 +338,48 @@ main .section:first-child::after {
 
 main .section.highlight {
   background-color: var(--highlight-background-color);
+}
+
+@media (min-width: 768px) {
+  main.has-sidebar {
+    max-width: var(--max-page-width);
+    margin: auto;
+  }
+
+  main.has-sidebar .section:first-child {
+    grid-column: 2 / 4;
+  }
+
+  main.has-sidebar {
+    display: grid;
+    
+    grid-template-columns: auto 480px 240px auto;
+  }
+
+  main.has-sidebar > .section:not(:first-child) {
+    grid-column: 2;
+    padding-right: 2.4rem;
+  }
+
+  main.has-sidebar .section.sidebar {
+    grid-column: 3;
+    grid-row: 2 / inf;
+    padding-left: 2.4rem;
+  }
+
+  main.has-sidebar > .section.full-width-no-sidebar {
+    grid-column: 1 / 4;
+  }
+}
+
+@media (min-width: 992px) {
+  main.has-sidebar {
+    grid-template-columns: auto 626.5px 313.5px auto;
+  }
+}
+
+@media (min-width: 1280px) {
+  main.has-sidebar {
+    grid-template-columns: auto 800px 400px auto;
+  }
 }

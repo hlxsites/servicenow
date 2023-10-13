@@ -12,6 +12,7 @@ import {
   loadBlocks,
   loadCSS,
 } from './aem.js';
+import { span } from './dom-helpers.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
@@ -48,10 +49,32 @@ async function loadFonts() {
  */
 function buildAutoBlocks(main) {
   try {
-    buildHeroBlock(main);
+    // buildHeroBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
+  }
+}
+
+function detectSidebar(main) {
+  const sidebar = main.querySelector('.section.sidebar');
+  if (sidebar) {
+    main.classList.add('has-sidebar');
+    const sidebarOffset = sidebar.getAttribute('data-start-sidebar-at-section');
+
+    const numSections = main.children.length - 1;
+    main.style = `grid-template-rows: repeat(${numSections}, auto);`;
+
+    if (sidebarOffset && Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10)) {
+      const offset = Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10);
+      sidebar.style = `grid-row: ${offset} / infinite;`;
+    }
+
+    sidebar.querySelectorAll('h3').forEach(header => {
+      const headerContent = header.textContent;
+      header.textContent = '';
+      header.append(span(headerContent));
+    });
   }
 }
 
@@ -67,6 +90,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  detectSidebar(main);
 }
 
 /**
