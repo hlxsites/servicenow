@@ -221,9 +221,25 @@ a:hover {
     background-size: 100% 100%;
 }
 
-.sidebar a:any-link {
+/* stylelint-disable no-descending-specificity */
+.sidebar a:any-link,
+.blog-article main .section:first-child .default-content-wrapper p:first-of-type a:any-link {
   background: none;
+  background-image: linear-gradient(to right,#81b5a1 50%,transparent 50%);
+  background-size: 205% 2px;
+  background-repeat: no-repeat;
+  background-position: bottom right;
 }
+
+.sidebar a:hover,
+.blog-article main .section:first-child .default-content-wrapper p:first-of-type a:hover {
+  background-position: bottom left;
+}
+
+.blog-article main .section:first-child .default-content-wrapper p:first-of-type a {
+  font-family: var(--ff-gilroy-bold);
+}
+/* stylelint-enable no-descending-specificity */
 
 /* buttons */
 a.button:any-link, button {
@@ -332,6 +348,7 @@ main .section:first-child::after {
   display: block;
   height: 9px;
   background: url('/images/blog-diagonal-lines.webp') repeat 0 0;
+  margin-top: 2.4rem;
   margin-bottom: 3rem;
   max-width: 1200px;
 }
@@ -376,4 +393,9 @@ main .section.highlight {
   main.has-sidebar {
     grid-template-columns: auto 800px 400px auto;
   }
+}
+
+.blog-article main .section:first-child .default-content-wrapper p {
+  display: inline;
+  margin-right: 2rem;
 }
