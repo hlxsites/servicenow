@@ -11,17 +11,22 @@
  */
 
  :root {
+  --ff-gilroy-regular: 'GilroyRegular', 'GilroyRegularFallback', 'helvetica neue', helvetica, arial, sans-serif;
+  --ff-gilroy-bold: 'GilroyBold', 'GilroyBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
+  --ff-gilroy-semibold: 'GilroySemiBold', 'GilroySemiBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
+
+
   /* colors */
-  --link-color: #035fe6;
   --link-hover-color: #136ff6;
   --background-color: #fff;
   --overlay-background-color: #eee;
   --highlight-background-color: #ccc;
-  --text-color: #000;
+  --text-color: #293e40;
+  --link-color: var(--text-color);
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback;
-  --heading-font-family: var(--body-font-family);
+  --body-font-family: var(--ff-gilroy-regular);
+  --heading-font-family: var(--ff-gilroy-bold);
   --fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
 
   /* body sizes */
@@ -49,23 +54,51 @@
   src: local('Arial');
 }
 
+@font-face {
+  font-family: GilroyRegularFallback;
+  size-adjust: 100.06%; /* TODO finetune */
+  ascent-override: 95%; /* TODO finetune */
+  src: local('Arial');
+}
+
+@font-face {
+  font-family: GilroyBoldFallback;
+  size-adjust: 100.06%; /* TODO finetune */
+  ascent-override: 95%; /* TODO finetune */
+  src: local('Arial');
+}
+
+@font-face {
+  font-family: GilroySemiBoldFallback;
+  size-adjust: 100.06%; /* TODO finetune */
+  ascent-override: 95%; /* TODO finetune */
+  src: local('Arial');
+}
+
 
 @media (min-width: 900px) {
   :root {
     --heading-font-size-xxl: 60px;
     --heading-font-size-xl: 48px;
     --heading-font-size-l: 36px;
-    --heading-font-size-m: 30px;
+    --heading-font-size-m: 1.4rem;
     --heading-font-size-s: 24px;
     --heading-font-size-xs: 22px;
   }
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
 body {
-  font-size: var(--body-font-size-m);
   margin: 0;
   font-family: var(--body-font-family);
-  line-height: 1.6;
+  line-height: 1.7143;
   color: var(--text-color);
   background-color: var(--background-color);
   display: none;
@@ -82,23 +115,48 @@ header {
 h1, h2, h3,
 h4, h5, h6 {
   font-family: var(--heading-font-family);
-  font-weight: 600;
   line-height: 1.25;
-  margin-top: 1em;
-  margin-bottom: .5em;
+  margin: 0;
   scroll-margin: calc(var(--nav-height) + 1em);
+  /* stylelint-disable-next-line value-no-vendor-prefix */
+  -webkit-font-smoothing: antialiased;
 }
 
-h1 { font-size: var(--heading-font-size-xxl) }
+/* h1 { font-size: var(--heading-font-size-xxl) }
 h2 { font-size: var(--heading-font-size-xl) }
-h3 { font-size: var(--heading-font-size-l) }
+h3 { font-size: var(--heading-font-size-l) }  */
 h4 { font-size: var(--heading-font-size-m) }
 h5 { font-size: var(--heading-font-size-s) }
 h6 { font-size: var(--heading-font-size-xs) }
 
-p, dl, ol, ul, pre, blockquote {
+h1, h2 {
+  font-size: 3.6rem;
+  line-height: 4.68rem;
+  margin: 2rem 0;
+}
+
+h3 {
+  font-size: 2.8rem;
+  line-height: 3.64rem;
+  margin-top: 3rem;
+}
+
+dl, ol, ul, pre, blockquote {
   margin-top: 1em;
   margin-bottom: 1em;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+p, span {
+  font-size: 1.4rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  margin: 0 0 12px;
 }
 
 hr {
@@ -132,11 +190,20 @@ main pre {
 a:any-link {
   color: var(--link-color);
   text-decoration: none;
+  background: linear-gradient(#81b5a1,#81b5a1) bottom repeat-x;
+  background-size: 0.2rem 0.2rem;
+  font-size: inherit;
+  padding-bottom: 0.1rem;
+  position: relative;
+  transition: all .25s ease-out;
 }
 
 a:hover {
-  text-decoration: underline;
-  color: var(--link-hover-color);
+    background-size: 100% 100%;
+}
+
+.section.sidebar a:any-link {
+  background: none;
 }
 
 /* buttons */
@@ -228,24 +295,28 @@ main img {
   width: 100%;
 }
 
-main .section {
-  padding: 64px 16px;
-}
-
-@media (min-width: 600px) {
-  main .section {
-    padding: 64px 32px;
-  }
+.section {
+  padding: 0 1.2rem;
 }
 
 @media (min-width: 900px) {
-  .section > div {
+  .section > div,
+  .section:first-child::after {
     max-width: 1200px;
     margin: auto;
   }
 }
 
 /* section metadata */
+main .section:first-child::after {
+  content: "";
+  display: block;
+  height: 9px;
+  background: url('/images/blog-diagonal-lines.webp') repeat 0 0;
+  margin-bottom: 3rem;
+  max-width: 1200px;
+}
+
 main .section.highlight {
   background-color: var(--highlight-background-color);
 }
