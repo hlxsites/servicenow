@@ -93,9 +93,11 @@
 /* SIDEBAR */
 .cards.sidebar {
   --gap: 1.5rem;
+
   margin-bottom: 3rem;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .cards.sidebar .card {
   padding-bottom: 1.5rem;
   border-bottom: 0.1rem solid #d9d9d9;

@@ -70,7 +70,6 @@ function detectSidebar(main) {
     if (sidebarOffset && Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10)) {
       const offset = Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10);
       sidebar.style.gridRow = `${offset} / infinite`;
-      console.log(sidebar.style);
     }
 
     sidebar.querySelectorAll('h3').forEach((header) => {

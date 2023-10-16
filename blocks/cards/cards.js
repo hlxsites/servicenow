@@ -50,8 +50,8 @@ export default async function decorate(block) {
         path: link.href,
         header: row.querySelector('h5')?.textContent,
         thumbnail: thumbnail.src,
-        topic: row.querySelector('p')?.textContent
-      }
+        topic: row.querySelector('p')?.textContent,
+      };
 
       return;
     }
@@ -60,7 +60,6 @@ export default async function decorate(block) {
     if (row.querySelector('a')) {
       const link = row.querySelector('a');
       links.push({ href: link.href, idx });
-      return;
     }
   });
 
