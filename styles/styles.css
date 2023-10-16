@@ -23,6 +23,7 @@
   --highlight-background-color: #ccc;
   --text-color: #293e40;
   --link-color: var(--text-color);
+  --link-background-color: #81b5a1;
 
   /* fonts */
   --body-font-family: var(--ff-gilroy-regular);
@@ -209,7 +210,7 @@ main pre {
 a:any-link {
   color: var(--link-color);
   text-decoration: none;
-  background: linear-gradient(#81b5a1,#81b5a1) bottom repeat-x;
+  background: linear-gradient(var(--link-background-color),var(--link-background-color)) bottom repeat-x;
   background-size: 0.2rem 0.2rem;
   font-size: inherit;
   padding-bottom: 0.1rem;
@@ -225,7 +226,7 @@ a:hover {
 .sidebar a:any-link,
 .blog-article main .section:first-child .default-content-wrapper p:first-of-type a:any-link {
   background: none;
-  background-image: linear-gradient(to right,#81b5a1 50%,transparent 50%);
+  background-image: linear-gradient(to right,var(--link-background-color) 50%,transparent 50%);
   background-size: 205% 2px;
   background-repeat: no-repeat;
   background-position: bottom right;
@@ -343,7 +344,7 @@ main img {
 }
 
 /* section metadata */
-main .section:first-child::after {
+body:not(.blog-home-page) main .section:first-child::after {
   content: "";
   display: block;
   height: 9px;
@@ -363,13 +364,13 @@ main .section.highlight {
     grid-template-columns: auto 480px 240px auto;
   }
 
-  main.has-sidebar .section:first-child {
-    grid-column: 2 / 4;
-  }
-
-  main.has-sidebar > .section:not(:first-child) {
+  main.has-sidebar > .section {
     grid-column: 2;
     padding-right: 2.4rem;
+  }
+
+  body:not(.blog-home-page) main.has-sidebar .section:first-child {
+    grid-column: 2 / 4;
   }
 
   main.has-sidebar .section.sidebar {
