@@ -16,7 +16,6 @@ indices:
         value: parseTimestamp(attribute(el, "content"), "MM/DD/YYYY")
       year:
         select: head > meta[name="publication-date"]
-        # value: match(attribute(el, "content"), "\\/(\\d{4})$")
         value: match(attribute(el, "content"), "\\d{2}\\/\\d{2}\\/(\\d{4})")
       title:
         select: head > meta[property="og:title"]
