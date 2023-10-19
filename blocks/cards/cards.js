@@ -85,7 +85,7 @@ function fetchAPIBasedCards(cardInfos, apis) {
 export default async function decorate(block) {
   const apis = [];
   const links = [];
-  const cardInfos = Array(block.children.children).fill(null);
+  const cardInfos = Array(block.children.length).fill(null);
 
   [...block.children].forEach((row, idx) => {
     // card with content directly in the word document
