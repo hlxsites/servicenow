@@ -86,7 +86,7 @@
   flex: 1 1 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .cards.teaser .card,
   .cards.teaser .card:first-child {
     flex: 1 1 100%;
@@ -117,6 +117,7 @@
 
 @media (max-width: 768px) {
   .cards.sidebar .card {
+    flex-direction: row;
     display: flex;
   }
 
