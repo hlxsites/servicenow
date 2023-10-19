@@ -5,10 +5,17 @@
   flex-wrap: wrap;
   gap: var(--gap);
   margin-bottom: 1.5rem;
+  align-items: stretch;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
 }
 
 .card .card-thumbnail {
   position: relative;
+  flex: 0 0 auto;
 }
 
 .card .card-thumbnail a,
@@ -57,6 +64,7 @@
 .card .card-text {
   margin: 0;
   padding: 0;
+  flex: 1 0 auto;
 }
 
 .card .card-text h5 {
