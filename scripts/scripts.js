@@ -1,18 +1,21 @@
 import {
-  sampleRUM,
   buildBlock,
-  loadHeader,
-  loadFooter,
+  decorateBlocks,
   decorateButtons,
   decorateIcons,
   decorateSections,
-  decorateBlocks,
   decorateTemplateAndTheme,
-  waitForLCP,
+  getMetadata,
   loadBlocks,
   loadCSS,
+  loadFooter,
+  loadHeader,
+  sampleRUM,
+  toClassName,
+  waitForLCP,
 } from './aem.js';
 import { span } from './dom-helpers.js';
+import { formatDate } from './utils.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
@@ -45,6 +48,45 @@ async function loadFonts() {
 }
 
 /**
+ * Builds an article header and prepends to main in a new section.
+ * @param main
+ */
+function buildArticleHeader(main) {
+  if (main.querySelector('.article-header')) {
+    // already got an article header
+    return;
+  }
+
+  const div = document.createElement('div');
+  const h1 = main.querySelector('h1');
+
+  const author = getMetadata('author');
+  const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
+  const publicationDate = formatDate(getMetadata('publication-date'));
+
+  const articleHeaderBlock = buildBlock('article-header', [
+    [h1],
+    [`<p><a href="${authorURL}">${author}</a></p>
+      <p>${publicationDate}</p>`],
+  ]);
+  div.append(articleHeaderBlock);
+  main.prepend(div);
+}
+
+/**
+ * Returns true if the page is an article based on the template metadata.
+ * @returns {boolean}
+ */
+function isArticlePage() {
+  let blogPage = false;
+  const template = getMetadata('template');
+  if (template && template === 'Blog Article') {
+    blogPage = true;
+  }
+  return blogPage;
+}
+
+/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
@@ -52,6 +94,9 @@ async function loadFonts() {
 function buildAutoBlocks(main) {
   try {
     // buildHeroBlock(main);
+    if (isArticlePage()) {
+      buildArticleHeader(main);
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
