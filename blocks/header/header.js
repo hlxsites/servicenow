@@ -124,7 +124,9 @@ export default async function decorate(block) {
   block.innerHTML = '';
   try {
     const headerSection = domEl('section', { id: "naas-header-old", class: "naas-header-old-section", 'data-domain': "https://www.servicenow.com" });
-    const headerContent = await fetchHtml('https://www.servicenow.com/header-footer/jcr:content/header.html');
+    // commented due to CORS issue
+    // const headerContent = await fetchHtml('https://www.servicenow.com/header-footer/jcr:content/header.html');
+    const headerContent = await fetchHtml('/blocks/header/header.html');
     headerSection.innerHTML = resolveRelativeURLs(headerContent);
     block.append(headerSection);
     loadCSS('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.css');
