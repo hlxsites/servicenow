@@ -1,19 +1,8 @@
+.block .article-byline div {
+  display: inline;
+}
+
 .block .article-byline p {
   display: inline;
-  margin-right: 20px;
-  font-size: 14px;
-  font-weight: 400;
-}
-
-
-.article-byline a:any-link {
-  font-family: var(--ff-gilroy-bold);
-  background-image: linear-gradient(to right,var(--link-background-color) 50%,transparent 50%);
-  background-size: 205% 2px;
-  background-repeat: no-repeat;
-  background-position: bottom right;
-}
-
-.article-byline p > a:hover {
-  background-position: bottom left;
+  margin-right: 2rem;
 }

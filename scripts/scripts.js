@@ -14,8 +14,9 @@ import {
   toClassName,
   waitForLCP,
 } from './aem.js';
-import { span } from './dom-helpers.js';
-import { formatDate } from './utils.js';
+import {
+  a, div, p, span,
+} from './dom-helpers.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
@@ -47,6 +48,68 @@ async function loadFonts() {
   }
 }
 
+const LANG = {
+  EN: 'en',
+  UK: 'uk',
+  DE: 'de',
+  FR: 'fr',
+  NL: 'nl',
+};
+
+const LANG_LOCALE = {
+  en: 'en-US',
+  uk: 'en-UK',
+  de: 'de-DE',
+  fr: 'fr-FR',
+  nl: 'nl-NL',
+};
+
+let language;
+
+/**
+ * Returns the language of the page based on the path.
+ * @returns {*|string}
+ */
+export function getLanguage() {
+  if (language) return language;
+  language = LANG.EN;
+  const segs = window.location.pathname.split('/');
+  if (segs && segs.length > 0) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [, value] of Object.entries(LANG)) {
+      if (value === segs[1]) {
+        language = value;
+        break;
+      }
+    }
+  }
+  return language;
+}
+
+/**
+ * Returns the locale of the page based on the language.
+ * @returns {*}
+ */
+export function getLocale() {
+  const lang = getLanguage();
+  return LANG_LOCALE[lang];
+}
+
+/**
+ * Formats a date in the current locale.
+ * @param date
+ * @returns {string}
+ */
+function formatDate(date) {
+  const d = new Date(date);
+  const locale = getLocale();
+  return d.toLocaleDateString(locale, {
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric',
+  });
+}
+
 /**
  * Builds an article header and prepends to main in a new section.
  * @param main
@@ -57,20 +120,18 @@ function buildArticleHeader(main) {
     return;
   }
 
-  const div = document.createElement('div');
-  const h1 = main.querySelector('h1');
-
+  //
   const author = getMetadata('author');
   const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
   const publicationDate = formatDate(getMetadata('publication-date'));
-
-  const articleHeaderBlock = buildBlock('article-header', [
-    [h1],
-    [`<p><a href="${authorURL}">${author}</a></p>
-      <p>${publicationDate}</p>`],
-  ]);
-  div.append(articleHeaderBlock);
-  main.prepend(div);
+  //
+  main.prepend(div(buildBlock('article-header', [
+    [main.querySelector('h1')],
+    [
+      p(a({ href: authorURL }, author)),
+      p(publicationDate),
+    ],
+  ])));
 }
 
 /**

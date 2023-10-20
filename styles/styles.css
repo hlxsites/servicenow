@@ -224,7 +224,7 @@ a:hover {
 
 /* stylelint-disable no-descending-specificity */
 .sidebar a:any-link,
-.blog-article main .section:first-child .default-content-wrapper p:first-of-type a:any-link {
+.article-byline a:any-link {
   background: none;
   background-image: linear-gradient(to right,var(--link-background-color) 50%,transparent 50%);
   background-size: 205% 2px;
@@ -233,11 +233,11 @@ a:hover {
 }
 
 .sidebar a:hover,
-.blog-article main .section:first-child .default-content-wrapper p:first-of-type a:hover {
+.article-byline p > a:hover {
   background-position: bottom left;
 }
 
-.blog-article main .section:first-child .default-content-wrapper p:first-of-type a {
+.article-byline a:any-link {
   font-family: var(--ff-gilroy-bold);
 }
 /* stylelint-enable no-descending-specificity */
