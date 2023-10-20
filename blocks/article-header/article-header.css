@@ -1,0 +1,8 @@
+.block .article-byline div {
+  display: inline;
+}
+
+.block .article-byline p {
+  display: inline;
+  margin-right: 2rem;
+}
