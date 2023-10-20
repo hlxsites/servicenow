@@ -635,10 +635,20 @@ function decorateBlocks(main) {
  * @returns {Promise}
  */
 async function loadHeader(header) {
-  const headerBlock = buildBlock('header', '');
+
+  const headerBlock = buildBlock('header', [
+    ['<section id="naas-header-old" class="naas-header-old-section">'],
+  ]);
+
   header.append(headerBlock);
   decorateBlock(headerBlock);
-  return loadBlock(headerBlock);
+
+  loadBlock(headerBlock);
+
+  await loadCSS('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.css');
+
+  await loadScript('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.js', null);
+
 }
 
 /**

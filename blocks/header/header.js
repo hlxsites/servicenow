@@ -1,4 +1,4 @@
-import { getMetadata, decorateIcons } from '../../scripts/aem.js';
+import {getMetadata, decorateIcons, loadCSS, loadScript} from '../../scripts/aem.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -92,12 +92,4 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 export default async function decorate(block) {
   // fetch nav content
   document.documentElement.setAttribute('data-path-hreflang', 'en-us');
-
-  const navSection = document.createElement('section');
-
-  navSection.setAttribute('id', 'naas-header-old');
-  navSection.setAttribute('class', 'naas-header-old-section');
-  navSection.setAttribute('data-domain', 'https://www.webdev.servicenow.com');)
-
-  block.append(navSection);
 }
