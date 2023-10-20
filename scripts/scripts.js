@@ -207,6 +207,8 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  document.documentElement.setAttribute('data-path-hreflang', 'en-us');
+
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {

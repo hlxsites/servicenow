@@ -1,4 +1,5 @@
-import { getMetadata, decorateIcons } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons, loadCSS, loadScript } from '../../scripts/aem.js';
+import { domEl } from '../../scripts/dom-helpers.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -85,61 +86,50 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+async function fetchHtml(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    // eslint-disable-next-line no-console
+    console.error('error loading fragment details', response);
+    return null;
+  }
+  const text = await response.text();
+  if (!text) {
+    // eslint-disable-next-line no-console
+    console.error('html empty', path);
+    return null;
+  }
+  return text;
+}
+
+function resolveRelativeURLs(content) {
+  const baseUrl = 'https://www.servicenow.com';
+
+  // Use a regular expression to find relative links (starting with "/")
+  const relativeLinkRegex = /(?:href|action)="(?!\/images\/)(\/[^"]+)"/g;
+  let absoluteContent = content.replace(relativeLinkRegex, (match, relativePath) => {
+    // Combine the base URL and the relative path to create an absolute URL
+    const absoluteUrl = `${baseUrl}${relativePath}`;
+    return `href="${absoluteUrl}"`;
+  });
+  absoluteContent = content.replaceAll('/content/dam', `${baseUrl}/content/dam`); 
+  return absoluteContent;
+}
+
 /**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // fetch nav content
-  const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta).pathname : '/nav';
-  const resp = await fetch(`${navPath}.plain.html`);
-
-  if (resp.ok) {
-    const html = await resp.text();
-
-    // decorate nav DOM
-    const nav = document.createElement('nav');
-    nav.id = 'nav';
-    nav.innerHTML = html;
-
-    const classes = ['brand', 'sections', 'tools'];
-    classes.forEach((c, i) => {
-      const section = nav.children[i];
-      if (section) section.classList.add(`nav-${c}`);
-    });
-
-    const navSections = nav.querySelector('.nav-sections');
-    if (navSections) {
-      navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
-        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-        navSection.addEventListener('click', () => {
-          if (isDesktop.matches) {
-            const expanded = navSection.getAttribute('aria-expanded') === 'true';
-            toggleAllNavSections(navSections);
-            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-          }
-        });
-      });
-    }
-
-    // hamburger for mobile
-    const hamburger = document.createElement('div');
-    hamburger.classList.add('nav-hamburger');
-    hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-        <span class="nav-hamburger-icon"></span>
-      </button>`;
-    hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
-    nav.prepend(hamburger);
-    nav.setAttribute('aria-expanded', 'false');
-    // prevent mobile nav behavior on window resize
-    toggleMenu(nav, navSections, isDesktop.matches);
-    isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
-
-    decorateIcons(nav);
-    const navWrapper = document.createElement('div');
-    navWrapper.className = 'nav-wrapper';
-    navWrapper.append(nav);
-    block.append(navWrapper);
+  block.innerHTML = '';
+  try {
+    const headerSection = domEl('section', { id: "naas-header-old", class: "naas-header-old-section", 'data-domain': "https://www.servicenow.com" });
+    const headerContent = await fetchHtml('https://www.servicenow.com/header-footer/jcr:content/header.html');
+    headerSection.innerHTML = resolveRelativeURLs(headerContent);
+    block.append(headerSection);
+    loadCSS('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.css');
+    loadScript('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.js');
+  } catch(e) {
+    console.error(e);
   }
 }
