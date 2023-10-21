@@ -25,7 +25,8 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   try {
-    let [content] = await Promise.all([
+    // eslint-disable-next-line no-unused-vars, prefer-const
+    let [css, content, js] = await Promise.all([
       loadCSS('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.css'),
       // commented due to CORS issue
       // fetchHtml('https://www.servicenow.com/header-footer/jcr:content/header.html')
