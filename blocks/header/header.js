@@ -26,10 +26,10 @@ export default async function decorate(block) {
 
   try {
     let [content] = await Promise.all([
+      loadCSS('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.css'),
       // commented due to CORS issue
       // fetchHtml('https://www.servicenow.com/header-footer/jcr:content/header.html')
       fetchHtml('/blocks/header/header.html'),
-      loadCSS('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.css'),
       loadScript('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.js'),
     ]);
 
