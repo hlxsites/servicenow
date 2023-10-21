@@ -30,7 +30,7 @@ export default async function decorate(block) {
       loadCSS('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.css'),
       // commented due to CORS issue
       // fetchHtml('https://www.servicenow.com/header-footer/jcr:content/header.html')
-      fetchHtml('/blocks/header/header.html'),
+      fetchHtml(`${window.hlx.codeBasePath}/blocks/header/header.html`),
       loadScript('https://www.servicenow.com/nas/ssi/header/v1/headerOld.bundle.js'),
     ]);
 
