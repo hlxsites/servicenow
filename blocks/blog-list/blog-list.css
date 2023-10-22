@@ -41,6 +41,7 @@
 }
 
 .blog-list .card .card-text .card-date {
+  display: inline-block;
   margin-top: 0.5rem;
   -webkit-font-smoothing: antialiased;
 }
@@ -117,10 +118,6 @@
   .blog-list .card .card-text .card-cta a .card-arrow {
     margin-left: .5rem;
     transform: scale(1);
-  }
-
-  .blog-list .card .card-text .card-cta a .card-arrow svg {
-      height: 1.5rem;
   }
 }
 
