@@ -1,0 +1,121 @@
+.blog-list ul,
+.blog-list li {
+  padding: 0;
+  margin: 0;
+}
+
+.blog-list li {
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 0.1rem solid #9c9c9c;
+}
+
+.blog-list .card {
+  display: flex;
+  flex-direction: row;
+  background-color: #fff;
+}
+
+.blog-list .card-thumbnail {
+  height: 14.4rem;
+}
+
+.blog-list .card .card-thumbnail a,
+.blog-list .card .card-thumbnail picture,
+.blog-list .card .card-thumbnail img {
+  height: 100%;
+}
+
+.blog-list .card .card-thumbnail img {
+  aspect-ratio: 16 / 9 ;
+}
+
+.blog-list .card .card-text {
+  padding: 0 1rem;
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.blog-list .card .card-text .card-date {
+  margin-top: 0.5rem;
+}
+
+.blog-list .card .card-text .card-cta {
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
+  line-height: 0;
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2.5rem;
+}
+
+.blog-list .card .card-text .card-cta a {
+  font-family: var(--ff-gilroy-semibold);
+  color: #293e40;
+  line-height: 1.4rem;
+  letter-spacing: 0;
+  cursor: pointer;
+  text-decoration: none;
+  background: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.blog-list .card .card-text .card-cta a .card-arrow {
+  display: inline-block;
+  margin-left: -0.2rem;
+  vertical-align: bottom;
+  line-height: 0;
+  position: relative;
+  transform: scale(0.8);
+}
+
+.blog-list .card .card-text .card-cta a .card-arrow svg {
+  height: 1.3rem;
+  transform: translate(-1.5rem,0);
+  transition: all .25s linear;
+}
+
+.blog-list .card .card-text .card-cta a .card-arrow svg #polyline-3 {
+  transform: translate(1rem,0);
+}
+
+.blog-list .card .card-text .card-cta a .card-arrow svg #svg-group {
+  transform: translate(-1rem,0);
+}
+
+.blog-list .card .card-text .card-cta a:hover .card-arrow {
+  display: inline-block
+}
+
+.blog-list .card .card-text .card-cta a:hover .card-arrow svg {
+  transform: translate(-0.5rem,0);
+}
+
+.blog-list .card .card-text .card-cta a .card-arrow {
+  overflow: hidden;
+}
+
+@media only screen and (min-width: 1024px) {
+  .blog-list .card .card-text .card-cta a {
+      font-size:1.8rem !important;
+  }
+
+  .blog-list .card .card-text .card-cta a .card-arrow {
+    margin-left: .5rem;
+    transform: scale(1);
+  }
+
+  .blog-list .card .card-text .card-cta a .card-arrow svg {
+      height: 1.5rem;
+  }
+}
+
+@media only screen and (min-width: 1700px) {
+  .blog-list .card .card-text .card-cta a {
+      padding: 1.5rem 4rem;
+  }
+
+  .blog-list .card .card-text .card-cta a .card-arrow {
+      margin-left: .8rem;
+  }
+}

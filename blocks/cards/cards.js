@@ -1,7 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 
-async function fetchHtml(path) {
+export async function fetchHtml(path) {
   const response = await fetch(path);
   if (!response.ok) {
     // eslint-disable-next-line no-console
@@ -33,7 +33,7 @@ async function fetchAPI(path) {
   return json;
 }
 
-function renderCard(post) {
+export function renderCard(post) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },

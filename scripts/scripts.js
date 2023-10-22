@@ -100,7 +100,7 @@ export function getLocale() {
  * @param date
  * @returns {string}
  */
-function formatDate(date) {
+export function formatDate(date) {
   const d = new Date(date);
   const locale = getLocale();
   return d.toLocaleDateString(locale, {
@@ -184,6 +184,22 @@ function detectSidebar(main) {
       header.append(span(headerContent));
     });
   }
+}
+
+export async function fetchAPI(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    // eslint-disable-next-line no-console
+    console.error('error loading API response', response);
+    return null;
+  }
+  const json = await response.json();
+  if (!json) {
+    // eslint-disable-next-line no-console
+    console.error('empty API response', path);
+    return null;
+  }
+  return json;
 }
 
 /**
