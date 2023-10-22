@@ -128,5 +128,6 @@
 
   .cards.sidebar .card .card-text {
     padding-left: 1rem;
+    flex: 1 1 auto;
   }
 }
