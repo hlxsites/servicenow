@@ -1,20 +1,22 @@
-import { decorateIcons, fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
+import { fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
 import { fetchAPI, formatDate } from '../../scripts/scripts.js';
-import { a, div, h5, li, span, ul } from '../../scripts/dom-helpers.js';
+import {
+  a, div, li, span, ul,
+} from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
 
-const domain = 'https://www.servicenow.com'
+const domain = 'https://www.servicenow.com';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
 const FILTERS = {
-  'category': (blogs, category) => blogs.filter((blog) => category === toClassName(blog.category)),
-  'topic': (blogs, topic) => blogs.filter((blog) => topic === toClassName(blog.topic)),
-  'year': (blogs, year) => blogs.filter((blog) => year === blog.year),
-  'author': (blogs, authorUrl) => blogs.filter(
+  category: (blogs, category) => blogs.filter((blog) => category === toClassName(blog.category)),
+  topic: (blogs, topic) => blogs.filter((blog) => topic === toClassName(blog.topic)),
+  year: (blogs, year) => blogs.filter((blog) => year === blog.year),
+  author: (blogs, authorUrl) => blogs.filter(
     (blog) => authorUrl === new URL(blog.authorUrl, domain).pathname.split('.')[0],
   ),
-}
+};
 
 export async function renderFilterCard(post) {
   // TODO geosite specific placeholders
@@ -33,7 +35,7 @@ export async function renderFilterCard(post) {
 
   cardText.append(
     span({ class: 'card-date' }, publicationDate),
-    div({ class: 'card-cta'},
+    div({ class: 'card-cta' },
       a({ class: 'cta-readmore', href: post.path },
         placeholders.readMore,
         cardArrow,
@@ -48,7 +50,7 @@ export default async function decorate(block) {
   const cssPromise = loadCSS(`${window.hlx.codeBasePath}/blocks/cards/cards.css`);
 
   const row = block.children[0];
-  let [ filterKey, filterValue ] = row.children;
+  let [filterKey, filterValue] = row.children;
 
   // sanitise
   filterKey = toClassName(filterKey.textContent);
@@ -56,7 +58,8 @@ export default async function decorate(block) {
 
   if (filterKey === 'category' || filterKey === 'topic') {
     filterValue = toClassName(filterValue);
-  } else if(filterKey === 'author') {
+  } else if (filterKey === 'author') {
+    // eslint-disable-next-line prefer-destructuring
     filterValue = new URL(filterValue, domain).pathname.split('.')[0];
   }
 
@@ -75,7 +78,7 @@ export default async function decorate(block) {
   block.classList.add(filterKey);
   block.append(
     ul(
-      ...await Promise.all(blogs.map(renderFilterCard))
+      ...await Promise.all(blogs.map(renderFilterCard)),
     ),
   );
   await cssPromise;
