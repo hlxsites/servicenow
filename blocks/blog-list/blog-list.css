@@ -102,6 +102,12 @@
   overflow: hidden;
 }
 
+@media (max-width: 1024px) {
+  .blog-list .card .card-text .card-cta a {
+    font-size: 1.6rem;
+  }
+}
+
 @media (max-width: 991px) {
   .blog-list .card .card-thumbnail {
     flex: 0 0 12.7rem;
@@ -111,6 +117,12 @@
     width: 100%;
     object-fit: contain;
     object-position: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .blog-list .card .card-text .card-cta a {
+    font-size: 1.4rem;
   }
 }
 
