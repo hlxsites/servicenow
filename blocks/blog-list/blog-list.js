@@ -17,6 +17,7 @@ const FILTERS = {
 }
 
 export async function renderFilterCard(post) {
+  // TODO geosite specific placeholders
   const placeholders = await fetchPlaceholders('/blogs');
   let publicationDate = '';
   if (post.publicationDate) {
@@ -64,6 +65,7 @@ export default async function decorate(block) {
   if (!filter) return;
 
   // retrieve and filter blog entries
+  // TODO geosite specific index
   let blogs = await fetchAPI('/blogs/query-index.json?limit=10000');
   if (!blogs) return;
   blogs = filter(blogs.data, filterValue);
