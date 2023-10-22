@@ -36,7 +36,7 @@ export async function renderFilterCard(post) {
   cardText.append(
     span({ class: 'card-date' }, publicationDate),
     div({ class: 'card-cta' },
-      a({ class: 'cta-readmore', href: post.path },
+      a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
         placeholders.readMore,
         cardArrow,
       ),
