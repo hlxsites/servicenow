@@ -112,7 +112,7 @@ export function formatDate(date) {
 
 function buildBlogHeader(main) {
   const section = document.createElement('div');
-  section.append(buildBlock('blogheader', { elems: []}));
+  section.append(buildBlock('blogheader', { elems: [] }));
   main.prepend(section);
 }
 

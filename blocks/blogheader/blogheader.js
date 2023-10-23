@@ -4,7 +4,7 @@ export default async function decorate(block) {
   const blogHeaderMeta = getMetadata('blogheader');
   const blogHeaderPath = blogHeaderMeta
     ? new URL(blogHeaderMeta).pathname
-    : "/blogs/blog-nav";
+    : '/blogs/blog-nav';
 
   const blogHeaderResp = await fetch(`${blogHeaderPath}.plain.html`);
 
