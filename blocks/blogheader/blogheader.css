@@ -1,5 +1,4 @@
 main.has-sidebar > div.blogheader-container {
-  background-color: var(--text-color);
   grid-column: 2 / span 2;
   color: var(--background-color);
   padding: 0;
