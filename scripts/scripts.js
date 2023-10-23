@@ -177,7 +177,7 @@ function detectSidebar(main) {
     main.style = `grid-template-rows: repeat(${numSections}, auto);`;
 
     sidebar.style.gridRow = `${sidebarOffset} / infinite`;
-    for (let i = 0; i < sidebarOffset - 1; i++) {
+    for (let i = 0; i < sidebarOffset - 1; i += 1) {
       main.children[i].classList.add('no-sidebar');
     }
 
