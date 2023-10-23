@@ -36,12 +36,6 @@ function buildHeroBlock(main) {
   }
 }
 
-function buildBlogHeader(main) {
-  const section = document.createElement('div');
-  section.append(buildBlock('blogheader', { elems: []}));
-  main.prepend(section);
-}
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -161,7 +155,6 @@ function isArticlePage() {
 function buildAutoBlocks(main) {
   try {
     // buildHeroBlock(main);
-    buildBlogHeader(main);
     if (isArticlePage()) {
       buildArticleHeader(main);
     }
@@ -175,18 +168,18 @@ function detectSidebar(main) {
   const sidebar = main.querySelector('.section.sidebar');
   if (sidebar) {
     main.classList.add('has-sidebar');
-    const sidebarOffset = sidebar.getAttribute('data-start-sidebar-at-section');
+    const sidebarOffset = Number.parseInt(
+      sidebar.getAttribute('data-start-sidebar-at-section') || '2',
+      10,
+    );
 
     const numSections = main.children.length - 1;
     main.style = `grid-template-rows: repeat(${numSections}, auto);`;
 
-    // sidebar offset is 2 by default and at a minimum to allow the blogheader to span the inner 2 columns
-    // without pushing the sidebar below the page contents.
-    let offset = 2;
-    if (sidebarOffset && Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10)) {
-       offset = Math.max(offset, Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10));
+    sidebar.style.gridRow = `${sidebarOffset} / infinite`;
+    for (let i = 0; i < sidebarOffset - 1; i += 1) {
+      main.children[i].classList.add('no-sidebar');
     }
-    sidebar.style.gridRow = `${offset} / infinite`;
 
     sidebar.querySelectorAll('h3').forEach((header) => {
       const headerContent = header.textContent;
