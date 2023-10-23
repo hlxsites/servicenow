@@ -51,6 +51,7 @@ export default async function decorate(block) {
 
   const row = block.children[0];
   let [filterKey, filterValue] = row.children;
+  block.innerHTML = '';
 
   // sanitise
   filterKey = toClassName(filterKey.textContent);
@@ -74,7 +75,6 @@ export default async function decorate(block) {
   blogs = filter(blogs.data, filterValue);
 
   // render
-  block.innerHTML = '';
   block.classList.add(filterKey);
   block.append(
     ul(
