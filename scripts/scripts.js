@@ -57,12 +57,12 @@ const LOCALE_INFO = {
   'en-UK': {
     urlPrefix: 'uk',
     placeholdersPrefix: '/uk/blogs',
-    metadataIndex: '', //TODO issue #30
+    metadataIndex: '', // TODO issue #30
   },
   'de-DE': {
     urlPrefix: 'de',
     placeholdersPrefix: '/de/blogs',
-    metadataIndex: '', //TODO issue #30
+    metadataIndex: '', // TODO issue #30
   },
   'fr-FR': {
     urlPrefix: 'fr',
@@ -74,7 +74,7 @@ const LOCALE_INFO = {
     placeholdersPrefix: '/nl/blogs',
     metadataIndex: '', // TODO issue #30
   },
-}
+};
 
 /**
  * Returns the locale of the page based on the path
