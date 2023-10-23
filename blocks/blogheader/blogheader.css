@@ -1,0 +1,58 @@
+main.has-sidebar > div.blogheader-container {
+  background-color: var(--text-color);
+  grid-column: 2 / span 2;
+  color: var(--background-color);
+  padding: 0;
+}
+
+nav#blogheader {
+  background-color: var(--text-color);
+  padding: 0;
+  margin: 0;
+}
+
+/* Style for the container div */
+nav#blogheader > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Style for the list as a table */
+nav#blogheader ul {
+  display: table;
+  table-layout: fixed;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 55rem;
+}
+
+nav#blogheader li a {
+  font-size: 1.4rem;
+  text-decoration: none;
+  transition: none;
+  background: inherit;
+  color: inherit;
+  font-family: GilroyRegular;
+  font-weight: 400;
+}
+
+/* Style for the list items as table cells */
+nav#blogheader li {
+  display: table-cell;
+  border-right: 1px solid white;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+nav#blogheader li.active {
+  background-color: black;
+}
+
+/* Style for the paragraph */
+nav#blogheader p {
+  margin: 0;
+  padding: 0;
+}
