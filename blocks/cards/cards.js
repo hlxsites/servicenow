@@ -1,7 +1,8 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
+import { fetchAPI } from '../../scripts/scripts.js';
 
-async function fetchHtml(path) {
+export async function fetchHtml(path) {
   const response = await fetch(path);
   if (!response.ok) {
     // eslint-disable-next-line no-console
@@ -17,23 +18,7 @@ async function fetchHtml(path) {
   return text;
 }
 
-async function fetchAPI(path) {
-  const response = await fetch(path);
-  if (!response.ok) {
-    // eslint-disable-next-line no-console
-    console.error('error loading API response', response);
-    return null;
-  }
-  const json = await response.json();
-  if (!json) {
-    // eslint-disable-next-line no-console
-    console.error('empty API response', path);
-    return null;
-  }
-  return json;
-}
-
-function renderCard(post) {
+export function renderCard(post) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },

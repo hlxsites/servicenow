@@ -45,6 +45,7 @@
   color: #fff;
   font-family: var(--ff-gilroy-semibold);
   font-size: 1.4rem;
+  line-height: 2rem;
 }
 
 .card .card-thumbnail .topic-tag::after {
@@ -127,5 +128,6 @@
 
   .cards.sidebar .card .card-text {
     padding-left: 1rem;
+    flex: 1 1 auto;
   }
 }
