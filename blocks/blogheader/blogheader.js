@@ -1,22 +1,25 @@
-import { getMetadata, decorateIcons } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from "../../scripts/aem.js";
 
 export default async function decorate(block) {
-    const blogHeaderMeta = getMetadata('blogheader');
-    const blogHeaderPath = blogHeaderMeta ? new URL(blogHeaderMeta).pathname : '/blogs/blog-nav';
-  
-    const blogHeaderResp = await fetch(`${blogHeaderPath}.plain.html`);
+  const blogHeaderMeta = getMetadata("blogheader");
+  const blogHeaderPath = blogHeaderMeta
+    ? new URL(blogHeaderMeta).pathname
+    : "/blogs/blog-nav";
 
-    if (blogHeaderResp.ok) {
-        const blogHeaderHtml = await blogHeaderResp.text();
+  const blogHeaderResp = await fetch(`${blogHeaderPath}.plain.html`);
 
-        const blogHeader = document.createElement('nav');
-        blogHeader.id = 'blogheader';
-        blogHeader.innerHTML = blogHeaderHtml;
+  if (blogHeaderResp.ok) {
+    const blogHeaderHtml = await blogHeaderResp.text();
 
-        blogHeader.querySelector(`li > a[href^="${window.location.pathname}"`)?.parentNode?.classList.add('active');
+    const blogHeader = document.createElement("nav");
+    blogHeader.id = "blogheader";
+    blogHeader.innerHTML = blogHeaderHtml;
 
-        decorateIcons(blogHeader);
-        block.append(blogHeader);
-    }
+    blogHeader
+      .querySelector(`li > a[href^="${window.location.pathname}"`)
+      ?.parentNode?.classList.add("active");
+
+    decorateIcons(blogHeader);
+    block.append(blogHeader);
+  }
 }
-  
