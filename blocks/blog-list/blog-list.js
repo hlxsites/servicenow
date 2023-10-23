@@ -1,5 +1,5 @@
 import { fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
-import { fetchAPI, formatDate } from '../../scripts/scripts.js';
+import { fetchAPI, formatDate, getLocaleInfo } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
@@ -19,8 +19,7 @@ const FILTERS = {
 };
 
 export async function renderFilterCard(post) {
-  // TODO geosite specific placeholders
-  const placeholders = await fetchPlaceholders('/blogs');
+  const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
   let publicationDate = '';
   if (post.publicationDate) {
     const date = new Date(0);
@@ -69,8 +68,7 @@ export default async function decorate(block) {
   if (!filter) return;
 
   // retrieve and filter blog entries
-  // TODO geosite specific index
-  let blogs = await fetchAPI('/blogs/query-index.json?limit=10000');
+  let blogs = await fetchAPI(`${getLocaleInfo().metadataIndex}?limit=10000`);
   if (!blogs) return;
   blogs = filter(blogs.data, filterValue);
 

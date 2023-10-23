@@ -48,51 +48,61 @@ async function loadFonts() {
   }
 }
 
-const LANG = {
-  EN: 'en',
-  UK: 'uk',
-  DE: 'de',
-  FR: 'fr',
-  NL: 'nl',
-};
-
-const LANG_LOCALE = {
-  en: 'en-US',
-  uk: 'en-UK',
-  de: 'de-DE',
-  fr: 'fr-FR',
-  nl: 'nl-NL',
-};
-
-let language;
+const LOCALE_INFO = {
+  'en-US': {
+    urlPrefix: '',
+    placeholdersPrefix: '/blogs',
+    metadataIndex: '/blogs/query-index.json',
+  },
+  'en-UK': {
+    urlPrefix: 'uk',
+    placeholdersPrefix: '/uk/blogs',
+    metadataIndex: '', //TODO issue #30
+  },
+  'de-DE': {
+    urlPrefix: 'de',
+    placeholdersPrefix: '/de/blogs',
+    metadataIndex: '', //TODO issue #30
+  },
+  'fr-FR': {
+    urlPrefix: 'fr',
+    placeholdersPrefix: '/fr/blogs',
+    metadataIndex: '', // TODO issue #30
+  },
+  'nl-NL': {
+    urlPrefix: 'nl',
+    placeholdersPrefix: '/nl/blogs',
+    metadataIndex: '', // TODO issue #30
+  },
+}
 
 /**
- * Returns the language of the page based on the path.
+ * Returns the locale of the page based on the path
  * @returns {*|string}
  */
-export function getLanguage() {
-  if (language) return language;
-  language = LANG.EN;
+export function getLocale() {
+  if (document.documentElement.lang) return document.documentElement.lang;
+
+  document.documentElement.lang = 'en-US';
   const segs = window.location.pathname.split('/');
   if (segs && segs.length > 0) {
     // eslint-disable-next-line no-restricted-syntax
-    for (const [, value] of Object.entries(LANG)) {
-      if (value === segs[1]) {
-        language = value;
+    for (const [key, value] of Object.entries(LOCALE_INFO)) {
+      if (value.urlPrefix === segs[1]) {
+        document.documentElement.lang = key;
         break;
       }
     }
   }
-  return language;
+  return document.documentElement.lang;
 }
 
 /**
- * Returns the locale of the page based on the language.
- * @returns {*}
+ * Returns the locale information
+ * @returns {Object}
  */
-export function getLocale() {
-  const lang = getLanguage();
-  return LANG_LOCALE[lang];
+export function getLocaleInfo() {
+  return LOCALE_INFO[getLocale()] || LOCALE_INFO['en-US'];
 }
 
 /**
@@ -225,7 +235,7 @@ export function decorateMain(main) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  getLocale(); // set document.documentElement.lang for SEO
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
