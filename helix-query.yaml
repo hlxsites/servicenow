@@ -3,6 +3,8 @@ indices:
   default:
     include:
       - /blogs/**
+    exclude:
+      - '/blogs/fragments/**'
     target: /blogs/query-index.json
     properties:
       type:
@@ -37,7 +39,7 @@ indices:
         value: attribute(el, "content")
       authorUrl:
         select: head > meta[name="author-link"]
-        value: attribute(el, "content")
+        value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")
       robots:
         select: head > meta[name="robots"]
         value: attribute(el, "content")
