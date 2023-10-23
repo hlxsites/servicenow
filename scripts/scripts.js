@@ -168,14 +168,17 @@ function detectSidebar(main) {
   const sidebar = main.querySelector('.section.sidebar');
   if (sidebar) {
     main.classList.add('has-sidebar');
-    const sidebarOffset = sidebar.getAttribute('data-start-sidebar-at-section');
+    const sidebarOffset = Number.parseInt(
+      sidebar.getAttribute('data-start-sidebar-at-section') || '2',
+      10,
+    );
 
     const numSections = main.children.length - 1;
     main.style = `grid-template-rows: repeat(${numSections}, auto);`;
 
-    if (sidebarOffset && Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10)) {
-      const offset = Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10);
-      sidebar.style.gridRow = `${offset} / infinite`;
+    sidebar.style.gridRow = `${sidebarOffset} / infinite`;
+    for (let i = 0; i < sidebarOffset - 1; i += 1) {
+      main.children[i].classList.add('no-sidebar');
     }
 
     sidebar.querySelectorAll('h3').forEach((header) => {
