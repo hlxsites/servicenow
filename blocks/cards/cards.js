@@ -1,7 +1,8 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
+import { fetchAPI } from '../../scripts/scripts.js';
 
-async function fetchHtml(path) {
+export async function fetchHtml(path) {
   const response = await fetch(path);
   if (!response.ok) {
     // eslint-disable-next-line no-console
@@ -17,12 +18,12 @@ async function fetchHtml(path) {
   return text;
 }
 
-function renderCard(post) {
+export function renderCard(post) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
-          createOptimizedPicture(post.thumbnail, post.header),
+          createOptimizedPicture(post.image, post.header),
         ),
         post.topic ? div({ class: 'topic-tag' }, div(post.topic)) : '',
       ),
@@ -33,9 +34,43 @@ function renderCard(post) {
   );
 }
 
+function isApiCall(path) {
+  return path?.split('?')[0]?.endsWith('.json');
+}
+
+function fetchLinkBasedCards(cardInfos, links) {
+  return links.map(async (postLink) => {
+    const fragmentHtml = await fetchHtml(postLink.href);
+    if (fragmentHtml) {
+      const fragmentElement = div();
+      fragmentElement.innerHTML = fragmentHtml;
+
+      const header = fragmentElement.querySelector('h1').textContent;
+      const image = fragmentElement.querySelector('img')
+        .getAttribute('src');
+      const topic = fragmentElement.querySelector('meta[name="topic"]')
+        .getAttribute('content');
+
+      cardInfos[postLink.idx] = {
+        path: postLink.href,
+        header,
+        image,
+        topic,
+      };
+    }
+  });
+}
+
+function fetchAPIBasedCards(cardInfos, apis) {
+  return apis.map(async (apiLink) => {
+    cardInfos[apiLink.idx] = (await fetchAPI(apiLink.href)).data;
+  });
+}
+
 export default async function decorate(block) {
+  const apis = [];
   const links = [];
-  const cardInfos = Array(block.children.children).fill(null);
+  const cardInfos = Array(block.children.length).fill(null);
 
   [...block.children].forEach((row, idx) => {
     // card with content directly in the word document
@@ -49,48 +84,40 @@ export default async function decorate(block) {
       cardInfos[idx] = {
         path: link.href,
         header: row.querySelector('h5')?.textContent,
-        thumbnail: thumbnail.src,
+        image: thumbnail.src,
         topic: row.querySelector('p')?.textContent,
       };
 
       return;
     }
 
-    // card with content as a link only
-    if (row.querySelector('a')) {
-      const link = row.querySelector('a');
-      links.push({ href: link.href, idx });
+    const source = row.querySelector('a');
+    if (source) {
+      // cards with content coming from a JSON api call
+      if (isApiCall(source.href)) {
+        apis.push({ href: source.href, idx });
+      // card with content as a link only
+      } else {
+        links.push({ href: source.href, idx });
+      }
     }
   });
 
-  // extract information for the cards as link only
-  await Promise.all(links.map(async (postLink) => {
-    const fragmentHtml = await fetchHtml(postLink.href, false);
-    if (fragmentHtml) {
-      const fragmentElement = div();
-      fragmentElement.innerHTML = fragmentHtml;
-
-      const header = fragmentElement.querySelector('h1').textContent;
-      const thumbnail = fragmentElement.querySelector('img')
-        .getAttribute('src');
-      const topic = fragmentElement.querySelector('meta[name="topic"]')
-        .getAttribute('content');
-
-      cardInfos[postLink.idx] = {
-        path: postLink.href,
-        header,
-        thumbnail,
-        topic,
-      };
-    }
-  }));
+  // extract information for the cards links and APIs
+  await Promise.all([
+    ...fetchLinkBasedCards(cardInfos, links),
+    ...fetchAPIBasedCards(cardInfos, apis),
+  ]);
 
   // render all cards
+  block.innerHTML = '';
   cardInfos.forEach((cardInfo, idx) => {
     if (!cardInfo) return;
 
-    block.children[idx].replaceWith(
-      renderCard(cardInfos[idx], idx),
-    );
+    if (Array.isArray(cardInfos[idx])) {
+      block.append(...cardInfos[idx].map(renderCard));
+    } else {
+      block.append(renderCard(cardInfos[idx]));
+    }
   });
 }

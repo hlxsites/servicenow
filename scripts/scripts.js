@@ -1,18 +1,22 @@
 import {
-  sampleRUM,
   buildBlock,
-  loadHeader,
-  loadFooter,
+  decorateBlocks,
   decorateButtons,
   decorateIcons,
   decorateSections,
-  decorateBlocks,
   decorateTemplateAndTheme,
-  waitForLCP,
+  getMetadata,
   loadBlocks,
   loadCSS,
+  loadFooter,
+  loadHeader,
+  sampleRUM,
+  toClassName,
+  waitForLCP,
 } from './aem.js';
-import { span } from './dom-helpers.js';
+import {
+  a, div, p, span,
+} from './dom-helpers.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
@@ -50,6 +54,105 @@ async function loadFonts() {
   }
 }
 
+const LANG = {
+  EN: 'en',
+  UK: 'uk',
+  DE: 'de',
+  FR: 'fr',
+  NL: 'nl',
+};
+
+const LANG_LOCALE = {
+  en: 'en-US',
+  uk: 'en-UK',
+  de: 'de-DE',
+  fr: 'fr-FR',
+  nl: 'nl-NL',
+};
+
+let language;
+
+/**
+ * Returns the language of the page based on the path.
+ * @returns {*|string}
+ */
+export function getLanguage() {
+  if (language) return language;
+  language = LANG.EN;
+  const segs = window.location.pathname.split('/');
+  if (segs && segs.length > 0) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [, value] of Object.entries(LANG)) {
+      if (value === segs[1]) {
+        language = value;
+        break;
+      }
+    }
+  }
+  return language;
+}
+
+/**
+ * Returns the locale of the page based on the language.
+ * @returns {*}
+ */
+export function getLocale() {
+  const lang = getLanguage();
+  return LANG_LOCALE[lang];
+}
+
+/**
+ * Formats a date in the current locale.
+ * @param date
+ * @returns {string}
+ */
+export function formatDate(date) {
+  const d = new Date(date);
+  const locale = getLocale();
+  return d.toLocaleDateString(locale, {
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric',
+  });
+}
+
+/**
+ * Builds an article header and prepends to main in a new section.
+ * @param main
+ */
+function buildArticleHeader(main) {
+  if (main.querySelector('.article-header')) {
+    // already got an article header
+    return;
+  }
+
+  //
+  const author = getMetadata('author');
+  const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
+  const publicationDate = formatDate(getMetadata('publication-date'));
+  //
+  main.prepend(div(buildBlock('article-header', [
+    [main.querySelector('h1')],
+    [
+      p(a({ href: authorURL }, author)),
+      p(publicationDate),
+    ],
+  ])));
+}
+
+/**
+ * Returns true if the page is an article based on the template metadata.
+ * @returns {boolean}
+ */
+function isArticlePage() {
+  let blogPage = false;
+  const template = getMetadata('template');
+  if (template && template === 'Blog Article') {
+    blogPage = true;
+  }
+  return blogPage;
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -59,6 +162,9 @@ function buildAutoBlocks(main) {
   try {
     // buildHeroBlock(main);
     buildBlogHeader(main);
+    if (isArticlePage()) {
+      buildArticleHeader(main);
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -88,6 +194,22 @@ function detectSidebar(main) {
       header.append(span(headerContent));
     });
   }
+}
+
+export async function fetchAPI(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    // eslint-disable-next-line no-console
+    console.error('error loading API response', response);
+    return null;
+  }
+  const json = await response.json();
+  if (!json) {
+    // eslint-disable-next-line no-console
+    console.error('empty API response', path);
+    return null;
+  }
+  return json;
 }
 
 /**
