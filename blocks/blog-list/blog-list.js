@@ -68,7 +68,7 @@ export default async function decorate(block) {
   if (!filter) return;
 
   // retrieve and filter blog entries
-  let blogs = await fetchAPI(`${getLocaleInfo().metadataIndex}?sheet=blog&limit=10000`);
+  let blogs = await fetchAPI(`${getLocaleInfo().metadataIndex}?sheet=blogs&limit=10000`);
   if (!blogs) return;
   blogs = filter(blogs.data, filterValue);
 
