@@ -344,8 +344,7 @@ main img {
 }
 
 @media (min-width: 900px) {
-  .section > div,
-  .section:first-child::after {
+  .section > div {
     max-width: 1200px;
     margin: auto;
   }
@@ -357,8 +356,18 @@ body:not(.blog-home-page) main .section:first-child::after {
   display: block;
   height: 9px;
   background: url('/images/blog-diagonal-lines.webp') repeat 0 0;
+  margin: 2.4rem auto 3rem;
+  max-width: calc(1200px - 2.4rem);
+}
+
+@media (max-width: 1224px) {
+  body:not(.blog-home-page) main .section:first-child::after {
+    margin: 2.4rem 1.2rem 3rem;
+  }
+}
+
+body:not(.blog-home-page) main.has-sidebar .section:first-child::after {
   margin: 2.4rem 1.2rem 3rem;
-  max-width: 1200px;
 }
 
 main .section.highlight {
