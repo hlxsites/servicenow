@@ -10,7 +10,7 @@ export default async function decorate(block) {
 
   // fetch footer content
   const footerPath = cfg.footer || '/footer';
-  const resp = await fetch(`${footerPath}.plain.html`, window.location.pathname.endsWith('/footer') ? { cache: 'reload' } : {});
+  const resp = await fetch(`${footerPath}.plain.html`, window.location.pathname.endsWith('/drafts/suazad/footer') ? { cache: 'reload' } : {});
 
   if (resp.ok) {
     const html = await resp.text();
@@ -18,6 +18,11 @@ export default async function decorate(block) {
     // decorate footer DOM
     const footer = document.createElement('div');
     footer.innerHTML = html;
+
+    footer.children[0].classList.add('contact');
+    footer.children[1].classList.add('company-links');
+    footer.children[2].classList.add('socials');
+    footer.children[3].classList.add('lower-footer');
 
     decorateIcons(footer);
     block.append(footer);
