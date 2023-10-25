@@ -170,10 +170,10 @@ function isArticlePage() {
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
   try {
-    buildBlogHeader(main);
     if (isArticlePage()) {
       buildArticleHeader(main);
     }
+    buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
