@@ -1,4 +1,6 @@
-import { getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock } from '../../scripts/aem.js';
+import {
+  getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock,
+} from '../../scripts/aem.js';
 import { getLocaleInfo } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
@@ -8,7 +10,7 @@ export default async function decorate(block) {
     ? new URL(blogHeaderMeta).pathname
     : 'blog-nav';
 
-  const blogHeaderResp = await fetch(`${localeInfo['urlPrefix']}/blogs/fragments/${blogHeaderPath}.plain.html`);
+  const blogHeaderResp = await fetch(`${localeInfo.urlPrefix}/blogs/fragments/${blogHeaderPath}.plain.html`);
 
   if (blogHeaderResp.ok) {
     const blogHeaderHtml = await blogHeaderResp.text();
@@ -22,7 +24,7 @@ export default async function decorate(block) {
       ?.parentNode?.classList.add('active');
 
     decorateIcons(blogHeader);
-    let searchBlock = buildBlock('blogsearch', { elems: [] });
+    const searchBlock = buildBlock('blogsearch', { elems: [] });
     blogHeader.querySelector('div').append(searchBlock);
     decorateBlock(searchBlock);
     loadBlock(searchBlock);
