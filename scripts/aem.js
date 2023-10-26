@@ -153,7 +153,7 @@ function setup() {
  */
 
 function init() {
-  setup();
+  setup(); 
   sampleRUM('top');
 
   window.addEventListener('load', () => sampleRUM('load'));

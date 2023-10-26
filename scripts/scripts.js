@@ -6,6 +6,7 @@ import {
   decorateSections,
   decorateTemplateAndTheme,
   getMetadata,
+  loadBlock,
   loadBlocks,
   loadCSS,
   loadFooter,
@@ -13,6 +14,7 @@ import {
   sampleRUM,
   toClassName,
   waitForLCP,
+  decorateBlock,
 } from './aem.js';
 import {
   a, div, p, span,
@@ -121,11 +123,28 @@ export function formatDate(date) {
 }
 
 /**
+ * Builds an article sidebar and appends it to main in a new section.
+ * @param main
+ */
+async function buildArticleSidebar(main) {
+  if (main.querySelector('.sidebar') || !main.firstChild) {
+    // already got a sidebar, !main.firstChild avoids recursive rendering for empty `main` blocks
+    return;
+  }
+  const locInfo = getLocaleInfo();
+  let sidebarBlock = buildBlock('fragment', [
+    [a({ href: locInfo.placeholdersPrefix+'/fragments/sidebar-fragment' }, 'Sidebar')],
+  ]);
+
+  main.append(div(sidebarBlock));
+}
+
+/**
  * Builds an article header and prepends to main in a new section.
  * @param main
  */
 function buildArticleHeader(main) {
-  if (main.querySelector('.article-header')) {
+  if (main.querySelector('.article-header') || !main.firstChild) {
     // already got an article header
     return;
   }
@@ -163,10 +182,14 @@ function isArticlePage() {
  */
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
+  if (main.parentNode != document.body) { // don't build auto blocks in fragments
+    return;
+  }
   try {
     // buildHeroBlock(main);
     if (isArticlePage()) {
       buildArticleHeader(main);
+      buildArticleSidebar(main);
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -266,8 +289,8 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
-  loadFooter(doc.querySelector('footer'));
+  await loadHeader(doc.querySelector('header'));
+  await loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -287,7 +310,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-async function loadPage() {
+export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
