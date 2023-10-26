@@ -25,7 +25,6 @@ const createMetadataBlock = (main, document) => {
     // Publication Date
     const date = document.querySelector('.cmp-blog-author-info__date');
     if (date) {
-        // parse date which is in format "October 23, 2023" considering local en-US
         const dateStr = date.textContent.trim();
         const dateObj = new Date(dateStr);
         // format date to mm/dd/yyyy
@@ -75,7 +74,71 @@ const createMetadataBlock = (main, document) => {
                         'Manufacturing',
                         'Now on Now',
                         'Now Platform',
-                        'Telecommunications'];
+                        'Telecommunications',
+
+                        // de-DE
+                        'Application Development',
+                        'Behörden',
+                        'Bildungswesen',
+                        'Crisis Management',
+                        'Cybersicherheit und Risikomanagement',
+                        'Events',
+                        'Fertigungsindustrie',
+                        'Finanzindustrie',
+                        'Gesundheitswesen',
+                        'IT-Management',
+                        'Karriere',
+                        'KI und Automatisierung',
+                        'Kultur',
+                        'Kunden-Experience',
+                        'Kundengeschichten',
+                        'Mitarbeiter-Experience',
+                        'Now on Now',
+                        'Now Platform',
+                        'Telekommunikation',
+
+                        // fr-FR
+                        'Carrières',
+                        'Culture',
+                        'Cyber-sécurité et risques',
+                        'Développement d’applications',
+                        'Expérience client',
+                        'Expérience des employés',
+                        'Gestion de crise',
+                        'Gestion de l’IT',
+                        'Gouvernement',
+                        'IA et automatisation',
+                        'Now on Now',
+                        'Now Platform',
+                        'Production industrielle',
+                        'Santé',
+                        'Services financiers',
+                        'Télécommunications',
+                        'Témoignages Client',
+                        'Éducation',
+                        'Événements',
+                        // nl-NL
+                        'AI en automatisering',
+                        'Applicatieontwikkeling',
+                        'Carrière',
+                        'Crisismanagement',
+                        'Cultuur',
+                        'Cybersecurity and Risk',
+                        'Events',
+                        'Financiële dienstverlening',
+                        'Gezondheidszorg',
+                        'IT-beheer',
+                        'Klantervaring',
+                        'Klantverhalen',
+                        'Now on Now',
+                        'Now Platform',
+                        'Opleiding',
+                        'Overheid',
+                        'Productie',
+                        'Telecommunicatie',
+                        'Werknemerservaring'
+            
+        ];
 
         const categories = ['Trends and Research', 'About ServiceNow', 'Solutions', 'Life at Now'];
 
