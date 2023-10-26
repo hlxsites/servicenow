@@ -13,6 +13,7 @@ import {
   sampleRUM,
   toClassName,
   waitForLCP,
+  loadBlock,
 } from './aem.js';
 import {
   a, div, p, span,
@@ -159,6 +160,27 @@ function buildArticleCopyright(main) {
 }
 
 /**
+ * Builds an article sidebar and appends it to main in a new section.
+ * @param main
+ */
+function buildArticleSidebar(main) {
+  const divs = Array.from(document.querySelectorAll('.section-metadata div div'));
+  const targetDivs = divs.filter(
+    (d) => d.textContent.trim().toLowerCase() === 'style' || d.textContent.trim().toLowerCase() === 'sidebar',
+  );
+  if (targetDivs.length !== 2) {
+    // the article did not come with an inline sidebar
+    const locInfo = getLocaleInfo();
+    const sidebarBlock = buildBlock('fragment', [
+      [a({ href: `${locInfo.placeholdersPrefix}/fragments/sidebar-fragment` }, 'Sidebar')],
+    ]);
+    sidebarBlock.dataset.eagerBlock = true;
+    const sidebar = div(sidebarBlock); // wrap sidebarBlock in div to create a new section
+    main.append(sidebar);
+  }
+}
+
+/**
  * Returns true if the page is an article based on the template metadata.
  * @returns {boolean}
  */
@@ -177,9 +199,13 @@ function isArticlePage() {
  */
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
+  if (main.parentNode !== document.body) { // don't build auto blocks in fragments
+    return;
+  }
   try {
     if (isArticlePage()) {
       buildArticleHeader(main);
+      buildArticleSidebar(main);
       buildArticleCopyright(main);
     }
     buildBlogHeader(main);
@@ -189,8 +215,22 @@ function buildAutoBlocks(main) {
   }
 }
 
-function detectSidebar(main) {
+export function addH3Spans(elem) {
+  elem.querySelectorAll('h3').forEach((header) => {
+    const headerContent = header.textContent;
+    header.textContent = '';
+    header.append(span(headerContent));
+  });
+}
+
+async function loadEagerBlocks(main) {
+  const eagerBlocks = main.querySelectorAll('div[data-eager-block]');
+  await Promise.all([...eagerBlocks].map((eagerBlock) => loadBlock(eagerBlock)));
+}
+
+async function detectSidebar(main) {
   const sidebar = main.querySelector('.section.sidebar');
+
   if (sidebar) {
     main.classList.add('has-sidebar');
     const sidebarOffset = Number.parseInt(
@@ -242,7 +282,6 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
-  detectSidebar(main);
 }
 
 /**
@@ -255,6 +294,8 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    await loadEagerBlocks(main);
+    await detectSidebar(main);
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
@@ -302,7 +343,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-async function loadPage() {
+export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
