@@ -1,5 +1,5 @@
 import { loadCSS, loadScript } from '../../scripts/aem.js';
-import {section } from '../../scripts/dom-helpers.js';
+import { section } from '../../scripts/dom-helpers.js';
 import { getLocale } from '../../scripts/scripts.js';
 
 // map containing environment configurations
@@ -10,6 +10,12 @@ const naavDataDomains = {
   prod: 'https://www.servicenow.com',
 };
 
+function getDataDomain() {
+  const env = new URLSearchParams(window.location.search).get('naas');
+
+  return env ? naavDataDomains[env.toLowerCase()] || naavDataDomains.prod : naavDataDomains.prod;
+}
+
 /**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -18,9 +24,7 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   document.documentElement.setAttribute('data-path-hreflang', getLocale().toLowerCase());
-
-  const env = new URLSearchParams(window.location.search).get('naas');
-  const dataDomain = env ? naavDataDomains[env.toLowerCase()] || naavDataDomains.prod : naavDataDomains.prod;
+  const dataDomain = getDataDomain();
 
   try {
     block.append(section({ id: 'naas-header-old', className: 'naas-header-old-section', 'data-domain': dataDomain }));
