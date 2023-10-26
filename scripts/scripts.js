@@ -314,4 +314,6 @@ export async function loadPage() {
   loadDelayed();
 }
 
-loadPage();
+if (!import.meta.url.startsWith('file://')) {
+  loadPage();
+}

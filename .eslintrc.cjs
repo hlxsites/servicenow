@@ -3,6 +3,7 @@ module.exports = {
   extends: 'airbnb-base',
   env: {
     browser: true,
+    'jest/globals': true,
   },
   parser: '@babel/eslint-parser',
   parserOptions: {
@@ -19,4 +20,5 @@ module.exports = {
     }],
     'function-paren-newline': 'off',
   },
+  plugins: ['jest'],
 };
