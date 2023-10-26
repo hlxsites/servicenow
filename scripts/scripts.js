@@ -127,6 +127,35 @@ function buildBlogHeader(main) {
 }
 
 /**
+ * Builds an article sidebar and appends it to main in a new section.
+ * @param main
+ */
+async function buildArticleSidebar(main) {
+  if (main.querySelector('.sidebar')) {
+    // already got a sidebar, !main.firstChild avoids recursive rendering for empty `main` blocks
+    return;
+  }
+  const locInfo = getLocaleInfo();
+  const sidebarBlock = buildBlock('sidebar', [
+    [a({ href: `${locInfo.placeholdersPrefix}/fragments/sidebar-fragment` }, 'Sidebar')],
+  ]);
+
+  const sidebar = div(sidebarBlock);
+  main.append(sidebar);
+
+  main.classList.add('has-sidebar');
+  const sidebarOffset = 2;
+
+  const numSections = main.children.length - 1;
+  main.style = `grid-template-rows: repeat(${numSections}, auto);`;
+
+  sidebar.style.gridRow = `${sidebarOffset} / infinite`;
+  for (let i = 0; i < sidebarOffset - 1; i += 1) {
+    main.children[i].classList.add('no-sidebar');
+  }
+}
+
+/**
  * Builds an article header and prepends to main in a new section.
  * @param main
  */
@@ -169,9 +198,13 @@ function isArticlePage() {
  */
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
+  if (main.parentNode !== document.body) { // don't build auto blocks in fragments
+    return;
+  }
   try {
     if (isArticlePage()) {
       buildArticleHeader(main);
+      buildArticleSidebar(main);
     }
     buildBlogHeader(main);
   } catch (error) {
@@ -293,7 +326,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-async function loadPage() {
+export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
