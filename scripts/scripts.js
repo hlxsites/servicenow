@@ -6,7 +6,6 @@ import {
   decorateSections,
   decorateTemplateAndTheme,
   getMetadata,
-  loadBlock,
   loadBlocks,
   loadCSS,
   loadFooter,
@@ -14,7 +13,6 @@ import {
   sampleRUM,
   toClassName,
   waitForLCP,
-  decorateBlock,
 } from './aem.js';
 import {
   a, div, p, span,
@@ -132,8 +130,8 @@ async function buildArticleSidebar(main) {
     return;
   }
   const locInfo = getLocaleInfo();
-  let sidebarBlock = buildBlock('fragment', [
-    [a({ href: locInfo.placeholdersPrefix+'/fragments/sidebar-fragment' }, 'Sidebar')],
+  const sidebarBlock = buildBlock('fragment', [
+    [a({ href: `${locInfo.placeholdersPrefix}/fragments/sidebar-fragment` }, 'Sidebar')],
   ]);
 
   main.append(div(sidebarBlock));
@@ -182,7 +180,7 @@ function isArticlePage() {
  */
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
-  if (main.parentNode != document.body) { // don't build auto blocks in fragments
+  if (main.parentNode !== document.body) { // don't build auto blocks in fragments
     return;
   }
   try {

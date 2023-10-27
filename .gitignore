@@ -9,3 +9,5 @@ helix-importer-ui
 .idea
 
 .vscode/
+.htmlvalidate.json
+.htmlvalidateignore
