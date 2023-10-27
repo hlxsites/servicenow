@@ -19,11 +19,13 @@ export default async function decorate(block) {
     const footer = document.createElement('div');
     footer.innerHTML = html;
 
-    /*footer.children[0].classList.addClass('contact');
+    footer.children[0].classList.add('contact');
     footer.children[1].classList.add('company-links');
-    footer.children[2].classList.add('socials');
-    footer.children[3].classList.add('lower-footer');*/
+    footer.children[2].classList.add('subscribe-to-updates');
+    footer.children[3].classList.add('socials');
+    footer.children[4].classList.add('bottom');
 
+    // decorate footer icons
     decorateIcons(footer);
     block.append(footer);
   }
