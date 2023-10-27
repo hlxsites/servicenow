@@ -20,10 +20,11 @@ export default async function decorate(block) {
     footer.innerHTML = html;
 
     footer.children[0].classList.add('contact');
-    footer.children[1].classList.add('company-links');
-    footer.children[2].classList.add('subscribe-to-updates');
-    footer.children[3].classList.add('socials');
-    footer.children[4].classList.add('bottom');
+    footer.children[1].classList.add('geo');
+    footer.children[2].classList.add('company-links');
+    footer.children[3].classList.add('subscribe-to-updates');
+    footer.children[4].classList.add('socials');
+    footer.children[5].classList.add('bottom');
 
     // decorate footer icons
     decorateIcons(footer);
