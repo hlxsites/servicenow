@@ -1,5 +1,5 @@
 import {
-  getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock,
+  getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock, fetchPlaceholders,
 } from '../../scripts/aem.js';
 import { getLocaleInfo } from '../../scripts/scripts.js';
 import { li } from '../../scripts/dom-helpers.js';
@@ -25,6 +25,7 @@ export default async function decorate(block) {
   const blogHeaderResp = await fetch(`${localeInfo.urlPrefix}/blogs/fragments/${blogHeaderPath}.plain.html`);
 
   if (blogHeaderResp.ok) {
+    const placeholdersPromise = fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
     const blogHeaderHtml = await blogHeaderResp.text();
 
     const blogHeader = document.createElement('nav');
@@ -47,8 +48,10 @@ export default async function decorate(block) {
 
     const hamburger = document.createElement('div');
     hamburger.classList.add('blogheader-hamburger');
+
+    const placeholders = await placeholdersPromise;
     hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-        Menu
+        ${placeholders.mobileMenu || 'Menu'}
       </button>`;
     hamburger.addEventListener('click', () => toggleMenu(navSections, isDesktop));
 
