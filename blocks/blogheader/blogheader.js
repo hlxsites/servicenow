@@ -2,6 +2,18 @@ import {
   getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock,
 } from '../../scripts/aem.js';
 import { getLocaleInfo } from '../../scripts/scripts.js';
+import { li } from '../../scripts/dom-helpers.js';
+
+const isDesktop = window.matchMedia('(min-width: 900px)');
+
+function toggleMenu(nav, desktop) {
+  const expanded = nav.getAttribute('aria-expanded') === 'true';
+  const expand = !expanded || desktop.matches;
+
+  nav.setAttribute('aria-expanded', !!expand);
+  nav.style.visibility = expand ? 'visible' : 'hidden';
+  nav.style.display = expand ? 'table' : 'none';
+}
 
 export default async function decorate(block) {
   const blogHeaderMeta = getMetadata('blogheader');
@@ -18,6 +30,7 @@ export default async function decorate(block) {
     const blogHeader = document.createElement('nav');
     blogHeader.id = 'blogheader';
     blogHeader.innerHTML = blogHeaderHtml;
+    blogHeader.querySelector('nav > div').classList.add('blogheader-sections');
 
     blogHeader
       .querySelector(`li > a[href^='${window.location.pathname}'`)
@@ -25,9 +38,22 @@ export default async function decorate(block) {
 
     decorateIcons(blogHeader);
     const searchBlock = buildBlock('blogsearch', { elems: [] });
-    blogHeader.querySelector('div').append(searchBlock);
+    const searchLi = li({ class: 'blogsearch-menu-container' });
+    searchLi.appendChild(searchBlock);
+    const navSections = blogHeader.querySelector('ul');
+    navSections.appendChild(searchLi);
     decorateBlock(searchBlock);
     loadBlock(searchBlock);
+
+    const hamburger = document.createElement('div');
+    hamburger.classList.add('blogheader-hamburger');
+    hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
+        Menu
+      </button>`;
+    hamburger.addEventListener('click', () => toggleMenu(navSections, isDesktop));
+
+    blogHeader.prepend(hamburger);
+    isDesktop.addEventListener('change', () => toggleMenu(navSections, isDesktop));
 
     block.append(blogHeader);
   }

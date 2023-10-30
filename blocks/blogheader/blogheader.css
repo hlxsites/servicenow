@@ -5,26 +5,26 @@ main.has-sidebar > div.blogheader-container {
 }
 
 nav#blogheader {
-  background-color: var(--text-color);
+  --number-of-menu-items: 4;
+
   padding: 0;
   margin: 0;
 }
 
-/* Style for the container div */
 nav#blogheader > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Style for the list as a table */
 nav#blogheader ul {
   display: table;
   table-layout: fixed;
   list-style-type: none;
   padding: 0;
   margin: 0;
-  width: 55rem;
+  width: 100%;
+  background-color: var(--text-color);
 }
 
 nav#blogheader li a {
@@ -36,13 +36,21 @@ nav#blogheader li a {
   font-weight: 400;
 }
 
-/* Style for the list items as table cells */
 nav#blogheader li {
   display: table-cell;
   border-right: 1px solid white;
   color: white;
   text-align: center;
   padding: 1.5rem 0;
+  width: calc(55rem / var(--number-of-menu-items));
+}
+
+nav#blogheader li.blogsearch-menu-container {
+  border: none;
+  text-align: right;
+  width: auto;
+  display: flex;
+  justify-content: flex-end;
 }
 
 nav#blogheader li.active {
@@ -53,4 +61,82 @@ nav#blogheader li.active {
 nav#blogheader p {
   margin: 0;
   padding: 0;
+}
+
+@media (min-width: 900px) {
+  div.blogheader-hamburger {
+    display: none;
+    visibility: hidden;  
+    width: 0;
+  }
+}
+
+@media (max-width: 899px ) {
+  nav#blogheader {
+    position: relative;
+  }
+
+  nav#blogheader div.blogheader-sections {
+    display: block;
+  }
+
+  nav#blogheader ul {
+    visibility: hidden;
+    display: none;
+  }
+
+  #blogheader > div.blogheader-sections > ul > li.blogsearch-menu-container.blogsearch-wrapper {
+    padding: 1.2rem;
+  }
+
+  nav#blogheader li {
+    display: table-row;
+    width: 100%;
+  }
+
+  nav#blogheader li a {
+    padding: 0.8rem 0;
+    display: table-cell;
+    font-size: 1.6rem;
+    border-bottom: 0.1rem solid #f7f7f7;
+  }
+}
+
+.blogheader-hamburger {
+  display: block;
+  width: 7rem;
+  height: 2.5rem;
+  float: right;
+  border-radius: 0.5rem;
+  background: #293e40;
+  position: relative;
+  right: 0;
+  color: white;
+  margin-bottom: 0.8rem;
+  padding-left: 0.4rem;
+}
+
+.blogheader-hamburger button {
+  margin: 0;
+  text-align: left;
+  padding: 0;
+  background-color: inherit;
+}
+
+.blogheader-hamburger button::after {
+  right: 10px;
+  margin: auto;
+  position: absolute;
+  top: 0.6rem;
+  opacity: 1;
+  cursor: pointer;
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(45deg);
+  transition: all 500ms;
+  transform-origin: center center;
 }
