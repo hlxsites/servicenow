@@ -5,7 +5,7 @@ main.has-sidebar > div.blogheader-container {
 }
 
 nav#blogheader {
-  --number-of-menu-items: 4;
+  --number-of-menu-items: 5;
 
   padding: 0;
   margin: 0;
@@ -41,7 +41,7 @@ nav#blogheader li {
   border-right: 1px solid white;
   color: white;
   text-align: center;
-  padding: 1.5rem 0;
+  padding: 1.5rem;
   width: calc(55rem / var(--number-of-menu-items));
 }
 
@@ -72,11 +72,19 @@ nav#blogheader p {
 }
 
 @media (max-width: 899px ) {
-  nav#blogheader {
+  div.blogheader-wrapper div.blogheader {
     position: relative;
   }
 
+  nav#blogheader {
+    position: relative;
+    width: 100%;
+  }
+
   nav#blogheader div.blogheader-sections {
+    position: absolute;
+    z-index: 100;
+    top: 3.2rem;
     display: block;
   }
 
