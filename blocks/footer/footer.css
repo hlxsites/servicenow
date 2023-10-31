@@ -57,6 +57,15 @@ footer .bottom img {
 	height: 17px;
 }
 
+.menu h3 {
+	font-size: 15px;
+	margin-bottom: 24px;
+	padding-left: 0;
+	padding-right: 0;
+	letter-spacing: .5px;
+	line-height: 1.5;
+}
+
 footer .bottom h3 {
 	border-left: 1px solid #e1e1e1;
 	font-size: 1.6rem;
@@ -64,10 +73,37 @@ footer .bottom h3 {
 	padding-left: 16px;
 }
 
+.menu ul {
+	list-style: none;
+	list-style-type: none;
+	margin: 0;
+	text-align: left;
+	margin-bottom: 0;
+	padding-left: 0;
+	display: block;
+}
+
+.menu li {
+	margin-left: 0;
+	margin-bottom: 20px;
+	line-height: 1.5em;
+	font-size: 1.4rem;
+	list-style: none;
+	display: list-item;
+}
+
+.menu a {
+	background-image: linear-gradient(to right, #81b5a1 50%, transparent 50%);
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-color: transparent;
+}
+
 footer .socials li {
 	float: left;
 	display: block;
 	flex: 0 1 auto;
+
 	/* Default */
 	list-style-type: none;
 	grid-auto-flow: column;
@@ -107,7 +143,6 @@ footer .bottom li {
 	display: grid;
 	grid-auto-flow: column;
 	grid-auto-columns: 1fr;
-	margin: 10px;
 	padding: 10px;
 	font-size: 1.2rem;
 	margin: 6px 0;
@@ -125,7 +160,7 @@ footer .bottom ul {
 
 .menu>div {
 	display: flex;
-	flex-wrap: wrap;
+	flex-flow: wrap;
 	flex-direction: row;
 	justify-content: space-between;
 	margin: 33px -15px 40px;
@@ -133,66 +168,3 @@ footer .bottom ul {
 	font-size: 15px;
 	text-align: left;
 }
-
-.menu h3 {
-	font-size: 15px;
-	margin-bottom: 24px;
-	padding-left: 0;
-	padding-right: 0;
-	font-size: 1.6rem;
-	letter-spacing: .5px;
-	line-height: 1.5;
-	margin: 0;
-}
-
-.menu ul {
-	list-style: none;
-	list-style-type: none;
-	margin: 0;
-	text-align: left;
-	margin-bottom: 0;
-	padding-left: 0;
-	display: block;
-	list-style-type: disc;
-	margin-block-start: 1em;
-	margin-block-end: 1em;
-	margin-inline-start: 0px;
-	margin-inline-end: 0px;
-}
-
-.menu li {
-	margin-left: 0;
-	margin-bottom: 20px;
-	line-height: 1.5em;
-	font-size: 1.4rem;
-	list-style: none;
-	display: list-item;
-}
-
-.menu a {
-	background-image: linear-gradient(to right, #81b5a1 50%, transparent 50%);
-	text-decoration: none;
-	background-repeat: no-repeat;
-	background-color: transparent;
-}
-
-/*.geo>ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	background-color: red;
-}
-
-.geo>ul li {
-	float: left;
-	display: block;
-	background-color: pink;
-}
-
-.geo>ul li a {
-	display: block;
-	padding: 6px 5px 0 5px;
-	text-decoration: none;
-	text-align: center;
-	background-color: red;
-}*/
