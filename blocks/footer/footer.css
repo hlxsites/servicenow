@@ -52,6 +52,13 @@ h3 {
 	font-size: 15px;
 }
 
+.footer a {
+	text-decoration: none;
+	background-image: linear-gradient(to right, #81b5a1 50%, transparent 50%);
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
 footer .bottom img {
 	width: 112px;
 	height: 17px;
@@ -92,13 +99,6 @@ footer .bottom h3 {
 	display: list-item;
 }
 
-.menu a {
-	background-image: linear-gradient(to right, #81b5a1 50%, transparent 50%);
-	text-decoration: none;
-	background-repeat: no-repeat;
-	background-color: transparent;
-}
-
 footer .socials li {
 	float: left;
 	display: block;
@@ -121,7 +121,6 @@ footer .socials a {
 	margin: 0 14px 0 0;
 	width: 40px;
 	margin-right: 40px;
-	text-decoration: none;
 }
 
 footer .socials ul {
