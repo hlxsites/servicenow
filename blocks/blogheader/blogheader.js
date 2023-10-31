@@ -4,7 +4,7 @@ import {
 import { getLocaleInfo } from '../../scripts/scripts.js';
 import { li } from '../../scripts/dom-helpers.js';
 
-const isDesktop = window.matchMedia('(min-width: 900px)');
+const isDesktop = window.matchMedia('(min-width: 768px)');
 
 function toggleMenu(nav, desktop) {
   const expanded = nav.getAttribute('aria-expanded') === 'true';
