@@ -2,7 +2,7 @@ import {
   getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock, fetchPlaceholders,
 } from '../../scripts/aem.js';
 import { getLocaleInfo } from '../../scripts/scripts.js';
-import { li } from '../../scripts/dom-helpers.js';
+import { li, div, button } from '../../scripts/dom-helpers.js';
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
 
@@ -43,19 +43,26 @@ export default async function decorate(block) {
     searchLi.appendChild(searchBlock);
     const navSections = blogHeader.querySelector('ul');
     navSections.appendChild(searchLi);
+    navSections.setAttribute('aria-expanded', 'true');
     decorateBlock(searchBlock);
     loadBlock(searchBlock);
 
-    const hamburger = document.createElement('div');
-    hamburger.classList.add('blogheader-hamburger');
-
     const placeholders = await placeholdersPromise;
-    hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-        ${placeholders.mobileMenu || 'Menu'}
-      </button>`;
-    hamburger.addEventListener('click', () => toggleMenu(navSections, isDesktop));
 
-    blogHeader.prepend(hamburger);
+    const menuText = placeholders.mobileMenu || 'Menu';
+    blogHeader.prepend(
+      div({
+        class: 'blogheader-hamburger',
+      },
+      button({
+        type: 'button',
+        'aria-controls': 'nav',
+        'aria-label': menuText,
+        onclick: () => toggleMenu(navSections, isDesktop),
+      }, menuText),
+      ),
+    );
+
     isDesktop.addEventListener('change', () => toggleMenu(navSections, isDesktop));
 
     block.append(blogHeader);
