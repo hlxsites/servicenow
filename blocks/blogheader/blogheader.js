@@ -37,6 +37,9 @@ export default async function decorate(block) {
       .querySelector(`li > a[href^='${window.location.pathname}'`)
       ?.parentNode?.classList.add('active');
 
+    const numberOfSections = blogHeader.querySelectorAll('li').length;
+    blogHeader.style.setProperty('--number-of-menu-items', numberOfSections);
+
     decorateIcons(blogHeader);
     const searchBlock = buildBlock('blogsearch', { elems: [] });
     const searchLi = li({ class: 'blogsearch-menu-container' });
