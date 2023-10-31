@@ -1,0 +1,154 @@
+main.has-sidebar > div.blogheader-container {
+  grid-column: 2 / span 2;
+  color: var(--background-color);
+  padding: 0;
+}
+
+nav#blogheader {
+  --number-of-menu-items: 5;
+
+  padding: 0;
+  margin: 0;
+}
+
+nav#blogheader > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav#blogheader ul {
+  display: table;
+  table-layout: fixed;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 3rem;
+  width: 100%;
+  background-color: var(--text-color);
+}
+
+nav#blogheader li a {
+  font-size: 1.6rem;
+  font-family: var(--ff-gilroy-semibold);
+  font-weight: 400;
+  text-decoration: none;
+  transition: none;
+  background: inherit;
+  color: inherit;
+  line-height: 1.714;
+  -webkit-font-smoothing: antialiased;
+}
+
+nav#blogheader li {
+  display: table-cell;
+  border-right: 1px solid white;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 1.2rem;
+  width: calc(55rem / var(--number-of-menu-items));
+}
+
+nav#blogheader li.blogsearch-menu-container {
+  border: none;
+  text-align: right;
+  width: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav#blogheader li.active {
+  background-color: black;
+}
+
+/* Style for the paragraph */
+nav#blogheader p {
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  div.blogheader-hamburger {
+    display: none;
+    visibility: hidden;  
+    width: 0;
+  }
+}
+
+@media (max-width: 767px ) {
+  div.blogheader-wrapper div.blogheader {
+    position: relative;
+  }
+
+  nav#blogheader {
+    position: relative;
+    width: 100%;
+  }
+
+  nav#blogheader div.blogheader-sections {
+    position: absolute;
+    z-index: 100;
+    top: 3.2rem;
+    display: block;
+  }
+
+  nav#blogheader ul {
+    visibility: hidden;
+    display: none;
+  }
+
+  #blogheader > div.blogheader-sections > ul > li.blogsearch-menu-container.blogsearch-wrapper {
+    padding: 1.2rem;
+  }
+
+  nav#blogheader li {
+    display: table-row;
+    width: 100%;
+  }
+
+  nav#blogheader li a {
+    padding: 0.8rem 0;
+    display: table-cell;
+    font-size: 1.6rem;
+    border-bottom: 0.1rem solid #f7f7f7;
+  }
+}
+
+.blogheader-hamburger {
+  display: block;
+  width: 7rem;
+  height: 2.5rem;
+  float: right;
+  border-radius: 0.5rem;
+  background: #293e40;
+  position: relative;
+  right: 0;
+  color: white;
+  margin-bottom: 0.8rem;
+  padding-left: 0.4rem;
+}
+
+.blogheader-hamburger button {
+  margin: 0;
+  text-align: left;
+  padding: 0;
+  background-color: inherit;
+}
+
+.blogheader-hamburger button::after {
+  right: 10px;
+  margin: auto;
+  position: absolute;
+  top: 0.6rem;
+  opacity: 1;
+  cursor: pointer;
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(45deg);
+  transition: all 500ms;
+  transform-origin: center center;
+}

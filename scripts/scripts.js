@@ -120,6 +120,12 @@ export function formatDate(date) {
   });
 }
 
+function buildBlogHeader(main) {
+  const section = document.createElement('div');
+  section.append(buildBlock('blogheader', { elems: [] }));
+  main.prepend(section);
+}
+
 /**
  * Builds an article header and prepends to main in a new section.
  * @param main
@@ -164,10 +170,10 @@ function isArticlePage() {
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
   try {
-    // buildHeroBlock(main);
     if (isArticlePage()) {
       buildArticleHeader(main);
     }
+    buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -181,7 +187,7 @@ function detectSidebar(main) {
     const sidebarOffset = Number.parseInt(
       sidebar.getAttribute('data-start-sidebar-at-section') || '2',
       10,
-    );
+    ) + 1;
 
     const numSections = main.children.length - 1;
     main.style = `grid-template-rows: repeat(${numSections}, auto);`;
