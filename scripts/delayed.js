@@ -5,4 +5,6 @@ import { loadScript, sampleRUM } from './aem.js';
 sampleRUM('cwv');
 
 // add more delayed functionality here
-loadScript('https://assets.adobedtm.com/a441b904b50e/7a4facbbcffb/launch-039be8795dc8.min.js', { async: '' });
+loadScript(`${window.hlx.codeBasePath}/scripts/jquery-3.7.1.min.js`).then(() => {
+  loadScript('https://assets.adobedtm.com/a441b904b50e/7a4facbbcffb/launch-039be8795dc8.min.js', { async: '' });
+});
