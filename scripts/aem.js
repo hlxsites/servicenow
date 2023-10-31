@@ -676,7 +676,9 @@ async function waitForLCP(lcpBlocks) {
   });
 }
 
-init();
+if (!import.meta.url.startsWith('file://')) {
+  init();
+}
 
 export {
   buildBlock,
