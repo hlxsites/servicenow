@@ -5,12 +5,11 @@
  */
 
 import {
-  decorateMain,
+  decorateMain, addH3Spans,
 } from '../../scripts/scripts.js';
 import {
   loadBlocks,
 } from '../../scripts/aem.js';
-import { span } from '../../scripts/dom-helpers.js';
 
 /**
  * Loads a fragment.
@@ -36,11 +35,7 @@ export default async function decorate(block) {
   const path = link ? link.getAttribute('href') : block.textContent.trim();
   const fragment = await loadFragment(path);
   if (fragment) {
-    fragment.querySelectorAll('h3').forEach((header) => {
-      const headerContent = header.textContent;
-      header.textContent = '';
-      header.append(span(headerContent));
-    });
+    addH3Spans(fragment);
     const fragmentSection = fragment.querySelector(':scope .section');
     if (fragmentSection) {
       block.closest('.section').classList.add(...fragmentSection.classList);

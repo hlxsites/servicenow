@@ -202,6 +202,14 @@ function buildAutoBlocks(main) {
   }
 }
 
+export function addH3Spans(elem) {
+  elem.querySelectorAll('h3').forEach((header) => {
+    const headerContent = header.textContent;
+    header.textContent = '';
+    header.append(span(headerContent));
+  });
+}
+
 function detectSidebar(main) {
   let sidebarOffset;
 
@@ -217,12 +225,7 @@ function detectSidebar(main) {
       10,
     ) + 1;
     inlineSidebar.style.gridRow = `${sidebarOffset} / infinite`;
-
-    inlineSidebar.querySelectorAll('h3').forEach((header) => {
-      const headerContent = header.textContent;
-      header.textContent = '';
-      header.append(span(headerContent));
-    });
+    addH3Spans(inlineSidebar);
   }
 
   if (fragmentSidebar) {
