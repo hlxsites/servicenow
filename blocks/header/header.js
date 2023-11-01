@@ -10,7 +10,7 @@ const naavDataDomains = {
   prod: 'https://www.servicenow.com',
 };
 
-function getDataDomain() {
+export function getDataDomain() {
   const env = new URLSearchParams(window.location.search).get('naas');
 
   return env ? naavDataDomains[env.toLowerCase()] || naavDataDomains.prod : naavDataDomains.prod;
