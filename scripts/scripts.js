@@ -136,23 +136,12 @@ async function buildArticleSidebar(main) {
     return;
   }
   const locInfo = getLocaleInfo();
-  const sidebarBlock = buildBlock('sidebar', [
+  const sidebarBlock = buildBlock('sidebar-fragment', [
     [a({ href: `${locInfo.placeholdersPrefix}/fragments/sidebar-fragment` }, 'Sidebar')],
   ]);
 
   const sidebar = div(sidebarBlock);
   main.append(sidebar);
-
-  main.classList.add('has-sidebar');
-  const sidebarOffset = 2;
-
-  const numSections = main.children.length - 1;
-  main.style = `grid-template-rows: repeat(${numSections}, auto);`;
-
-  sidebar.style.gridRow = `${sidebarOffset} / infinite`;
-  for (let i = 0; i < sidebarOffset - 1; i += 1) {
-    main.children[i].classList.add('no-sidebar');
-  }
 }
 
 /**
@@ -214,27 +203,41 @@ function buildAutoBlocks(main) {
 }
 
 function detectSidebar(main) {
-  const sidebar = main.querySelector('.section.sidebar');
-  if (sidebar) {
-    main.classList.add('has-sidebar');
-    const sidebarOffset = Number.parseInt(
-      sidebar.getAttribute('data-start-sidebar-at-section') || '2',
+  let sidebarOffset;
+
+  // inline sidebar (sidebar content + 'Section metadata' block added to the article's doc)
+  const inlineSidebar = main.querySelector('.section.sidebar');
+
+  // autoblocked fragment sidebar
+  const fragmentSidebar = main.querySelector('.section.sidebar-fragment-container');
+
+  if (inlineSidebar) {
+    sidebarOffset = Number.parseInt(
+      inlineSidebar.getAttribute('data-start-sidebar-at-section') || '2',
       10,
     ) + 1;
+    inlineSidebar.style.gridRow = `${sidebarOffset} / infinite`;
 
-    const numSections = main.children.length - 1;
-    main.style = `grid-template-rows: repeat(${numSections}, auto);`;
-
-    sidebar.style.gridRow = `${sidebarOffset} / infinite`;
-    for (let i = 0; i < sidebarOffset - 1; i += 1) {
-      main.children[i].classList.add('no-sidebar');
-    }
-
-    sidebar.querySelectorAll('h3').forEach((header) => {
+    inlineSidebar.querySelectorAll('h3').forEach((header) => {
       const headerContent = header.textContent;
       header.textContent = '';
       header.append(span(headerContent));
     });
+  }
+
+  if (fragmentSidebar) {
+    sidebarOffset = 3; // static offset for fragment sidebar
+    fragmentSidebar.style.gridRow = `${sidebarOffset} / infinite`;
+  }
+
+  if (inlineSidebar || fragmentSidebar) {
+    main.classList.add('has-sidebar');
+    const numSections = main.children.length - 1;
+    main.style = `grid-template-rows: repeat(${numSections}, auto);`;
+
+    for (let i = 0; i < sidebarOffset - 1; i += 1) {
+      main.children[i].classList.add('no-sidebar');
+    }
   }
 }
 
@@ -266,7 +269,6 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
-  detectSidebar(main);
 }
 
 /**
@@ -279,6 +281,7 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    detectSidebar(main);
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
