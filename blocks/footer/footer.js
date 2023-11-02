@@ -14,7 +14,7 @@ export default async function decorate(block) {
   const dataDomain = getDataDomain();
 
   try {
-    block.append(section({ id: 'naas-footer', className: 'naas-footer-section', 'data-domain': dataDomain }));
+    block.append(section({ id: 'naas-footer', class: 'naas-footer-section', 'data-domain': dataDomain }));
 
     // trigger NaaS JS
     await Promise.all([
