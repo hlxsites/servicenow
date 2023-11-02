@@ -150,6 +150,14 @@ function buildArticleHeader(main) {
   ])));
 }
 
+function buildArticleCopyright(main) {
+  if (main.querySelector('.article-copyright')) {
+    return;
+  }
+
+  main.append(div(buildBlock('article-copyright', { elems: [] })));
+}
+
 /**
  * Returns true if the page is an article based on the template metadata.
  * @returns {boolean}
@@ -172,6 +180,7 @@ function buildAutoBlocks(main) {
   try {
     if (isArticlePage()) {
       buildArticleHeader(main);
+      buildArticleCopyright(main);
     }
     buildBlogHeader(main);
   } catch (error) {
