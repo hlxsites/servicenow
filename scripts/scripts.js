@@ -244,10 +244,8 @@ async function loadLazy(doc) {
     document.addEventListener('nass-header-rendered', () => {
       // work-around
       if (window.location.host !== 'www.servicenow.com') {
-        setTimeout(() => {
-          document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
-            .forEach((image) => image.src = `https://www.servicenow.com${new URL(image.src).pathname}`);
-        }, 500);
+        document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
+          .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
       }
     });
     window.document.dispatchEvent(new Event('DOMContentLoaded'));
