@@ -10,7 +10,7 @@ async function loadAdobeDTM() {
   const prod = 'https://assets.adobedtm.com/a441b904b50e/7a4facbbcffb/launch-039be8795dc8.min.js';
   const stage = 'https://assets.adobedtm.com/a441b904b50e/7a4facbbcffb/launch-a2ae4c3b0523-staging.min.js';
 
-  const host = window.location.host;
+  const { host } = window.location;
   if (host === 'servicenow.com' || host === 'www.servicenow.com' || host.endsWith('.live')) {
     loadScript(prod, { async: '' });
   } else {
