@@ -159,11 +159,7 @@ function buildArticleCopyright(main) {
 }
 
 function buildArticleSocialShare(main) {
-  if (main.querySelector('.sharethis-inline-share-buttons')) {
-    return;
-  }
-
-  main.append(div(buildBlock('.sharethis-inline-share-buttons', { elems: [] })));
+  main.append(div(buildBlock('social-share', { elems: [] })));
 }
 
 /**
