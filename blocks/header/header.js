@@ -13,7 +13,7 @@ const naavDataDomains = {
 export function getDataDomain() {
   const env = new URLSearchParams(window.location.search).get('naas');
 
-  return env ? naavDataDomains[env.toLowerCase()] || naavDataDomains.prod : naavDataDomains.stage;
+  return env ? naavDataDomains[env.toLowerCase()] || naavDataDomains.prod : naavDataDomains.prod;
 }
 
 /**
