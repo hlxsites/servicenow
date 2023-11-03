@@ -1,18 +1,22 @@
 import {
-  sampleRUM,
   buildBlock,
-  loadHeader,
-  loadFooter,
+  decorateBlocks,
   decorateButtons,
   decorateIcons,
   decorateSections,
-  decorateBlocks,
   decorateTemplateAndTheme,
-  waitForLCP,
+  getMetadata,
   loadBlocks,
   loadCSS,
+  loadFooter,
+  loadHeader,
+  sampleRUM,
+  toClassName,
+  waitForLCP,
 } from './aem.js';
-import { span } from './dom-helpers.js';
+import {
+  a, div, p, span,
+} from './dom-helpers.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
@@ -44,6 +48,129 @@ async function loadFonts() {
   }
 }
 
+const LOCALE_INFO = {
+  'en-US': {
+    urlPrefix: '',
+    placeholdersPrefix: '/blogs',
+    metadataIndex: '/blogs/query-index.json',
+  },
+  'en-UK': {
+    urlPrefix: 'uk',
+    placeholdersPrefix: '/uk/blogs',
+    metadataIndex: '', // TODO issue #30
+  },
+  'de-DE': {
+    urlPrefix: 'de',
+    placeholdersPrefix: '/de/blogs',
+    metadataIndex: '', // TODO issue #30
+  },
+  'fr-FR': {
+    urlPrefix: 'fr',
+    placeholdersPrefix: '/fr/blogs',
+    metadataIndex: '', // TODO issue #30
+  },
+  'nl-NL': {
+    urlPrefix: 'nl',
+    placeholdersPrefix: '/nl/blogs',
+    metadataIndex: '', // TODO issue #30
+  },
+};
+
+/**
+ * Returns the locale of the page based on the path
+ * @returns {*|string}
+ */
+export function getLocale() {
+  if (document.documentElement.lang) return document.documentElement.lang;
+
+  document.documentElement.lang = 'en-US';
+  const segs = window.location.pathname.split('/');
+  if (segs && segs.length > 0) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(LOCALE_INFO)) {
+      if (value.urlPrefix === segs[1]) {
+        document.documentElement.lang = key;
+        break;
+      }
+    }
+  }
+  return document.documentElement.lang;
+}
+
+/**
+ * Returns the locale information
+ * @returns {Object}
+ */
+export function getLocaleInfo() {
+  return LOCALE_INFO[getLocale()] || LOCALE_INFO['en-US'];
+}
+
+/**
+ * Formats a date in the current locale.
+ * @param date
+ * @returns {string}
+ */
+export function formatDate(date) {
+  const d = new Date(date);
+  const locale = getLocale();
+  return d.toLocaleDateString(locale, {
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric',
+  });
+}
+
+function buildBlogHeader(main) {
+  const section = document.createElement('div');
+  section.append(buildBlock('blogheader', { elems: [] }));
+  main.prepend(section);
+}
+
+/**
+ * Builds an article header and prepends to main in a new section.
+ * @param main
+ */
+function buildArticleHeader(main) {
+  if (main.querySelector('.article-header')) {
+    // already got an article header
+    return;
+  }
+
+  //
+  const author = getMetadata('author');
+  const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
+  const publicationDate = formatDate(getMetadata('publication-date'));
+  //
+  main.prepend(div(buildBlock('article-header', [
+    [main.querySelector('h1')],
+    [
+      p(a({ href: authorURL }, author)),
+      p(publicationDate),
+    ],
+  ])));
+}
+
+function buildArticleCopyright(main) {
+  if (main.querySelector('.article-copyright')) {
+    return;
+  }
+
+  main.append(div(buildBlock('article-copyright', { elems: [] })));
+}
+
+/**
+ * Returns true if the page is an article based on the template metadata.
+ * @returns {boolean}
+ */
+function isArticlePage() {
+  let blogPage = false;
+  const template = getMetadata('template');
+  if (template && template === 'Blog Article') {
+    blogPage = true;
+  }
+  return blogPage;
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -51,7 +178,11 @@ async function loadFonts() {
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
   try {
-    // buildHeroBlock(main);
+    if (isArticlePage()) {
+      buildArticleHeader(main);
+      buildArticleCopyright(main);
+    }
+    buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -62,14 +193,17 @@ function detectSidebar(main) {
   const sidebar = main.querySelector('.section.sidebar');
   if (sidebar) {
     main.classList.add('has-sidebar');
-    const sidebarOffset = sidebar.getAttribute('data-start-sidebar-at-section');
+    const sidebarOffset = Number.parseInt(
+      sidebar.getAttribute('data-start-sidebar-at-section') || '2',
+      10,
+    ) + 1;
 
     const numSections = main.children.length - 1;
     main.style = `grid-template-rows: repeat(${numSections}, auto);`;
 
-    if (sidebarOffset && Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10)) {
-      const offset = Number.parseInt(sidebar.getAttribute('data-start-sidebar-at-section'), 10);
-      sidebar.style.gridRow = `${offset} / infinite`;
+    sidebar.style.gridRow = `${sidebarOffset} / infinite`;
+    for (let i = 0; i < sidebarOffset - 1; i += 1) {
+      main.children[i].classList.add('no-sidebar');
     }
 
     sidebar.querySelectorAll('h3').forEach((header) => {
@@ -78,6 +212,22 @@ function detectSidebar(main) {
       header.append(span(headerContent));
     });
   }
+}
+
+export async function fetchAPI(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    // eslint-disable-next-line no-console
+    console.error('error loading API response', response);
+    return null;
+  }
+  const json = await response.json();
+  if (!json) {
+    // eslint-disable-next-line no-console
+    console.error('empty API response', path);
+    return null;
+  }
+  return json;
 }
 
 /**
@@ -100,7 +250,7 @@ export function decorateMain(main) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  getLocale(); // set document.documentElement.lang for SEO
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {

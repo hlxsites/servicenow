@@ -1,0 +1,51 @@
+version: 1
+indices:
+  default:
+    include:
+      - /blogs/**
+    exclude:
+      - '/blogs/fragments/**'
+    target: /blogs/query-index.json
+    properties:
+      type:
+        select: head > meta[name="template"]
+        value: attribute(el, "content")
+      header:
+        select: main h1
+        value: textContent(el)
+      publicationDate:
+        select: head > meta[name="publication-date"]
+        value: parseTimestamp(attribute(el, "content"), "MM/DD/YYYY")
+      year:
+        select: head > meta[name="publication-date"]
+        value: match(attribute(el, "content"), "\\d{2}\\/\\d{2}\\/(\\d{4})")
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")
+      category:
+        select: head > meta[name="category"]
+        value: attribute(el, "content")
+      topic:
+        select: head > meta[name="topic"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      author:
+        select: head > meta[name="author"]
+        value: attribute(el, "content")
+      authorUrl:
+        select: head > meta[name="author-link"]
+        value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")
+      robots:
+        select: head > meta[name="robots"]
+        value: attribute(el, "content")
+      locale:
+        select: head > meta[name="locale"]
+        value: attribute(el, "content")
+      lastModified:
+        select: none
+        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
