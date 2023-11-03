@@ -44,7 +44,7 @@
   --heading-font-size-xs: 18px;
 
   /* nav height */
-  --nav-height: 64px;
+  --nav-height: 80px;
 }
 
 @font-face {
@@ -207,7 +207,7 @@ main pre {
   white-space: pre;
 }
 
-a:any-link {
+main a:any-link {
   color: var(--link-color);
   text-decoration: none;
   background: linear-gradient(var(--link-background-color),var(--link-background-color)) bottom repeat-x;
@@ -218,7 +218,7 @@ a:any-link {
   transition: all .25s ease-out;
 }
 
-a:hover {
+main a:hover {
     background-size: 100% 100%;
 }
 
