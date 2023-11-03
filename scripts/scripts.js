@@ -158,6 +158,14 @@ function buildArticleCopyright(main) {
   main.append(div(buildBlock('article-copyright', { elems: [] })));
 }
 
+function buildArticleSocialShare(main) {
+  if (main.querySelector('.sharethis-inline-share-buttons')) {
+    return;
+  }
+
+  main.append(div(buildBlock('.sharethis-inline-share-buttons', { elems: [] })));
+}
+
 /**
  * Returns true if the page is an article based on the template metadata.
  * @returns {boolean}
@@ -181,6 +189,7 @@ function buildAutoBlocks(main) {
     if (isArticlePage()) {
       buildArticleHeader(main);
       buildArticleCopyright(main);
+      buildArticleSocialShare(main);
     }
     buildBlogHeader(main);
   } catch (error) {

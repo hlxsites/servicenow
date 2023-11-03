@@ -1,14 +1,13 @@
-import { loadScript } from "../../scripts/aem";
+import { loadScript } from '../../scripts/aem.js';
 
 async function loadSocialShare() {
-    // lazy load 3 urls
-    loadScript('https://platform-api.sharethis.com/js/sharethis.js#property=5cae6f10a8698b001266ffd9&product=inline-share-buttons');
+  loadScript('https://platform-api.sharethis.com/js/sharethis.js#property=5cae6f10a8698b001266ffd9&product=inline-share-buttons');
 }
 
-const socialShareContainer = block.querySelector('.sharethis-inline-share-buttons');
+const socialShareContainer = document.querySelector('.sharethis-inline-share-buttons');
 if (socialShareContainer) {
     const observer = new IntersectionObserver((entries) => {
-        if(entries.some(entry => entry.isIntersecting)) {
+        if (entries.some((entry) => entry.isIntersecting)) {
             observer.disconnect();
             loadSocialShare(socialShareContainer);
         }
