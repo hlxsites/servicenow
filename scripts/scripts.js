@@ -138,17 +138,6 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  function loadSocialShare() {
-  loadScript('https://buttons-config.sharethis.com/js/5cae6f10a8698b001266ffd9.js');
-  loadScript('https://platform-api.sharethis.com/js/sharethis.js#property=5cae6f10a8698b001266ffd9&product=inline-share-buttons');
-  loadScript('https://count-server.sharethis.com/v2.0/get_counts?cb=window.__sharethis__.cb&url=https%3A%2F%2Fwww.servicenow.com%2Fblogs%2F2023%2Fvancouver-release-genai-security-agility.html');
-  }
-
-  if(window.location.hostname === 'www.servicenow.com/blog'
-    || window.location.hostname.startsWith('https://main--servicenow--hlxsites.hlx.')) {
-    loadSocialShare();
-  }
-
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
