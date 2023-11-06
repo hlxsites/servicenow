@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Page not found</title>
-  <script>
+  <script type="text/javascript">
+    window.isErrorPage = true;
+    window.errorCode = '404';
     document.addEventListener('DOMContentLoaded', function () {
       const path = window.location.pathname;
 
