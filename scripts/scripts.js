@@ -48,6 +48,7 @@ async function loadFonts() {
   }
 }
 
+// when adding new locales, the 404.html needs to be updated as well
 const LOCALE_INFO = {
   'en-US': {
     urlPrefix: '',
