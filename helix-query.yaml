@@ -49,3 +49,6 @@ indices:
       lastModified:
         select: none
         value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
+      content:
+        select: main
+        value: textContent(el)
