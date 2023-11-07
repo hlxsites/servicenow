@@ -50,5 +50,5 @@ indices:
         select: none
         value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
       content:
-        select: .default-content-wrapper > p
+        select: main p
         value: textContent(el)
