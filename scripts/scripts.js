@@ -215,14 +215,6 @@ function buildAutoBlocks(main) {
   }
 }
 
-export function addH3Spans(elem) {
-  elem.querySelectorAll('h3').forEach((header) => {
-    const headerContent = header.textContent;
-    header.textContent = '';
-    header.append(span(headerContent));
-  });
-}
-
 async function loadEagerBlocks(main) {
   const eagerBlocks = main.querySelectorAll('div[data-eager-block]');
   await Promise.all([...eagerBlocks].map((eagerBlock) => loadBlock(eagerBlock)));
