@@ -3,7 +3,6 @@ import { loadScript, sampleRUM } from './aem.js';
 
 // Core Web Vitals RUM collection
 sampleRUM('cwv');
-
 // add more delayed functionality here
 async function loadAdobeDTM() {
   await loadScript(`${window.hlx.codeBasePath}/scripts/jquery-3.7.1.min.js`);
