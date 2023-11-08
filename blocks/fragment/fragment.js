@@ -38,7 +38,16 @@ export default async function decorate(block) {
   if (fragment) {
     const fragmentSection = fragment.querySelector(':scope .section');
     if (fragmentSection) {
-      block.closest('.section').classList.add(...fragmentSection.classList);
+      const mainSection = block.closest('.section');
+      if (mainSection) {
+        mainSection.classList.add(...fragmentSection.classList);
+        const dataset = { ...mainSection.dataset, ...fragmentSection.dataset };
+        // block dataset takes precedence so that
+        // data-sectionstatus changes to "loaded" (from "initialized")
+        Object.keys(dataset).forEach((key) => {
+          mainSection.setAttribute(`data-${key}`, dataset[key]);
+        });
+      }
       block.closest('.fragment-wrapper').replaceWith(...fragmentSection.childNodes);
     }
   }

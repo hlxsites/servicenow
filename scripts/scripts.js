@@ -165,15 +165,35 @@ function buildArticleSocialShare(main) {
 }
 
 /**
+ * Checks if a block with the given key/value pair exists in the main element.
+ * @param element
+ * @param blockClass
+ * @param key
+ * @param value
+ */
+function blockKeyValueExists(element, blockClass, key, value) {
+  const divs = Array.from(element.querySelectorAll(`.${blockClass} div`));
+  const targetElement = divs.find(
+    (d) => {
+      const divChildren = d.querySelectorAll('div');
+      if (divChildren.length !== 2) {
+        return false;
+      }
+      const isStyle = divChildren[0].textContent.trim().toLowerCase() === key.toLowerCase();
+      const isSidebar = RegExp(`\\b${value}\\b`, 'gi').test(divChildren[1].textContent);
+      return isStyle && isSidebar;
+    },
+  );
+  return targetElement;
+}
+
+/**
  * Builds an article sidebar and appends it to main in a new section.
  * @param main
  */
 function buildArticleSidebar(main) {
-  const divs = Array.from(document.querySelectorAll('.section-metadata div div'));
-  const targetDivs = divs.filter(
-    (d) => d.textContent.trim().toLowerCase() === 'style' || d.textContent.trim().toLowerCase() === 'sidebar',
-  );
-  if (targetDivs.length !== 2) {
+  const sidebarSectionExists = blockKeyValueExists(document, 'section-metadata', 'style', 'sidebar');
+  if (!sidebarSectionExists) {
     // the article did not come with an inline sidebar
     const locInfo = getLocaleInfo();
     const sidebarBlock = buildBlock('fragment', [
