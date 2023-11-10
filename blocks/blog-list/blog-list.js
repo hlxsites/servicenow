@@ -61,7 +61,7 @@ export default async function decorate(block) {
   // retrieve and filter blog entries
   let blogs = await getLocaleBlogs();
   if (!blogs) return;
-  blogs = filter(blogs.data, filterValue);
+  blogs = filter(blogs, filterValue);
 
   // render
   block.classList.add(filterKey);

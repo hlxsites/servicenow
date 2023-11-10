@@ -133,6 +133,11 @@ export function getLocaleInfo() {
   return LOCALE_INFO[getLocale()] || LOCALE_INFO['en-US'];
 }
 
+/**
+ * Retrievs and retuns the list of blogs for the current locale based on the index
+ * Read Only: Consumers of this API should not modify the list, as it is cached
+ * @returns {Array} array of blog objects
+ */
 export async function getLocaleBlogs() {
   if (window.blogs) return window.blogs;
 
