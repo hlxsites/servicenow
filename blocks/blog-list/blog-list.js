@@ -1,22 +1,13 @@
 import { fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
-import { fetchAPI, formatDate, getLocaleInfo } from '../../scripts/scripts.js';
+import {
+  FILTERS, fetchAPI, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
+} from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
 
-const domain = 'https://www.servicenow.com';
-
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
-
-const FILTERS = {
-  category: (blogs, category) => blogs.filter((blog) => category === toClassName(blog.category)),
-  topic: (blogs, topic) => blogs.filter((blog) => topic === toClassName(blog.topic)),
-  year: (blogs, year) => blogs.filter((blog) => year === blog.year),
-  author: (blogs, authorUrl) => blogs.filter(
-    (blog) => authorUrl === new URL(blog.authorUrl, domain).pathname.split('.')[0],
-  ),
-};
 
 export async function renderFilterCard(post) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
@@ -60,7 +51,7 @@ export default async function decorate(block) {
     filterValue = toClassName(filterValue);
   } else if (filterKey === 'author') {
     // eslint-disable-next-line prefer-destructuring
-    filterValue = new URL(filterValue, domain).pathname.split('.')[0];
+    filterValue = new URL(filterValue, serviceNowDefaultOrigin).pathname.split('.')[0];
   }
 
   // get filter function
