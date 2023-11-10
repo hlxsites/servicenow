@@ -1,6 +1,6 @@
 import { fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
 import {
-  FILTERS, fetchAPI, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
+  FILTERS, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
