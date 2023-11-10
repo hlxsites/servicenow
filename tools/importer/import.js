@@ -162,15 +162,15 @@ const createMetadataBlock = (main, document) => {
     }
 
     // Image
-    const img = document.querySelector('[property="og:image"]');
-    if (img && img.content) {
-        const el = document.createElement('img');
-        el.src = img.content;
-        meta.Image = el;
-    }
+    // const img = document.querySelector('[property="og:image"]');
+    // if (img && img.content) {
+    //     const el = document.createElement('img');
+    //     el.src = img.content;
+    //     meta.Image = el;
+    // }
 
     const block = WebImporter.Blocks.getMetadataBlock(document, meta);
-    main.append(block);
+    main.prepend(block);
 
     return meta;
 };
@@ -194,6 +194,7 @@ export default {
         createMetadataBlock(main, document);
 
         main.querySelectorAll('.legacyHtml, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
+        main.querySelectorAll('br, nbsp').forEach((el) => el.remove());
         return main;
 
     },
