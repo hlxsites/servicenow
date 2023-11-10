@@ -12,6 +12,10 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
+const pageUrl = "https://main--servicenow--hlxsites.hlx.page";
+const liveUrl = "https://main--servicenow--hlxsites.hlx.page";
+
+
 const createMetadataBlock = (main, document) => {
     const meta = {};
 
@@ -19,7 +23,7 @@ const createMetadataBlock = (main, document) => {
     const authorLink = document.querySelector('.cmp-blog-author-info__author a');
     if (authorLink) {
         meta.Author = authorLink.textContent;
-        meta['Author Link'] = authorLink.href;
+        meta['Author Link'] = new URL(authorLink.href, pageUrl);
     }
 
     // Publication Date
@@ -28,7 +32,10 @@ const createMetadataBlock = (main, document) => {
         const dateStr = date.textContent.trim();
         const dateObj = new Date(dateStr);
         // format date to mm/dd/yyyy
-        meta['Publication Date'] = dateObj.toLocaleDateString('en-US');
+        meta['Publication Date'] = dateObj.toLocaleDateString(
+            'en-US',
+            { day: '2-digit', month: '2-digit', year: 'numeric' },
+        );
     }
 
     // Title
