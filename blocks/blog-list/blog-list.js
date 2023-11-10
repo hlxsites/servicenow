@@ -1,6 +1,6 @@
 import { fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
 import {
-  FILTERS, fetchAPI, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
+  FILTERS, fetchAPI, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
@@ -59,7 +59,7 @@ export default async function decorate(block) {
   if (!filter) return;
 
   // retrieve and filter blog entries
-  let blogs = await fetchAPI(`${getLocaleInfo().metadataIndex}?sheet=blogs&limit=10000`);
+  let blogs = await getLocaleBlogs();
   if (!blogs) return;
   blogs = filter(blogs.data, filterValue);
 
