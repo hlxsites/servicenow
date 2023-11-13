@@ -135,6 +135,10 @@ nav#blogheader li.blogsearch-menu-container {
   padding: 0;
 }
 
+#blogheader div.search-results a:hover {
+  text-decoration: underline #81b5a1;
+}
+
 #blogheader div.search-results a mark {
   background-color: #81b5a1;
   font-family: var(--ff-gilroy-semibold);
@@ -147,12 +151,47 @@ nav#blogheader li.blogsearch-menu-container {
     width: 0;
   }
 
-  nav#blogheader .blogsearch div.search-results {
+  nav#blogheader li.blogsearch-menu-container {
     position: relative;
-    left: -100px;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  nav#blogheader div.search-results {
+    position: absolute;
+    right: 0;
+    left: unset;
+    top: 5.3rem;
     min-width: unset;
-    width: 200px;
-    border: 2px solid brown;
+    width: 18rem;
+    overflow: scroll;
+  }
+
+  nav#blogheader .blogsearch {
+    width: 18rem;
+  }
+
+  .blogsearch > form > div {
+    top: 15px;
+  }
+
+  .blogsearch form div.search-container input {
+    width: 4rem;
+  }
+
+  nav .blogsearch form div.search-active input:focus {
+    width: 100%;
+  }
+
+  .blogsearch form div.search-container i.search-icon {
+    background-image: url("/icons/blog-search-icon.webp");
+    right: 1.3rem;
+    left: unset;
+  }
+
+  nav .blogsearch form div.search-active i.search-icon {
+    right: 12.3rem;
   }
 }
 

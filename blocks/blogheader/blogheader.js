@@ -29,16 +29,31 @@ async function getLocaleBlogContents() {
   return window.serviceNowBlogContents;
 }
 
-function markSearchTerms(a, searchTerms) {
+function markSearchTerms(link, searchTerms) {
+  // eslint-disable-next-line no-restricted-syntax
   for (const term of searchTerms) {
     const regex = new RegExp(`(${term})`, 'gi');
-    a.innerHTML = a.innerHTML.replace(regex, '<mark>$1</mark>');
+    link.innerHTML = link.innerHTML.replace(regex, '<mark>$1</mark>');
   }
+}
+
+function focusSearch(block) {
+  block.querySelector('div.search-container').classList.add('search-active');
+}
+
+function blurSearch(block) {
+  block.querySelector('div.search-container').classList.remove('search-active');
+  const searchResults = block.querySelector('.search-results');
+  searchResults.innerHTML = '';
+  searchResults.style.display = 'none';
+  block.querySelector('input').value = '';
 }
 
 async function handleSearch(block) {
   const searchValue = block.querySelector('input').value;
   const searchResults = block.querySelector('.search-results');
+
+  focusSearch(block);
 
   if (searchValue.length < 3) {
     searchResults.innerHTML = '';
@@ -118,7 +133,9 @@ export default async function decorate(block) {
           input({
             type: 'text',
             oninput: () => { debouncedSearch(); },
-            onkeyup: (e) => { if (e.code === 'Escape') { block.querySelector('.search-results').style.display = 'none'; } },
+            onkeyup: (e) => { if (e.code === 'Escape') { blurSearch(block); } },
+            onblur: () => { blurSearch(block); },
+            onfocus: () => { focusSearch(block); },
           })))),
       div({ class: 'search-results' }));
 
