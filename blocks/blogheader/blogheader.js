@@ -1,5 +1,5 @@
 import {
-  getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock, fetchPlaceholders,
+  getMetadata, decorateIcons, fetchPlaceholders,
 } from '../../scripts/aem.js';
 import {
   a, div, form, input, i, li, button,
