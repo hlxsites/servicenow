@@ -1,5 +1,6 @@
 nav#blogheader {
   --number-of-menu-items: 5;
+
   padding: 0;
   margin: 0;
 }
@@ -90,7 +91,7 @@ nav#blogheader li.blogsearch-menu-container {
   background-color: rgb(255 255 255 / 10%);
   background-image: none;
   border-radius: 12px;
-  box-shadow: 0 2px 1px rgba(0,0,0,0.6) inset, 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 2px 1px rgb(0 0 0 / 60%) inset, 0 1px 0 rgb(255 255 255 / 20%);
   padding: 0;
   padding-left: 3rem;
   font-family: var(--ff-gilroy-regular);
