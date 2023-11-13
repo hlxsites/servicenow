@@ -54,7 +54,6 @@ function focusSearch(block) {
 function blurSearch(block) {
   block.querySelector('div.search-container').classList.remove('search-active');
   const searchResults = block.querySelector('.search-results');
-  searchResults.innerHTML = '';
   searchResults.style.display = 'none';
   block.querySelector('input').value = '';
   unindicateSearch(block);
@@ -140,9 +139,11 @@ export default async function decorate(block) {
       handleSearch(block);
     }, 350);
 
-    const delayedBlur = setTimeout(() => {
-      blurSearch(block);
-    }, 350);
+    const delayedBlur = () => {
+      setTimeout(() => {
+        blurSearch(block);
+      }, 350);
+    };
 
     const searchLi = li({ class: 'blogsearch-menu-container' },
       div({ class: 'blogsearch' }, form({},
@@ -152,7 +153,7 @@ export default async function decorate(block) {
           input({
             type: 'text',
             oninput: () => { debouncedSearch(); },
-            onkeyup: (e) => { if (e.code === 'Escape') { blurSearch(block); } },
+            onkeyup: (e) => { if (e.code === 'Escape') { delayedBlur(); } },
             onblur: () => { delayedBlur(); },
             onfocus: () => { focusSearch(block); },
           })))),
