@@ -4,7 +4,7 @@ import {
 import {
   a, div, form, input, i, li, button,
 } from '../../scripts/dom-helpers.js';
-import { getLocaleInfo, debounce } from '../../scripts/scripts.js';
+import { getLocaleInfo, debounce, getLocale } from '../../scripts/scripts.js';
 import ffetch from '../../scripts/ffetch.js';
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
@@ -18,6 +18,21 @@ function toggleMenu(nav, desktop) {
   nav.style.display = expand ? 'table' : 'none';
 }
 
+async function getLocaleBlogContents() {
+  if (window.serviceNowBlogContents) {
+    return window.serviceNowBlogContents;
+  }
+
+  const locale = getLocale();
+  const entries = ffetch(`${getLocaleInfo().metadataIndex}`)
+    .sheet('blogs-content')
+    .filter((entry) => entry.locale === locale)
+    .all();
+
+  window.serviceNowBlogContents = entries;
+  return window.serviceNowBlogContents;
+}
+
 async function handleSearch(block) {
   const searchValue = block.querySelector('input').value;
   if (searchValue.length < 3) {
@@ -27,38 +42,36 @@ async function handleSearch(block) {
   const searchResults = block.querySelector('.search-results');
   searchResults.innerHTML = '';
 
-  const entries = await ffetch(`${getLocaleInfo().metadataIndex}`)
-    .sheet('blogs-content')
-    .filter((entry) => {
-      const searchTerms = searchValue.toLowerCase().split(/\s+/);
-      const prefixLength = getLocaleInfo().placeholdersPrefix.length;
-
-      return searchTerms.some((term) => (entry.title && entry.title.toLowerCase()
-        .includes(term))
-        || (entry.description && entry.description.toLowerCase()
-          .includes(term))
-        || (entry.header && entry.header.toLowerCase()
-          .includes(term))
-        || (entry.path && entry.path.substring(prefixLength).toLowerCase()
-          .includes(term))
-        || (entry.content && entry.content.toLowerCase()
-          .includes(term)),
-      );
-    })
-    .all();
-
-  // potential improvement: search content separately, first show those
-  // that match on title, description and header
-  //
-  // while sorting by publicationDate would potentially make sense, it's not what's currently
-  // implemented on servicenow.com
+  const results = await getLocaleBlogContents();
+  const prefixLength = getLocaleInfo().placeholdersPrefix.length;
+  const searchTerms = searchValue.toLowerCase().split(/\s+/);
+  const includedPaths = [];
 
   // eslint-disable-next-line no-restricted-syntax
-  for await (const entry of entries) {
-    searchResults.append(
-      a({ href: entry.path }, entry.header),
-    );
+  for (const result of results) {
+    const metaContents = `${result.title.toLowerCase()} ${result.description.toLowerCase()} ${result.header.toLowerCase()} ${result.path.substring(prefixLength).toLowerCase()}`;
+    if (searchTerms.some((term) => metaContents.includes(term))) {
+      searchResults.append(
+        a({ href: result.path }, result.header),
+      );
+      includedPaths.push(result.path);
+    }
   }
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const result of results) {
+    if (!includedPaths.includes(result.path)) {
+      if (searchTerms.some((term) => result.content.toLowerCase()
+        .includes(term))) {
+        searchResults.append(
+          a({ href: result.path }, result.header),
+        );
+      }
+    }
+  }
+
+  // while sorting by publicationDate would potentially make sense, it's not what's currently
+  // implemented on servicenow.com
 }
 
 export default async function decorate(block) {
