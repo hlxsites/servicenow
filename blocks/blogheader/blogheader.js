@@ -140,6 +140,10 @@ export default async function decorate(block) {
       handleSearch(block);
     }, 350);
 
+    const delayedBlur = setTimeout(() => {
+      blurSearch(block);
+    }, 350);
+
     const searchLi = li({ class: 'blogsearch-menu-container' },
       div({ class: 'blogsearch' }, form({},
         div({ class: 'search-container' },
@@ -149,7 +153,7 @@ export default async function decorate(block) {
             type: 'text',
             oninput: () => { debouncedSearch(); },
             onkeyup: (e) => { if (e.code === 'Escape') { blurSearch(block); } },
-            onblur: () => { blurSearch(block); },
+            onblur: () => { delayedBlur(); },
             onfocus: () => { focusSearch(block); },
           })))),
       div({ class: 'search-results' }));
