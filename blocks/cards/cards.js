@@ -1,6 +1,6 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
-import { fetchAPI } from '../../scripts/scripts.js';
+import { FILTERS, fetchAPI, getLocaleBlogs } from '../../scripts/scripts.js';
 
 export async function fetchHtml(path) {
   const response = await fetch(path);
@@ -67,47 +67,72 @@ function fetchAPIBasedCards(cardInfos, apis) {
   });
 }
 
+async function fetchRuleBasedCards(config, cardInfos, idx) {
+  const blogs = await getLocaleBlogs();
+  switch (toClassName(config.rule)) {
+    case 'home-page-latest':
+      cardInfos[idx] = blogs.slice(0, 3);
+      break;
+    case 'home-page-category':
+      cardInfos[idx] = FILTERS.category(
+        // skip first 3 blogs as they are used for the latest section
+        blogs.slice(3),
+        toClassName(config.category),
+      ).slice(0, 3);
+      break;
+    default:
+      break;
+  }
+}
+
 export default async function decorate(block) {
   const apis = [];
   const links = [];
   const cardInfos = Array(block.children.length).fill(null);
 
-  [...block.children].forEach((row, idx) => {
-    // card with content directly in the word document
-    if (row.querySelector('picture')) {
-      const thumbnail = row.querySelector('img');
-      thumbnail.parentElement.parentElement.remove();
+  const config = readBlockConfig(block);
 
-      const link = row.querySelector('a');
-      link.parentElement.remove();
+  // cards based on rules
+  if (config.rule) {
+    await fetchRuleBasedCards(config, cardInfos, 0);
+  } else {
+    [...block.children].forEach((row, idx) => {
+      // card with content directly in the word document
+      if (row.querySelector('picture')) {
+        const thumbnail = row.querySelector('img');
+        thumbnail.parentElement.parentElement.remove();
 
-      cardInfos[idx] = {
-        path: link.href,
-        header: row.querySelector('h5')?.textContent,
-        image: thumbnail.src,
-        topic: row.querySelector('p')?.textContent,
-      };
+        const link = row.querySelector('a');
+        link.parentElement.remove();
 
-      return;
-    }
+        cardInfos[idx] = {
+          path: link.href,
+          header: row.querySelector('h5')?.textContent,
+          image: thumbnail.src,
+          topic: row.querySelector('p')?.textContent,
+        };
 
-    const source = row.querySelector('a');
-    if (source) {
-      // cards with content coming from a JSON api call
-      if (isApiCall(source.href)) {
-        apis.push({ href: source.href, idx });
-      // card with content as a link only
-      } else {
-        links.push({ href: source.href, idx });
+        return;
       }
-    }
-  });
 
-  // extract information for the cards links and APIs
-  await Promise.all([
-    ...fetchLinkBasedCards(cardInfos, links),
-    ...fetchAPIBasedCards(cardInfos, apis),
-  ]);
+      const source = row.querySelector('a');
+      if (source) {
+        // cards with content coming from a JSON api call
+        if (isApiCall(source.href)) {
+          apis.push({ href: source.href, idx });
+        // card with content as a link only
+        } else {
+          links.push({ href: source.href, idx });
+        }
+      }
+    });
+
+    // extract information for the cards links and APIs
+    await Promise.all([
+      ...fetchLinkBasedCards(cardInfos, links),
+      ...fetchAPIBasedCards(cardInfos, apis),
+    ]);
+  }
 
   // render all cards
   block.innerHTML = '';

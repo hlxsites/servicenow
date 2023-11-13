@@ -43,7 +43,6 @@ async function handleSearch(block) {
 
   // eslint-disable-next-line no-restricted-syntax
   for await (const entry of entries) {
-    console.log(entry);
     searchResults.append(
       a({ href: entry.path }, entry.title),
     );
