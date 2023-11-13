@@ -4,6 +4,67 @@ main.has-sidebar > div.blogheader-container {
   padding: 0;
 }
 
+.blogsearch {
+  width: 6rem;
+}
+
+.blogsearch > form {
+  display: block;
+  padding-right: 10px;
+  height: 2.5rem;
+}
+
+.blogsearch form > div.search-container {
+  position: relative;
+  height: 100%;
+}
+
+.blogsearch form div.search-container i.search-icon {
+  background-image: url("/icons/blog-search-icon.webp");
+  width: 1.5rem;
+  height: 1.5rem;
+  left: 1.3rem;
+  top: 0.7rem;
+  background-repeat: no-repeat;
+  display: block;
+  position: absolute;
+}
+
+.blogsearch form div.search-container input {
+  background-color: rgb(255 255 255 / 10%);
+  background-image: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 1px rgb(0 0 0 / 60%) inset, 0 1px 0 rgb(255 255 255 / 20%);
+  padding: 0;
+  margin: 0;
+  position: relative;
+  border-color: #293e40;
+  padding-left: 3rem;
+  color: #fff;
+  outline: 0;
+  height: 100%;
+  width: 100%;
+  display: inline-block;
+  line-height: inherit;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.blogsearch form div.search-results a {
+  display: block;
+}
+
+.blogsearch form div.search-results {
+  position: relative;
+  width: 600px;
+  background: white;
+  border: 1px solid black;
+  color: black;
+  margin-left: -500px;
+  z-index: 100;
+  text-align: left;
+}
+
 nav#blogheader {
   --number-of-menu-items: 5;
 
@@ -155,63 +216,3 @@ nav#blogheader p {
   transform-origin: center center;
 }
 
-.blogsearch {
-  width: 6rem;
-}
-
-.blogsearch > form {
-  display: block;
-  padding-right: 10px;
-  height: 2.5rem;
-}
-
-.blogsearch form > div.search-container {
-  position: relative;
-  height: 100%;
-}
-
-.blogsearch form div.search-container i.search-icon {
-  background-image: url("/icons/blog-search-icon.webp");
-  width: 1.5rem;
-  height: 1.5rem;
-  left: 1.3rem;
-  top: 0.7rem;
-  background-repeat: no-repeat;
-  display: block;
-  position: absolute;
-}
-
-.blogsearch form div.search-container input {
-  background-color: rgb(255 255 255 / 10%);
-  background-image: none;
-  border-radius: 12px;
-  box-shadow: 0 2px 1px rgb(0 0 0 / 60%) inset, 0 1px 0 rgb(255 255 255 / 20%);
-  padding: 0;
-  margin: 0;
-  position: relative;
-  border-color: #293e40;
-  padding-left: 3rem;
-  color: #fff;
-  outline: 0;
-  height: 100%;
-  width: 100%;
-  display: inline-block;
-  line-height: inherit;
-  font-size: inherit;
-  font-family: inherit;
-}
-
-.blogsearch form div.search-results {
-  position: relative;
-  width: 600px;
-  background: white;
-  border: 1px solid black;
-  color: black;
-  margin-left: -500px;
-  z-index: 100;
-  text-align: left;
-}
-
-.blogsearch form div.search-results a {
-  display: block;
-}
