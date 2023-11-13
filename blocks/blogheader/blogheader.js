@@ -1,10 +1,8 @@
+import { decorateIcons, fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 import {
-  getMetadata, decorateIcons, fetchPlaceholders,
-} from '../../scripts/aem.js';
-import {
-  a, div, form, input, i, li, button,
+  a, button, div, form, i, input, li,
 } from '../../scripts/dom-helpers.js';
-import { getLocaleInfo, debounce, getLocale } from '../../scripts/scripts.js';
+import { debounce, getLocale, getLocaleInfo } from '../../scripts/scripts.js';
 import ffetch from '../../scripts/ffetch.js';
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
@@ -24,12 +22,10 @@ async function getLocaleBlogContents() {
   }
 
   const locale = getLocale();
-  const entries = ffetch(`${getLocaleInfo().metadataIndex}`)
+  window.serviceNowBlogContents = ffetch(`${getLocaleInfo().metadataIndex}`)
     .sheet('blogs-content')
     .filter((entry) => entry.locale === locale)
     .all();
-
-  window.serviceNowBlogContents = entries;
   return window.serviceNowBlogContents;
 }
 
