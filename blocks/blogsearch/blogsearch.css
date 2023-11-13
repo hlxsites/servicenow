@@ -8,12 +8,12 @@
     height: 2.5rem;
 }
 
-.blogsearch form > div {
+.blogsearch form > div.search-container {
     position: relative;
     height: 100%;
 }
 
-.blogsearch form div i.search-icon {
+.blogsearch form div.search-container i.search-icon {
     background-image: url("/icons/blog-search-icon.webp");
     width: 1.5rem;
     height: 1.5rem;
@@ -24,7 +24,7 @@
     position: absolute;
 }
 
-.blogsearch form div input {
+.blogsearch form div.search-container input {
     background-color: rgb(255 255 255 / 10%);
     background-image: none;
     border-radius: 12px;
@@ -42,4 +42,19 @@
     line-height: inherit;
     font-size: inherit;
     font-family: inherit;
+}
+
+.blogsearch form div.search-results {
+    position: relative;
+    width: 600px;
+    background: white;
+    border: 1px solid black;
+    color: black;
+    margin-left: -500px;
+    z-index: 100;
+    text-align: left;
+}
+
+.blogsearch form div.search-results a {
+    display: block;
 }

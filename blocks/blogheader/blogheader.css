@@ -53,8 +53,10 @@ nav#blogheader li.blogsearch-menu-container {
   border: none;
   text-align: right;
   width: auto;
+  padding: 1.5rem 2.5rem;
   display: flex;
   justify-content: flex-end;
+  height: 80px;
 }
 
 nav#blogheader li.active {

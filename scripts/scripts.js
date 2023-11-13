@@ -268,6 +268,16 @@ export async function fetchAPI(path) {
   return json;
 }
 
+export function debounce(func, delay) {
+  let debounceTimer;
+  return function (...args) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
