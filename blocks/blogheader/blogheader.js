@@ -1,8 +1,11 @@
 import {
   getMetadata, decorateIcons, buildBlock, loadBlock, decorateBlock, fetchPlaceholders,
 } from '../../scripts/aem.js';
-import { getLocaleInfo } from '../../scripts/scripts.js';
-import { li, div, button } from '../../scripts/dom-helpers.js';
+import {
+  a, div, form, input, i, li, button,
+} from '../../scripts/dom-helpers.js';
+import { getLocaleInfo, debounce } from '../../scripts/scripts.js';
+import ffetch from '../../scripts/ffetch.js';
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
 
@@ -13,6 +16,49 @@ function toggleMenu(nav, desktop) {
   nav.setAttribute('aria-expanded', !!expand);
   nav.style.visibility = expand ? 'visible' : 'hidden';
   nav.style.display = expand ? 'table' : 'none';
+}
+
+async function handleSearch(block) {
+  const searchValue = block.querySelector('input').value;
+  if (searchValue.length < 3) {
+    return;
+  }
+
+  const searchResults = block.querySelector('.search-results');
+  searchResults.innerHTML = '';
+
+  const entries = await ffetch(`${getLocaleInfo().metadataIndex}`)
+    .sheet('blogs-content')
+    .filter((entry) => {
+      const searchTerms = searchValue.toLowerCase().split(/\s+/);
+      const prefixLength = getLocaleInfo().placeholdersPrefix.length;
+
+      return searchTerms.some((term) => (entry.title && entry.title.toLowerCase()
+        .includes(term))
+        || (entry.description && entry.description.toLowerCase()
+          .includes(term))
+        || (entry.header && entry.header.toLowerCase()
+          .includes(term))
+        || (entry.path && entry.path.substring(prefixLength).toLowerCase()
+          .includes(term))
+        || (entry.content && entry.content.toLowerCase()
+          .includes(term)),
+      );
+    })
+    .all();
+
+  // potential improvement: search content separately, first show those
+  // that match on title, description and header
+  //
+  // while sorting by publicationDate would potentially make sense, it's not what's currently
+  // implemented on servicenow.com
+
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const entry of entries) {
+    searchResults.append(
+      a({ href: entry.path }, entry.title),
+    );
+  }
 }
 
 export default async function decorate(block) {
@@ -41,14 +87,24 @@ export default async function decorate(block) {
     blogHeader.style.setProperty('--number-of-menu-items', numberOfSections);
 
     decorateIcons(blogHeader);
-    const searchBlock = buildBlock('blogsearch', { elems: [] });
-    const searchLi = li({ class: 'blogsearch-menu-container' });
-    searchLi.appendChild(searchBlock);
+    const debouncedSearch = debounce(() => {
+      handleSearch(block);
+    }, 350);
+
+    const searchLi = li({ class: 'blogsearch-menu-container' },
+      div({ class: 'blogsearch' }, form({},
+        div({ class: 'search-container' },
+          i({ class: 'search-icon' }),
+          input({
+            type: 'text',
+            oninput: () => { debouncedSearch(); }
+            ,
+          })),
+        div({ class: 'search-results' }))));
+
     const navSections = blogHeader.querySelector('ul');
     navSections.appendChild(searchLi);
     navSections.setAttribute('aria-expanded', 'true');
-    decorateBlock(searchBlock);
-    loadBlock(searchBlock);
 
     const placeholders = await placeholdersPromise;
 
