@@ -29,13 +29,24 @@ async function getLocaleBlogContents() {
   return window.serviceNowBlogContents;
 }
 
+function markSearchTerms(a, searchTerms) {
+  for (const term of searchTerms) {
+    const regex = new RegExp(`(${term})`, 'gi');
+    a.innerHTML = a.innerHTML.replace(regex, '<mark>$1</mark>');
+  }
+}
+
 async function handleSearch(block) {
   const searchValue = block.querySelector('input').value;
+  const searchResults = block.querySelector('.search-results');
+
   if (searchValue.length < 3) {
+    searchResults.innerHTML = '';
+    searchResults.style.display = 'none';
     return;
   }
 
-  const searchResults = block.querySelector('.search-results');
+  searchResults.style.display = 'block';
   searchResults.innerHTML = '';
 
   const results = await getLocaleBlogContents();
@@ -47,9 +58,9 @@ async function handleSearch(block) {
   for (const result of results) {
     const metaContents = `${result.title.toLowerCase()} ${result.description.toLowerCase()} ${result.header.toLowerCase()} ${result.path.substring(prefixLength).toLowerCase()}`;
     if (searchTerms.some((term) => metaContents.includes(term))) {
-      searchResults.append(
-        a({ href: result.path }, result.header),
-      );
+      const link = a({ href: result.path }, result.header);
+      markSearchTerms(link, searchTerms);
+      searchResults.append(link);
       includedPaths.push(result.path);
     }
   }
@@ -106,14 +117,14 @@ export default async function decorate(block) {
           i({ class: 'search-icon' }),
           input({
             type: 'text',
-            oninput: () => { debouncedSearch(); }
-            ,
-          })),
-        div({ class: 'search-results' }))));
+            oninput: () => { debouncedSearch(); },
+            onkeyup: (e) => { if (e.code === 'Escape') { block.querySelector('.search-results').style.display = 'none'; } },
+          })))),
+      div({ class: 'search-results' }));
 
     const navSections = blogHeader.querySelector('ul');
     navSections.appendChild(searchLi);
-    navSections.setAttribute('aria-expanded', 'true');
+    navSections.setAttribute('aria-expanded', 'false');
 
     const placeholders = await placeholdersPromise;
 
