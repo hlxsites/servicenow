@@ -18,5 +18,5 @@ export default async function decorate(block) {
   setTimeout(() => {
     observer.disconnect();
     loadSocialShare();
-  }, 3000);
+  }, 4500);
 }
