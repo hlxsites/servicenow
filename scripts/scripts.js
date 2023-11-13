@@ -280,21 +280,21 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  Promise.all([
+  await loadBlocks(main);
+
+  await Promise.all([
     loadHeader(doc.querySelector('header')),
     loadFooter(doc.querySelector('footer')),
-  ]).then(() => {
-    document.addEventListener('nass-header-rendered', () => {
-      // work-around
-      if (window.location.host !== 'www.servicenow.com') {
-        document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
-          .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
-      }
-    });
-    window.document.dispatchEvent(new Event('DOMContentLoaded'));
-  });
+  ]);
 
-  await loadBlocks(main);
+  document.addEventListener('nass-header-rendered', () => {
+    // work-around
+    if (window.location.host !== 'www.servicenow.com') {
+      document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
+        .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
+    }
+  });
+  window.document.dispatchEvent(new Event('DOMContentLoaded'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -310,7 +310,7 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 4500);
+  window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
 }
 
