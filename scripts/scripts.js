@@ -13,12 +13,30 @@ import {
   sampleRUM,
   toClassName,
   waitForLCP,
+  loadBlock,
 } from './aem.js';
 import {
   a, div, p, span,
 } from './dom-helpers.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
+export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
+
+export async function fetchAPI(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    // eslint-disable-next-line no-console
+    console.error('error loading API response', response);
+    return null;
+  }
+  const json = await response.json();
+  if (!json) {
+    // eslint-disable-next-line no-console
+    console.error('empty API response', path);
+    return null;
+  }
+  return json;
+}
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -36,6 +54,15 @@ function buildHeroBlock(main) {
   }
 }
 
+export const FILTERS = {
+  category: (blogs, category) => blogs.filter((blog) => category === toClassName(blog.category)),
+  topic: (blogs, topic) => blogs.filter((blog) => topic === toClassName(blog.topic)),
+  year: (blogs, year) => blogs.filter((blog) => year === blog.year),
+  author: (blogs, authorUrl) => blogs.filter(
+    (blog) => authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0],
+  ),
+};
+
 /**
  * load fonts.css and set a session storage flag
  */
@@ -48,6 +75,7 @@ async function loadFonts() {
   }
 }
 
+// when adding new locales, the 404.html needs to be updated as well
 const LOCALE_INFO = {
   'en-US': {
     urlPrefix: '',
@@ -106,6 +134,33 @@ export function getLocaleInfo() {
 }
 
 /**
+ * Retrievs and retuns the list of blogs for the current locale based on the index
+ * Read Only: Consumers of this API should not modify the list, as it is cached
+ * @returns {Array} array of blog objects
+ */
+export async function getLocaleBlogs() {
+  if (window.blogs) return window.blogs;
+
+  const response = await fetchAPI(`${getLocaleInfo().metadataIndex}?sheet=blogs&limit=10000`);
+  if (!response) {
+    // eslint-disable-next-line no-console
+    console.warn('failed to retrieve blogs.');
+    return [];
+  }
+
+  const blogs = response.data;
+  if (!blogs) {
+    // eslint-disable-next-line no-console
+    console.warn('failed to retrieve blogs.');
+    return [];
+  }
+
+  const locale = getLocale();
+  window.blogs = blogs.filter((blog) => blog.locale === locale);
+  return window.blogs;
+}
+
+/**
  * Formats a date in the current locale.
  * @param date
  * @returns {string}
@@ -158,6 +213,31 @@ function buildArticleCopyright(main) {
   main.append(div(buildBlock('article-copyright', { elems: [] })));
 }
 
+function buildArticleSocialShare(main) {
+  main.append(div(buildBlock('social-share', { elems: [] })));
+}
+
+/**
+ * Builds an article sidebar and appends it to main in a new section.
+ * @param main
+ */
+function buildArticleSidebar(main) {
+  const divs = Array.from(document.querySelectorAll('.section-metadata div div'));
+  const targetDivs = divs.filter(
+    (d) => d.textContent.trim().toLowerCase() === 'style' || d.textContent.trim().toLowerCase() === 'sidebar',
+  );
+  if (targetDivs.length !== 2) {
+    // the article did not come with an inline sidebar
+    const locInfo = getLocaleInfo();
+    const sidebarBlock = buildBlock('fragment', [
+      [a({ href: `${locInfo.placeholdersPrefix}/fragments/sidebar-fragment` }, 'Sidebar')],
+    ]);
+    sidebarBlock.dataset.eagerBlock = true;
+    const sidebar = div(sidebarBlock); // wrap sidebarBlock in div to create a new section
+    main.append(sidebar);
+  }
+}
+
 /**
  * Returns true if the page is an article based on the template metadata.
  * @returns {boolean}
@@ -177,10 +257,15 @@ function isArticlePage() {
  */
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
+  if (main.parentNode !== document.body) { // don't build auto blocks in fragments
+    return;
+  }
   try {
     if (isArticlePage()) {
       buildArticleHeader(main);
+      buildArticleSidebar(main);
       buildArticleCopyright(main);
+      buildArticleSocialShare(main);
     }
     buildBlogHeader(main);
   } catch (error) {
@@ -189,8 +274,14 @@ function buildAutoBlocks(main) {
   }
 }
 
-function detectSidebar(main) {
+async function loadEagerBlocks(main) {
+  const eagerBlocks = main.querySelectorAll('div[data-eager-block]');
+  await Promise.all([...eagerBlocks].map((eagerBlock) => loadBlock(eagerBlock)));
+}
+
+async function detectSidebar(main) {
   const sidebar = main.querySelector('.section.sidebar');
+
   if (sidebar) {
     main.classList.add('has-sidebar');
     const sidebarOffset = Number.parseInt(
@@ -214,22 +305,6 @@ function detectSidebar(main) {
   }
 }
 
-export async function fetchAPI(path) {
-  const response = await fetch(path);
-  if (!response.ok) {
-    // eslint-disable-next-line no-console
-    console.error('error loading API response', response);
-    return null;
-  }
-  const json = await response.json();
-  if (!json) {
-    // eslint-disable-next-line no-console
-    console.error('empty API response', path);
-    return null;
-  }
-  return json;
-}
-
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -242,7 +317,6 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
-  detectSidebar(main);
 }
 
 /**
@@ -255,6 +329,8 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    await loadEagerBlocks(main);
+    await detectSidebar(main);
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
@@ -314,7 +390,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-async function loadPage() {
+export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
