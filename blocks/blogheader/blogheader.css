@@ -152,6 +152,7 @@ nav#blogheader li.blogsearch-menu-container {
   color: black;
   z-index: 100;
   text-align: left;
+  overflow: scroll;
 }
 
 #blogheader div.search-results a {
