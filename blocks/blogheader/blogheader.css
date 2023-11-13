@@ -87,6 +87,38 @@ nav#blogheader li.blogsearch-menu-container {
   position: absolute;
 }
 
+.blogsearch form.searching div.search-container i.search-icon {
+  display: none;
+}
+
+.blogsearch form div.search-container span.search-indicator {
+  display: none;
+  position: absolute;
+  left: 1.3rem;
+  top: 0.7rem;
+  border: 3px solid #ccc;
+  border-top-color: #333;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  animation: loading-indicator-spin 2s linear infinite;
+}
+
+.blogsearch form.searching div span.search-indicator {
+     display: block;
+}
+
+/* stylelint-disable */
+@keyframes loading-indicator-spin {
+  0 {
+    transform: rotate(0)
+  }
+  100% {
+    transform: rotate(360deg)
+  }
+}
+/* stylelint-enable */
+
 .blogsearch form div.search-container input {
   background-color: rgb(255 255 255 / 10%);
   background-image: none;
@@ -192,7 +224,8 @@ nav#blogheader li.blogsearch-menu-container {
   }
 
   nav .blogsearch form div.search-active i.search-icon {
-    right: 12.3rem;
+    left: 1.3rem;
+    right: unset;
   }
 }
 

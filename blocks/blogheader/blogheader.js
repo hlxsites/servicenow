@@ -1,6 +1,6 @@
 import { decorateIcons, fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 import {
-  a, button, div, form, i, input, li,
+  a, button, div, form, i, input, li, span,
 } from '../../scripts/dom-helpers.js';
 import {
   BLOG_QUERY_INDEX, debounce, getLocale, getLocaleInfo,
@@ -39,6 +39,14 @@ function markSearchTerms(link, searchTerms) {
   }
 }
 
+function indicateSearch(block) {
+  block.querySelector('form').classList.add('searching');
+}
+
+function unindicateSearch(block) {
+  block.querySelector('form').classList.remove('searching');
+}
+
 function focusSearch(block) {
   block.querySelector('div.search-container').classList.add('search-active');
 }
@@ -49,6 +57,7 @@ function blurSearch(block) {
   searchResults.innerHTML = '';
   searchResults.style.display = 'none';
   block.querySelector('input').value = '';
+  unindicateSearch(block);
 }
 
 async function handleSearch(block) {
@@ -62,6 +71,8 @@ async function handleSearch(block) {
     searchResults.style.display = 'none';
     return;
   }
+
+  indicateSearch(block);
 
   searchResults.style.display = 'block';
   searchResults.innerHTML = '';
@@ -94,6 +105,7 @@ async function handleSearch(block) {
     }
   }
 
+  unindicateSearch(block);
   // while sorting by publicationDate would potentially make sense, it's not what's currently
   // implemented on servicenow.com
 }
@@ -132,6 +144,7 @@ export default async function decorate(block) {
       div({ class: 'blogsearch' }, form({},
         div({ class: 'search-container' },
           i({ class: 'search-icon' }),
+          span({ class: 'search-indicator' }),
           input({
             type: 'text',
             oninput: () => { debouncedSearch(); },
