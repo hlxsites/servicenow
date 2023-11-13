@@ -2,7 +2,9 @@ import { decorateIcons, fetchPlaceholders, getMetadata } from '../../scripts/aem
 import {
   a, button, div, form, i, input, li,
 } from '../../scripts/dom-helpers.js';
-import { debounce, getLocale, getLocaleInfo } from '../../scripts/scripts.js';
+import {
+  BLOG_QUERY_INDEX, debounce, getLocale, getLocaleInfo,
+} from '../../scripts/scripts.js';
 import ffetch from '../../scripts/ffetch.js';
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
@@ -22,7 +24,7 @@ async function getLocaleBlogContents() {
   }
 
   const locale = getLocale();
-  window.serviceNowBlogContents = ffetch(`${getLocaleInfo().metadataIndex}`)
+  window.serviceNowBlogContents = ffetch(`${BLOG_QUERY_INDEX}`)
     .sheet('blogs-content')
     .filter((entry) => entry.locale === locale)
     .all();
