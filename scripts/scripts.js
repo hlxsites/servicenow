@@ -363,14 +363,17 @@ async function loadLazy(doc) {
     loadFooter(doc.querySelector('footer')),
   ]);
 
-  document.addEventListener('nass-header-rendered', () => {
-    // work-around
-    if (window.location.host !== 'www.servicenow.com') {
-      document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
-        .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
-    }
+  await new Promise((resolve) => {
+    document.addEventListener('nass-header-rendered', () => {
+      // work-around
+      if (window.location.host !== 'www.servicenow.com') {
+        document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
+          .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
+      }
+      resolve();
+    });
+    window.document.dispatchEvent(new Event('DOMContentLoaded'));
   });
-  window.document.dispatchEvent(new Event('DOMContentLoaded'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
