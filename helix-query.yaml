@@ -3,6 +3,10 @@ indices:
   default:
     include:
       - /blogs/**
+      - /blogs/de/**
+      - /blogs/fr/**
+      - /blogs/nl/**
+      - /blogs/uk/**
     exclude:
       - '/blogs/fragments/**'
     target: /blogs/query-index.json
