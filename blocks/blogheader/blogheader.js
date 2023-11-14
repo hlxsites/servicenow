@@ -66,7 +66,6 @@ async function handleSearch(block) {
   focusSearch(block);
 
   if (searchValue.length < 3) {
-    searchResults.innerHTML = '';
     searchResults.style.display = 'none';
     return;
   }
