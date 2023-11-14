@@ -75,32 +75,28 @@ async function loadFonts() {
   }
 }
 
+export const BLOG_QUERY_INDEX = '/blogs/query-index.json';
 // when adding new locales, the 404.html needs to be updated as well
 const LOCALE_INFO = {
   'en-US': {
     urlPrefix: '',
     placeholdersPrefix: '/blogs',
-    metadataIndex: '/blogs/query-index.json',
   },
   'en-UK': {
     urlPrefix: 'uk',
     placeholdersPrefix: '/uk/blogs',
-    metadataIndex: '', // TODO issue #30
   },
   'de-DE': {
     urlPrefix: 'de',
     placeholdersPrefix: '/de/blogs',
-    metadataIndex: '', // TODO issue #30
   },
   'fr-FR': {
     urlPrefix: 'fr',
     placeholdersPrefix: '/fr/blogs',
-    metadataIndex: '', // TODO issue #30
   },
   'nl-NL': {
     urlPrefix: 'nl',
     placeholdersPrefix: '/nl/blogs',
-    metadataIndex: '', // TODO issue #30
   },
 };
 
@@ -141,7 +137,7 @@ export function getLocaleInfo() {
 export async function getLocaleBlogs() {
   if (window.blogs) return window.blogs;
 
-  const response = await fetchAPI(`${getLocaleInfo().metadataIndex}?sheet=blogs&limit=10000`);
+  const response = await fetchAPI(`${BLOG_QUERY_INDEX}?sheet=blogs&limit=10000`);
   if (!response) {
     // eslint-disable-next-line no-console
     console.warn('failed to retrieve blogs.');
@@ -303,6 +299,16 @@ async function detectSidebar(main) {
       header.append(span(headerContent));
     });
   }
+}
+
+export function debounce(func, delay) {
+  let debounceTimer;
+  return function (...args) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
 }
 
 /**
