@@ -96,7 +96,7 @@ nav#blogheader li.blogsearch-menu-container {
   position: absolute;
   left: 1.3rem;
   top: 0.7rem;
-  border: 3px solid #ccc;
+  border: 3px solid var(--highlight-background-color);
   border-top-color: #333;
   border-radius: 50%;
   width: 1rem;
@@ -130,7 +130,7 @@ nav#blogheader li.blogsearch-menu-container {
   font-size: 1.4rem;
   margin: 0;
   position: relative;
-  border: 2px inset #293e40;
+  border: 2px inset var(--text-color);
   color: #fff;
   outline: 0;
   height: 100%;
@@ -148,7 +148,7 @@ nav#blogheader li.blogsearch-menu-container {
   max-height: 20rem;
   min-width: 100%;
   background: white;
-  border: 1px solid #ccc;
+  border: 1px solid var(--highlight-background-color);
   color: black;
   z-index: 100;
   text-align: left;
@@ -157,7 +157,7 @@ nav#blogheader li.blogsearch-menu-container {
 
 #blogheader div.search-results a {
   display: block;
-  color: #293e40;
+  color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   letter-spacing: normal;
   line-height: 1.6rem;
@@ -170,11 +170,11 @@ nav#blogheader li.blogsearch-menu-container {
 }
 
 #blogheader div.search-results a:hover {
-  text-decoration: underline #81b5a1;
+  text-decoration: underline var(--link-background-color);
 }
 
 #blogheader div.search-results a mark {
-  background-color: #81b5a1;
+  background-color: var(--link-background-color);
   font-family: var(--ff-gilroy-semibold);
 }
 
@@ -275,7 +275,7 @@ nav#blogheader li.blogsearch-menu-container {
   height: 2.5rem;
   float: right;
   border-radius: 0.5rem;
-  background: #293e40;
+  background: var(--text-color);
   position: relative;
   right: 0;
   color: white;
