@@ -13,6 +13,9 @@ async function loadAdobeDTM() {
   if (host === 'servicenow.com' || host === 'www.servicenow.com' || host.endsWith('.live')) {
     loadScript(prod, { async: '' });
   } else {
+    if (new URLSearchParams(window.location.search).get('disableLaunch') === 'true') {
+      return;
+    }
     loadScript(stage, { async: '' });
   }
 }
