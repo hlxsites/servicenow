@@ -104,8 +104,6 @@ async function handleSearch(block) {
   }
 
   unindicateSearch(block);
-  // while sorting by publicationDate would potentially make sense, it's not what's currently
-  // implemented on servicenow.com
 }
 
 export default async function decorate(block) {
