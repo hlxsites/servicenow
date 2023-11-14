@@ -9,10 +9,10 @@ indices:
       - /uk/blogs/**
     exclude:
       - '/blogs/fragments/**'
-      - 'de/blogs/fragments/**'
-      - 'fr/blogs/fragments/**'
-      - 'nl/blogs/fragments/**'
-      - 'uk/blogs/fragments/**'
+      - '/de/blogs/fragments/**'
+      - '/fr/blogs/fragments/**'
+      - '/nl/blogs/fragments/**'
+      - '/uk/blogs/fragments/**'
     target: /blogs/query-index.json
     properties:
       type:
