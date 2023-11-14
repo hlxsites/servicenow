@@ -1,9 +1,3 @@
-main.has-sidebar > div.blogheader-container {
-  grid-column: 2 / span 2;
-  color: var(--background-color);
-  padding: 0;
-}
-
 nav#blogheader {
   --number-of-menu-items: 5;
 
@@ -28,6 +22,19 @@ nav#blogheader ul {
   background-color: var(--text-color);
 }
 
+nav#blogheader li {
+  display: table-cell;
+  border-right: 1px solid white;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 1.2rem;
+  width: calc(55rem / var(--number-of-menu-items));
+}
+
+nav#blogheader li.active {
+  background-color: black;
+}
+
 nav#blogheader li a {
   font-size: 1.6rem;
   font-family: var(--ff-gilroy-semibold);
@@ -40,42 +47,190 @@ nav#blogheader li a {
   -webkit-font-smoothing: antialiased;
 }
 
-nav#blogheader li {
-  display: table-cell;
-  border-right: 1px solid white;
-  color: white;
-  text-align: center;
-  padding: 1.5rem 1.2rem;
-  width: calc(55rem / var(--number-of-menu-items));
-}
-
 nav#blogheader li.blogsearch-menu-container {
   border: none;
   text-align: right;
   width: auto;
+  padding: 0;
   display: flex;
+  flex-direction: column;
   justify-content: flex-end;
 }
 
-nav#blogheader li.active {
-  background-color: black;
+/* Search Related Styles */
+.blogsearch {
+  width: 100%;
+  display: flex;
+  padding: 1rem;
 }
 
-/* Style for the paragraph */
-nav#blogheader p {
-  margin: 0;
+.blogsearch > form {
+  display: block;
+  padding-right: 10px;
+  height: 2.5rem;
+  width: 100%;
+}
+
+.blogsearch form > div.search-container {
+  position: relative;
+  height: 100%;
+}
+
+.blogsearch form div.search-container i.search-icon {
+  background-image: url("/icons/blog-search-icon.webp");
+  width: 1.5rem;
+  height: 1.5rem;
+  left: 1.3rem;
+  top: 0.7rem;
+  background-repeat: no-repeat;
+  display: block;
+  position: absolute;
+}
+
+.blogsearch form.searching div.search-container i.search-icon {
+  display: none;
+}
+
+.blogsearch form div.search-container span.search-indicator {
+  display: none;
+  position: absolute;
+  left: 1.3rem;
+  top: 0.7rem;
+  border: 3px solid var(--highlight-background-color);
+  border-top-color: #333;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  animation: loading-indicator-spin 2s linear infinite;
+}
+
+.blogsearch form.searching div span.search-indicator {
+     display: block;
+}
+
+/* stylelint-disable */
+@keyframes loading-indicator-spin {
+  0 {
+    transform: rotate(0)
+  }
+  100% {
+    transform: rotate(360deg)
+  }
+}
+/* stylelint-enable */
+
+.blogsearch form div.search-container input {
+  background-color: rgb(255 255 255 / 10%);
+  background-image: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 1px rgb(0 0 0 / 60%) inset, 0 1px 0 rgb(255 255 255 / 20%);
   padding: 0;
+  padding-left: 3rem;
+  font-family: var(--ff-gilroy-regular);
+  font-size: 1.4rem;
+  margin: 0;
+  position: relative;
+  border: 2px inset var(--text-color);
+  color: #fff;
+  outline: 0;
+  height: 100%;
+  width: 100%;
+  max-width: unset;
+  display: inline-block;
+}
+
+#blogheader div.search-results {
+  display: none;
+  left: 0;
+  top: 0;
+  padding: 1.5rem;
+  padding-bottom: 1rem;
+  max-height: 20rem;
+  min-width: 100%;
+  background: white;
+  border: 1px solid var(--highlight-background-color);
+  color: black;
+  z-index: 100;
+  text-align: left;
+  overflow: scroll;
+}
+
+#blogheader div.search-results a {
+  display: block;
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: normal;
+  line-height: 1.6rem;
+  margin-bottom: 1rem;
+  font-weight: normal;
+  font-family: var(--ff-gilroy-regular);
+  font-size: 1.4rem;
+  border: none;
+  padding: 0;
+}
+
+#blogheader div.search-results a:hover {
+  text-decoration: underline var(--link-background-color);
+}
+
+#blogheader div.search-results a mark {
+  background-color: var(--link-background-color);
+  font-family: var(--ff-gilroy-semibold);
 }
 
 @media (min-width: 768px) {
   div.blogheader-hamburger {
     display: none;
-    visibility: hidden;  
+    visibility: hidden;
     width: 0;
+  }
+
+  nav#blogheader li.blogsearch-menu-container {
+    position: relative;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+  nav#blogheader div.search-results {
+    position: absolute;
+    right: 0;
+    left: unset;
+    top: 5.3rem;
+    min-width: unset;
+    width: 18rem;
+    overflow: scroll;
+  }
+
+  nav#blogheader .blogsearch {
+    width: 18rem;
+  }
+
+  .blogsearch > form > div {
+    top: 15px;
+  }
+
+  .blogsearch form div.search-container input {
+    width: 4rem;
+  }
+
+  nav .blogsearch form div.search-active input:focus {
+    width: 100%;
+  }
+
+  .blogsearch form div.search-container i.search-icon {
+    background-image: url("/icons/blog-search-icon.webp");
+    right: 1.3rem;
+    left: unset;
+  }
+
+  nav .blogsearch form div.search-active i.search-icon {
+    left: 1.3rem;
+    right: unset;
   }
 }
 
-@media (max-width: 767px ) {
+@media (max-width: 767px) {
   div.blogheader-wrapper div.blogheader {
     position: relative;
   }
@@ -120,7 +275,7 @@ nav#blogheader p {
   height: 2.5rem;
   float: right;
   border-radius: 0.5rem;
-  background: #293e40;
+  background: var(--text-color);
   position: relative;
   right: 0;
   color: white;
@@ -151,4 +306,10 @@ nav#blogheader p {
   transform: rotate(45deg);
   transition: all 500ms;
   transform-origin: center center;
+}
+
+main.has-sidebar > div.blogheader-container {
+  grid-column: 2 / span 2;
+  color: var(--background-color);
+  padding: 0;
 }
