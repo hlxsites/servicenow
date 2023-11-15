@@ -296,17 +296,13 @@ async function detectSidebar(main) {
 }
 
 async function h3Styling(main) {
-  const sidebar = main.querySelector('.section.sidebar');
-  const isHomepage = document.body.classList.contains('blog-home-page');
-  if (sidebar || isHomepage) {
-    let allH3 = new Set([...sidebar.querySelectorAll('h3'), ...main.querySelectorAll('h3')]);
-    allH3.forEach((header) => {
-      const headerContent = header.textContent;
-      header.textContent = '';
-      header.append(span(headerContent));
-      header.classList.add('strikeLine')
-    });
-  }
+  let allH3 = new Set([...main.querySelector('.section.sidebar').querySelectorAll('h3'), ...document.querySelectorAll('.blog-home-page main h3')]);
+  allH3.forEach((header) => {
+    const headerContent = header.textContent;
+    header.textContent = '';
+    header.append(span(headerContent));
+    header.classList.add('strikeLine')
+  });
 }
 
 export function debounce(func, delay) {
