@@ -21,6 +21,7 @@ import {
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
+export const TAGS_QUERY_INDEX = '/blogs/tags.json';
 
 export async function fetchAPI(path) {
   const response = await fetch(path);

@@ -1,10 +1,8 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import {
-  FILTERS, fetchAPI, getLocaleBlogs, getLocale,
+  FILTERS, fetchAPI, getLocaleBlogs, getLocale, TAGS_QUERY_INDEX,
 } from '../../scripts/scripts.js';
-
-const TAGS_QUERY_INDEX = '/blogs/tags.json';
 
 export async function fetchHtml(path) {
   const response = await fetch(path);
