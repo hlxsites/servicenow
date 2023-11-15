@@ -172,13 +172,11 @@ function hasInlinedSidebar(main) {
     if (meta.style) {
       const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
       if (styles.includes('sidebar')) {
-        console.log('has inlined sidebar');
         return true;
       }
     }
   }
 
-  console.log('no inlined sidebar');
   return false;
 }
 

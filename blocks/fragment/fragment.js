@@ -41,10 +41,10 @@ export default async function decorate(block) {
       const mainSection = block.closest('.section');
       mainSection.classList.add(...fragmentSection.classList);
       // initial file metadata overrides the fragment metadata in case of conflicts
-      const mergedDataset = Object.assign({}, fragmentSection.dataset, mainSection.dataset);
-      for(const key in mergedDataset) {
+      const mergedDataset = { ...fragmentSection.dataset, ...mainSection.dataset };
+      Object.keys(mergedDataset).forEach((key) => {
         mainSection.dataset[key] = mergedDataset[key];
-      }
+      });
       block.closest('.fragment-wrapper').replaceWith(...fragmentSection.childNodes);
     }
   }
