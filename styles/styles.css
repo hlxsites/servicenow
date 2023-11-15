@@ -164,12 +164,13 @@ p + h3 {
   margin-top: 3rem;
 }
 
+.blog-home-page h3,
 .sidebar h3 {
   background-image: url('/images/header-bar-h3.gif');
   background-repeat: repeat-x;
   background-position: 0 50%;
 }
-
+.blog-home-page h3 span,
 .sidebar h3 span {
   background-color: var(--background-color);
 }
