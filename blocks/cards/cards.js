@@ -151,7 +151,7 @@ export default async function decorate(block) {
       if (!cardInfo) return;
 
       if (Array.isArray(cardInfos[idx])) {
-        block.append(await Promise.all(cardInfos[idx].map(renderCard)));
+        block.append(...await Promise.all(cardInfos[idx].map(renderCard)));
       } else {
         block.append(await renderCard(cardInfos[idx]));
       }
