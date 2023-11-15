@@ -1,7 +1,7 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import {
-FILTERS, fetchAPI, getLocaleBlogs, getLocale
+  FILTERS, fetchAPI, getLocaleBlogs, getLocale,
 } from '../../scripts/scripts.js';
 
 const TAGS_QUERY_INDEX = '/blogs/tags.json';
@@ -44,8 +44,6 @@ export async function renderCard(post) {
     )
   );
 }
-
-
 
 function isApiCall(path) {
   return path?.split('?')[0]?.endsWith('.json');
