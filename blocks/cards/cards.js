@@ -1,7 +1,7 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import {
-  FILTERS, fetchAPI, getLocaleBlogs, getLocale, TAGS_QUERY_INDEX, getTopicTags,
+  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags,
 } from '../../scripts/scripts.js';
 
 export async function fetchHtml(path) {
