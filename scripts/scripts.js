@@ -295,7 +295,7 @@ async function detectSidebar(main) {
   }
 }
 
-async function h3Styling(main) {
+function h3Styling(main) {
   const sidebar = main.querySelector('.section.sidebar');
   const isHomepage = document.body.classList.contains('blog-home-page');
   if (sidebar || isHomepage) {
@@ -329,6 +329,7 @@ export function decorateMain(main) {
   decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
+  h3Styling(main);
   decorateSections(main);
   decorateBlocks(main);
 }
