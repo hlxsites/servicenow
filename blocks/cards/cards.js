@@ -1,6 +1,8 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
-import { FILTERS, fetchAPI, getLocaleBlogs } from '../../scripts/scripts.js';
+import { FILTERS, fetchAPI, getLocaleBlogs, getLocale } from '../../scripts/scripts.js';
+
+const TAGS_QUERY_INDEX ="/blogs/tags.json"
 
 export async function fetchHtml(path) {
   const response = await fetch(path);
@@ -18,20 +20,28 @@ export async function fetchHtml(path) {
   return text;
 }
 
-export function renderCard(post) {
+
+export async function renderCard(post) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
           createOptimizedPicture(post.image, post.header),
         ),
-        post.topic ? div({ class: 'topic-tag' }, div(post.topic)) : '',
+        post.topic ? div({ class: 'topic-tag' }, div(await extractTopicBasedOnLocale(post.topic))) : '',
       ),
       div({ class: 'card-text' },
         h5(post.header),
       ),
     )
   );
+}
+
+async function extractTopicBasedOnLocale(topic) {
+  if (topic === undefined) return topic;
+  const apiResponse = await fetchAPI(`${TAGS_QUERY_INDEX}?sheet=topic`);
+  const tagTopic = apiResponse.data.find((tag) => tag.identifier === topic);
+  return tagTopic[getLocale()]  || tagTopic['en-US'] || tagTopic['identifier'] || topic;
 }
 
 function isApiCall(path) {
@@ -136,13 +146,15 @@ export default async function decorate(block) {
 
   // render all cards
   block.innerHTML = '';
-  cardInfos.forEach((cardInfo, idx) => {
-    if (!cardInfo) return;
 
-    if (Array.isArray(cardInfos[idx])) {
-      block.append(...cardInfos[idx].map(renderCard));
-    } else {
-      block.append(renderCard(cardInfos[idx]));
-    }
-  });
+    await Promise.all(cardInfos.map(async (cardInfo, idx) => {
+      if (!cardInfo) return;
+
+      if (Array.isArray(cardInfos[idx])) {
+        block.append(await Promise.all(cardInfos[idx].map(renderCard)));
+      } else {
+        block.append(await renderCard(cardInfos[idx]));
+      }
+    }));
+
 }
