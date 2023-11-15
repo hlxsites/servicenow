@@ -295,7 +295,7 @@ async function detectSidebar(main) {
   }
 }
 
-function h3Styling(main) {
+async function h3Styling(main) {
   const sidebar = main.querySelector('.section.sidebar');
   const isHomepage = document.body.classList.contains('blog-home-page');
   if (sidebar || isHomepage) {
@@ -329,7 +329,6 @@ export function decorateMain(main) {
   decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
-  h3Styling(main);
   decorateSections(main);
   decorateBlocks(main);
 }
@@ -346,6 +345,7 @@ async function loadEager(doc) {
     decorateMain(main);
     await loadEagerBlocks(main);
     await detectSidebar(main);
+    await h3Styling(main);
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
