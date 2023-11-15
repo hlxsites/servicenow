@@ -39,14 +39,11 @@ export default async function decorate(block) {
     const fragmentSection = fragment.querySelector(':scope .section');
     if (fragmentSection) {
       const mainSection = block.closest('.section');
-      if (mainSection) {
-        mainSection.classList.add(...fragmentSection.classList);
-        const dataset = { ...mainSection.dataset, ...fragmentSection.dataset };
-        // block dataset takes precedence so that
-        // data-sectionstatus changes to "loaded" (from "initialized")
-        Object.keys(dataset).forEach((key) => {
-          mainSection.setAttribute(`data-${key}`, dataset[key]);
-        });
+      mainSection.classList.add(...fragmentSection.classList);
+      // initial file metadata overrides the fragment metadata in case of conflicts
+      const mergedDataset = Object.assign({}, fragmentSection.dataset, mainSection.dataset);
+      for(const key in mergedDataset) {
+        mainSection.dataset[key] = mergedDataset[key];
       }
       block.closest('.fragment-wrapper').replaceWith(...fragmentSection.childNodes);
     }

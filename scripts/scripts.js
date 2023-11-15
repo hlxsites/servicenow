@@ -14,6 +14,7 @@ import {
   toClassName,
   waitForLCP,
   loadBlock,
+  readBlockConfig,
 } from './aem.js';
 import {
   a, div, p, span,
@@ -164,27 +165,21 @@ function buildArticleSocialShare(main) {
   main.append(div(buildBlock('social-share', { elems: [] })));
 }
 
-/**
- * Checks if a block with the given key/value pair exists in the main element.
- * @param element
- * @param blockClass
- * @param key
- * @param value
- */
-function blockKeyValueExists(element, blockClass, key, value) {
-  const divs = Array.from(element.querySelectorAll(`.${blockClass} div`));
-  const targetElement = divs.find(
-    (d) => {
-      const divChildren = d.querySelectorAll('div');
-      if (divChildren.length !== 2) {
-        return false;
+function hasInlinedSidebar(main) {
+  const sectionMetas = [...main.querySelectorAll('div.section-metadata')];
+  for (let i = sectionMetas.length - 1; i >= 0; i -= 1) {
+    const meta = readBlockConfig(sectionMetas[i]);
+    if (meta.style) {
+      const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
+      if (styles.includes('sidebar')) {
+        console.log('has inlined sidebar');
+        return true;
       }
-      const isStyle = divChildren[0].textContent.trim().toLowerCase() === key.toLowerCase();
-      const isSidebar = RegExp(`\\b${value}\\b`, 'gi').test(divChildren[1].textContent);
-      return isStyle && isSidebar;
-    },
-  );
-  return targetElement;
+    }
+  }
+
+  console.log('no inlined sidebar');
+  return false;
 }
 
 /**
@@ -192,8 +187,7 @@ function blockKeyValueExists(element, blockClass, key, value) {
  * @param main
  */
 function buildArticleSidebar(main) {
-  const sidebarSectionExists = blockKeyValueExists(document, 'section-metadata', 'style', 'sidebar');
-  if (!sidebarSectionExists) {
+  if (!hasInlinedSidebar(main)) {
     // the article did not come with an inline sidebar
     const locInfo = getLocaleInfo();
     const sidebarBlock = buildBlock('fragment', [
@@ -230,9 +224,9 @@ function buildAutoBlocks(main) {
   try {
     if (isArticlePage()) {
       buildArticleHeader(main);
-      buildArticleSidebar(main);
       buildArticleCopyright(main);
       buildArticleSocialShare(main);
+      buildArticleSidebar(main);
     }
     buildBlogHeader(main);
   } catch (error) {
