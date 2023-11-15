@@ -15,15 +15,81 @@
 const pageUrl = "https://main--servicenow--hlxsites.hlx.page";
 const liveUrl = "https://main--servicenow--hlxsites.hlx.page";
 
+function fetchSync(method, url) {
+    // we use old XMLHttpRequest as fetch seams to have problems in bulk import
+    const request = new XMLHttpRequest();
+    request.open(method, url, false);
+    request.overrideMimeType('text/json; UTF-8');
+    request.send(null);
+    return {
+        status: request.status,
+        body: request.responseText,
+    }
+}
 
-const createMetadataBlock = (main, document) => {
+function jsonRenditionURL(url) {
+    return url.replace('.html', '.1.json');
+}
+
+function getAllTags() {
+    const tagsURL = 'https://main--servicenow--hlxsites.hlx.live/blogs/tags.json';
+    const response = fetchSync('GET', tagsURL);
+    if (response.status === 200) {
+        return JSON.parse(response.body);
+    }
+    return {};
+}
+
+function getOriginalTags(jsonRendition) {
+    return jsonRendition['jcr:content']['cq:tags'];
+}
+
+function getOriginalCategoryTag(originalTags) {
+    return originalTags.find((tag) => tag.startsWith('sn-blog-docs:category'));
+}
+
+function getOriginalTopicTag(originalTags) {
+    // TODO is this the correct tag or sn-blog-docs:new-trend ?
+    return originalTags.find((tag) => tag.startsWith('sn-blog-docs:topic'));
+}
+
+const createMetadataBlock = (main, document, url) => {
+    const jsonRendition = JSON.parse(fetchSync('GET', jsonRenditionURL(url)).body);
+    const allTags = getAllTags();
+    const originalTags = getOriginalTags(jsonRendition);
+
+    const originalCategoryTag = getOriginalCategoryTag(originalTags);
+    const originalTopicTag = getOriginalTopicTag(originalTags);
+
     const meta = {};
 
     // Author
     const authorLink = document.querySelector('.cmp-blog-author-info__author a');
     if (authorLink) {
         meta.Author = authorLink.textContent;
-        meta['Author Link'] = new URL(authorLink.href, pageUrl);
+
+        // TODO whether we remove .html might depend on the outcome of https://github.com/hlxsites/servicenow/issues/24
+        meta['Author Link'] = new URL(new URL(authorLink.href.replace('.html', '')).pathname, pageUrl);
+    }
+
+    // Category
+    meta.Category = allTags.category.data.find((tag) => tag['legacy-identifier'] === originalCategoryTag)?.identifier;
+
+    // Topic
+    meta.Topic = allTags.topic.data.find((tag) => tag['legacy-identifier'] === originalTopicTag)?.identifier;
+
+    // New Trend - TODO what is it used for?
+
+    // Title
+    const title = document.querySelector('title');
+    if (title) {
+        meta.Title = title.textContent.replace(/[\n\t]/gm, '');
+    }
+
+    // Description
+    const desc = document.querySelector('[property="og:description"]');
+    if (desc) {
+        meta.Description = desc.content;
     }
 
     // Publication Date
@@ -38,137 +104,16 @@ const createMetadataBlock = (main, document) => {
         );
     }
 
-    // Title
-    const title = document.querySelector('title');
-    if (title) {
-        meta.Title = title.textContent.replace(/[\n\t]/gm, '');
-    }
-
     // Keywords
     const keywords = document.querySelector('meta[name="keywords"]');
     if (keywords && keywords.content) {
         meta.Keywords = keywords.content;
     }
 
-    // Description
-    const desc = document.querySelector('[property="og:description"]');
-    if (desc) {
-        meta.Description = desc.content;
-    }
+    // Template set in the metadata.xls
+    // meta.Template = 'Blog Article';
 
-    // Template
-    meta.Template = 'Blog Article';
-
-    // Category
-    const tags = document.querySelectorAll('.cmp-blog-author-info__tags li');
-    if (tags) {
-        // for each tag, if present in a predefined list, then add it to the metadata
-        const topics = ['AI and Automation', 
-                        'Application Development',
-                        'Careers',
-                        'Crisis Management',
-                        'Culture',
-                        'Customer Experience',
-                        'Customer Stories',
-                        'Cybersecurity and Risk',
-                        'Education',
-                        'Employee Experience',
-                        'Events',
-                        'Financial Services',
-                        'Government',
-                        'Healthcare',
-                        'IT Management',
-                        'Manufacturing',
-                        'Now on Now',
-                        'Now Platform',
-                        'Telecommunications',
-
-                        // de-DE
-                        'Application Development',
-                        'Behörden',
-                        'Bildungswesen',
-                        'Crisis Management',
-                        'Cybersicherheit und Risikomanagement',
-                        'Events',
-                        'Fertigungsindustrie',
-                        'Finanzindustrie',
-                        'Gesundheitswesen',
-                        'IT-Management',
-                        'Karriere',
-                        'KI und Automatisierung',
-                        'Kultur',
-                        'Kunden-Experience',
-                        'Kundengeschichten',
-                        'Mitarbeiter-Experience',
-                        'Now on Now',
-                        'Now Platform',
-                        'Telekommunikation',
-
-                        // fr-FR
-                        'Carrières',
-                        'Culture',
-                        'Cyber-sécurité et risques',
-                        'Développement d’applications',
-                        'Expérience client',
-                        'Expérience des employés',
-                        'Gestion de crise',
-                        'Gestion de l’IT',
-                        'Gouvernement',
-                        'IA et automatisation',
-                        'Now on Now',
-                        'Now Platform',
-                        'Production industrielle',
-                        'Santé',
-                        'Services financiers',
-                        'Télécommunications',
-                        'Témoignages Client',
-                        'Éducation',
-                        'Événements',
-                        // nl-NL
-                        'AI en automatisering',
-                        'Applicatieontwikkeling',
-                        'Carrière',
-                        'Crisismanagement',
-                        'Cultuur',
-                        'Cybersecurity and Risk',
-                        'Events',
-                        'Financiële dienstverlening',
-                        'Gezondheidszorg',
-                        'IT-beheer',
-                        'Klantervaring',
-                        'Klantverhalen',
-                        'Now on Now',
-                        'Now Platform',
-                        'Opleiding',
-                        'Overheid',
-                        'Productie',
-                        'Telecommunicatie',
-                        'Werknemerservaring'
-            
-        ];
-
-        const categories = ['Trends and Research', 'About ServiceNow', 'Solutions', 'Life at Now'];
-
-        // for each tag if present in the topics array, then create a list of topics
-
-        for (let i = 0; i < tags.length; i++) {
-            if (categories.includes(tags[i].textContent.trim())) {
-                if (meta.Category) {
-                    meta.Category = meta.Category + ', ' + tags[i].textContent.trim();
-                }
-                else {
-                    meta.Category = tags[i].textContent.trim();
-                }
-            }
-
-            if (topics.includes(tags[i].textContent.trim())) {
-                meta.Topic = tags[i].textContent.trim();
-            }
-
-        }
-    }
-
-    // Image
+    // Image - TODO if we find blogs for which the first image is not the same as the og:image
     // const img = document.querySelector('[property="og:image"]');
     // if (img && img.content) {
     //     const el = document.createElement('img');
@@ -198,10 +143,19 @@ export default {
                    }) => {
         const main = document.querySelector('body');
 
-        createMetadataBlock(main, document);
+        createMetadataBlock(main, document, url);
 
-        main.querySelectorAll('.legacyHtml, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
+        main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
+        
+        // TODO is this ok?
         main.querySelectorAll('br, nbsp').forEach((el) => el.remove());
+
+        // Remove copyright as we create a fragment with it.
+        main.querySelectorAll('p').forEach((paragraph) => {
+            if (paragraph.textContent.includes('ServiceNow, Inc. All rights reserved.')) {
+                paragraph.remove();
+            }
+        })
         return main;
 
     },
