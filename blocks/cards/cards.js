@@ -1,7 +1,7 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import {
-  FILTERS, fetchAPI, getLocaleBlogs, getLocale, TAGS_QUERY_INDEX,
+  FILTERS, fetchAPI, getLocaleBlogs, getLocale, TAGS_QUERY_INDEX, getTopicTags,
 } from '../../scripts/scripts.js';
 
 export async function fetchHtml(path) {
@@ -20,11 +20,10 @@ export async function fetchHtml(path) {
   return text;
 }
 
-async function extractTopicBasedOnLocale(topic) {
-  if (topic === undefined) return topic;
-  const apiResponse = await fetchAPI(`${TAGS_QUERY_INDEX}?sheet=topic`);
-  const tagTopic = apiResponse.data.find((tag) => tag.identifier === topic);
-  return tagTopic[getLocale()] || tagTopic['en-US'] || tagTopic.identifier || topic;
+async function localizedTopic(topic) {
+  if (!topic) return topic;
+  const topicResponse = (await getTopicTags()).find((t) => t.identifier === topic);
+  return topicResponse[getLocale()] || topicResponse['en-US'] || topicResponse.identifier || topic;
 }
 
 export async function renderCard(post) {
@@ -34,7 +33,7 @@ export async function renderCard(post) {
         a({ href: post.path },
           createOptimizedPicture(post.image, post.header),
         ),
-        post.topic ? div({ class: 'topic-tag' }, div(await extractTopicBasedOnLocale(post.topic))) : '',
+        post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
       div({ class: 'card-text' },
         h5(post.header),
