@@ -296,12 +296,12 @@ async function detectSidebar(main) {
 }
 
 async function h3Styling(main) {
-  let allH3 = new Set([...main.querySelector('.section.sidebar').querySelectorAll('h3'), ...document.querySelectorAll('.blog-home-page main h3')]);
+  const allH3 = new Set([...main.querySelector('.section.sidebar').querySelectorAll('h3'), ...document.querySelectorAll('.blog-home-page main h3')]);
   allH3.forEach((header) => {
     const headerContent = header.textContent;
     header.textContent = '';
     header.append(span(headerContent));
-    header.classList.add('strikeLine')
+    header.classList.add('strikeLine');
   });
 }
 
