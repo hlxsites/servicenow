@@ -292,11 +292,19 @@ async function detectSidebar(main) {
     for (let i = 0; i < sidebarOffset - 1; i += 1) {
       main.children[i].classList.add('no-sidebar');
     }
+  }
+}
 
+async function h3Styling(main) {
+  const sidebar = main.querySelector('.section.sidebar');
+  const isHomepage = document.body.classList.contains('blog-home-page');
+  if (sidebar || isHomepage) {
+    let allH3 = new Set([...sidebar.querySelectorAll('h3'), ...main.querySelectorAll('h3')]);
     sidebar.querySelectorAll('h3').forEach((header) => {
       const headerContent = header.textContent;
       header.textContent = '';
       header.append(span(headerContent));
+      header.classList.add('strikeLine')
     });
   }
 }
