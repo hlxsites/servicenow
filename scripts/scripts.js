@@ -301,7 +301,7 @@ async function h3Styling(main) {
     const headerContent = header.textContent;
     header.textContent = '';
     header.append(span(headerContent));
-    header.classList.add('strikeLine');
+    header.classList.add('strike-line');
   });
 }
 
