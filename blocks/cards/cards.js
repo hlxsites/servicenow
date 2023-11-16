@@ -23,6 +23,7 @@ export async function fetchHtml(path) {
 async function localizedTopic(topic) {
   if (!topic) return topic;
   const topicResponse = (await getTopicTags()).find((t) => t.identifier === topic);
+  if(!topicResponse) return topic;
   return topicResponse[getLocale()] || topicResponse['en-US'] || topicResponse.identifier || topic;
 }
 
