@@ -297,7 +297,7 @@ async function detectSidebar(main) {
 
 function decorateH3(main) {
   const sidebar = main.querySelector('.section.sidebar');
-  const isHomepage = document.body.classList.contains('blog-home-page main');
+  const isHomepage = document.body.classList.contains('blog-home-page');
   let allH3;
   if (isHomepage) {
     allH3 = main.querySelectorAll('h3');
