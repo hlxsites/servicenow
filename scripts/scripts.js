@@ -295,7 +295,7 @@ async function detectSidebar(main) {
   }
 }
 
-async function h3Styling(main) {
+function decorateH3(main) {
   const allH3 = new Set([...main.querySelector('.section.sidebar').querySelectorAll('h3'), ...document.querySelectorAll('.blog-home-page main h3')]);
   allH3.forEach((header) => {
     const headerContent = header.textContent;
@@ -327,6 +327,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateH3(main);
 }
 
 /**
@@ -341,7 +342,6 @@ async function loadEager(doc) {
     decorateMain(main);
     await loadEagerBlocks(main);
     await detectSidebar(main);
-    await h3Styling(main);
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
