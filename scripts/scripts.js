@@ -14,6 +14,7 @@ import {
   toClassName,
   waitForLCP,
   loadBlock,
+  readBlockConfig,
 } from './aem.js';
 import {
   a, div, p, span,
@@ -213,16 +214,27 @@ function buildArticleSocialShare(main) {
   main.append(div(buildBlock('social-share', { elems: [] })));
 }
 
+function hasInlinedSidebar(main) {
+  const sectionMetas = [...main.querySelectorAll('div.section-metadata')];
+  for (let i = sectionMetas.length - 1; i >= 0; i -= 1) {
+    const meta = readBlockConfig(sectionMetas[i]);
+    if (meta.style) {
+      const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
+      if (styles.includes('sidebar')) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 /**
  * Builds an article sidebar and appends it to main in a new section.
  * @param main
  */
 function buildArticleSidebar(main) {
-  const divs = Array.from(document.querySelectorAll('.section-metadata div div'));
-  const targetDivs = divs.filter(
-    (d) => d.textContent.trim().toLowerCase() === 'style' || d.textContent.trim().toLowerCase() === 'sidebar',
-  );
-  if (targetDivs.length !== 2) {
+  if (!hasInlinedSidebar(main)) {
     // the article did not come with an inline sidebar
     const locInfo = getLocaleInfo();
     const sidebarBlock = buildBlock('fragment', [
@@ -259,9 +271,9 @@ function buildAutoBlocks(main) {
   try {
     if (isArticlePage()) {
       buildArticleHeader(main);
-      buildArticleSidebar(main);
       buildArticleCopyright(main);
       buildArticleSocialShare(main);
+      buildArticleSidebar(main);
     }
     buildBlogHeader(main);
   } catch (error) {
