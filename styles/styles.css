@@ -164,13 +164,13 @@ p + h3 {
   margin-top: 3rem;
 }
 
-.sidebar h3 {
+h3.strike-line {
   background-image: url('/images/header-bar-h3.gif');
   background-repeat: repeat-x;
   background-position: 0 50%;
 }
 
-.sidebar h3 span {
+h3.strike-line span {
   background-color: var(--background-color);
 }
 

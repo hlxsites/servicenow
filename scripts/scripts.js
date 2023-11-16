@@ -304,11 +304,24 @@ async function detectSidebar(main) {
     for (let i = 0; i < sidebarOffset - 1; i += 1) {
       main.children[i].classList.add('no-sidebar');
     }
+  }
+}
 
-    sidebar.querySelectorAll('h3').forEach((header) => {
+function decorateH3(main) {
+  const sidebar = main.querySelector('.section.sidebar');
+  const isHomepage = document.body.classList.contains('blog-home-page');
+  let allH3;
+  if (isHomepage) {
+    allH3 = main.querySelectorAll('h3');
+  } else if (sidebar) {
+    allH3 = sidebar.querySelectorAll('h3');
+  }
+  if (allH3) {
+    allH3.forEach((header) => {
       const headerContent = header.textContent;
       header.textContent = '';
       header.append(span(headerContent));
+      header.classList.add('strike-line');
     });
   }
 }
@@ -335,6 +348,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateH3(main);
 }
 
 /**
