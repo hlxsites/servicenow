@@ -296,13 +296,23 @@ async function detectSidebar(main) {
 }
 
 function decorateH3(main) {
-  const allH3 = new Set([...main.querySelector('.section.sidebar').querySelectorAll('h3'), ...document.querySelectorAll('.blog-home-page main h3')]);
-  allH3.forEach((header) => {
-    const headerContent = header.textContent;
-    header.textContent = '';
-    header.append(span(headerContent));
-    header.classList.add('strike-line');
-  });
+  const sidebar = main.querySelector('.section.sidebar');
+  const isHomepage = document.body.classList.contains('blog-home-page main');
+  let allH3;
+  if(isHomepage){
+    allH3 = main.querySelectorAll('h3')
+  }
+  else if(sidebar){
+    allH3 = sidebar.querySelectorAll('h3')
+  }
+  if(allH3){
+    allH3.forEach((header) => {
+      const headerContent = header.textContent;
+      header.textContent = '';
+      header.append(span(headerContent));
+      header.classList.add('strike-line');
+    });
+  }
 }
 
 export function debounce(func, delay) {
