@@ -300,9 +300,9 @@ function decorateH3(main) {
   const isHomepage = document.body.classList.contains('blog-home-page main');
   let allH3;
   if (isHomepage) {
-    allH3 = main.querySelectorAll('h3')
+    allH3 = main.querySelectorAll('h3');
   } else if (sidebar) {
-    allH3 = sidebar.querySelectorAll('h3')
+    allH3 = sidebar.querySelectorAll('h3');
   }
   if (allH3) {
     allH3.forEach((header) => {
