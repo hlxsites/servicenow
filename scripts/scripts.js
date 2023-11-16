@@ -299,13 +299,12 @@ function decorateH3(main) {
   const sidebar = main.querySelector('.section.sidebar');
   const isHomepage = document.body.classList.contains('blog-home-page main');
   let allH3;
-  if(isHomepage){
+  if (isHomepage) {
     allH3 = main.querySelectorAll('h3')
-  }
-  else if(sidebar){
+  } else if (sidebar) {
     allH3 = sidebar.querySelectorAll('h3')
   }
-  if(allH3){
+  if (allH3) {
     allH3.forEach((header) => {
       const headerContent = header.textContent;
       header.textContent = '';
