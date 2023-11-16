@@ -78,6 +78,8 @@ const createMetadataBlock = (main, document, url) => {
     // Topic
     meta.Topic = allTags.topic.data.find((tag) => tag['legacy-identifier'] === originalTopicTag)?.identifier;
 
+    meta.Template = 'Blog Article';
+
     // New Trend - TODO what is it used for?
 
     // Title
@@ -145,7 +147,7 @@ export default {
 
         createMetadataBlock(main, document, url);
 
-        main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
+        main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4, .hero-image').forEach(el => el.remove());
         
         // TODO is this ok?
         main.querySelectorAll('br, nbsp').forEach((el) => el.remove());
