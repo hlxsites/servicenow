@@ -18,7 +18,7 @@ import {
 import {
   a, div, p, span,
 } from './dom-helpers.js';
-import ffetch from '../../scripts/ffetch.js';
+import ffetch from './ffetch.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
@@ -161,7 +161,6 @@ export async function getLocaleBlogs() {
 export async function getTopicTags() {
   if (window.blogTags) return window.blogTags;
 
-  const locale = getLocale();
   const response = ffetch(`${TAGS_QUERY_INDEX}`)
     .sheet('topic')
     .all();
