@@ -77,13 +77,13 @@ export default async function decorate(block) {
   if (block.classList.contains('customer-stories')) {
     block.append(
       ul(
-        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, true)))
+        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, true,)))
       ),
     );
   } else {
     block.append(
       ul(
-        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, false)))
+        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, false,)))
       ),
     );
   }
