@@ -36,7 +36,6 @@ export async function renderFilterCard(post) {
 }
 
 export async function renderCustomerStoryCard(post) {
-  const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
   let publicationDate = '';
   if (post.publicationDate) {
     const date = new Date(0);
@@ -50,11 +49,11 @@ export async function renderCustomerStoryCard(post) {
   cardArrow.innerHTML = await arrowSvg;
 
   cardText.append(
-     span({ class: 'card-date' }, publicationDate),
-     div({ class: 'card-cta' },
-       span({ class: 'card-description' }, post.description),
-     ),
-   );
+    span({ class: 'card-date' }, publicationDate),
+    div({ class: 'card-cta' },
+      span({ class: 'card-description' }, post.description),
+    ),
+  );
   return card;
 }
 
@@ -87,13 +86,13 @@ export default async function decorate(block) {
 
   // render
   block.classList.add(filterKey);
-  if(block.classList.contains('customer-stories')) {
+  if (block.classList.contains('customer-stories')) {
     block.append(
       ul(
        ...await Promise.all(blogs.map(renderCustomerStoryCard)),
       ),
     );
-  }else{
+  } else {
     block.append(
       ul(
         ...await Promise.all(blogs.map(renderFilterCard)),
