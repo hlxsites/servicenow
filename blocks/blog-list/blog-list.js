@@ -1,4 +1,6 @@
-import { fetchPlaceholders, loadCSS, readBlockConfig, toCamelCase, toClassName } from '../../scripts/aem.js';
+import {
+  fetchPlaceholders, loadCSS, toCamelCase, toClassName,
+} from '../../scripts/aem.js';
 import {
   FILTERS, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
 } from '../../scripts/scripts.js';
@@ -54,7 +56,6 @@ export default async function decorate(block) {
     filterValue = new URL(filterValue, serviceNowDefaultOrigin).pathname.split('.')[0];
   }
 
-  console.log(filterKey, filterValue);
   // get filter function
   const filter = FILTERS[filterKey];
   if (!filter) {
