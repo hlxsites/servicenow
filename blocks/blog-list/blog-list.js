@@ -25,14 +25,14 @@ export async function renderFilterCard(post, showDescription) {
 
   cardText.append(
     span({ class: 'card-date' }, publicationDate),
-      showDescription
-        ? span({ class: 'card-description' }, post.description)
-        : div({ class: 'card-cta' },
-             a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
-                    placeholders.readMore,
-                    cardArrow,
-             ),
-          ),
+    showDescription
+      ? span({ class: 'card-description' }, post.description)
+      : div({ class: 'card-cta' },
+        a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
+          placeholders.readMore,
+          cardArrow,
+        ),
+     ),
   );
   return card;
 }
