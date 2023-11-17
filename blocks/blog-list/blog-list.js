@@ -1,4 +1,6 @@
-import { fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
+import {
+  fetchPlaceholders, loadCSS, toCamelCase, toClassName,
+} from '../../scripts/aem.js';
 import {
   FILTERS, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
 } from '../../scripts/scripts.js';
@@ -45,10 +47,10 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   // sanitise
-  filterKey = toClassName(filterKey.textContent);
-  filterValue = filterValue.textContent;
+  filterKey = toCamelCase(filterKey.textContent);
+  filterValue = filterValue.textContent.trim();
 
-  if (filterKey === 'category' || filterKey === 'topic') {
+  if (['category', 'topic', 'newTrend', 'trend'].includes(filterKey)) {
     filterValue = toClassName(filterValue);
   } else if (filterKey === 'author') {
     // eslint-disable-next-line prefer-destructuring
@@ -56,8 +58,12 @@ export default async function decorate(block) {
   }
 
   // get filter function
-  const filter = FILTERS[toClassName(filterKey)];
-  if (!filter) return;
+  const filter = FILTERS[filterKey];
+  if (!filter) {
+    // eslint-disable-next-line no-console
+    console.warn(`no filter function found for '${filterKey}'`);
+    return;
+  }
 
   // retrieve and filter blog entries
   let blogs = await getLocaleBlogs();
