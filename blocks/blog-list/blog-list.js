@@ -89,7 +89,7 @@ export default async function decorate(block) {
   if (block.classList.contains('customer-stories')) {
     block.append(
       ul(
-       ...await Promise.all(blogs.map(renderCustomerStoryCard)),
+        ...await Promise.all(blogs.map(renderCustomerStoryCard)),
       ),
     );
   } else {
