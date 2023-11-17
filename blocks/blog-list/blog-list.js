@@ -9,7 +9,7 @@ import { fetchHtml, renderCard } from '../cards/cards.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
-export async function renderFilterCard(post) {
+export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
   let publicationDate = '';
   if (post.publicationDate) {
@@ -25,14 +25,15 @@ export async function renderFilterCard(post) {
 
   cardText.append(
     span({ class: 'card-date' }, publicationDate),
-    div({ class: 'card-cta' },
-      a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
-        placeholders.readMore,
-        cardArrow,
+    showDescription
+      ? span({ class: 'card-description' }, post.description)
+      : div({ class: 'card-cta' },
+        a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
+          placeholders.readMore,
+          cardArrow,
+        ),
       ),
-    ),
   );
-
   return card;
 }
 
@@ -65,10 +66,12 @@ export default async function decorate(block) {
 
   // render
   block.classList.add(filterKey);
+  const showDescription = block.classList.contains('show-description');
   block.append(
     ul(
-      ...await Promise.all(blogs.map(renderFilterCard)),
+      ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, showDescription))),
     ),
   );
+
   await cssPromise;
 }
