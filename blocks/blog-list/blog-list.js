@@ -9,7 +9,7 @@ import { fetchHtml, renderCard } from '../cards/cards.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
-export async function renderFilterCard(post, customerStory) {
+export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
   let publicationDate = '';
   if (post.publicationDate) {
@@ -23,24 +23,18 @@ export async function renderFilterCard(post, customerStory) {
   const cardArrow = span({ class: 'card-arrow' });
   cardArrow.innerHTML = await arrowSvg;
 
-  if (customerStory) {
-    cardText.append(
-      span({ class: 'card-date' }, publicationDate),
-      div({ class: 'card-cta' },
-        span({ class: 'card-description' }, post.description),
-      ),
-    );
-  } else {
-    cardText.append(
-      span({ class: 'card-date' }, publicationDate),
-      div({ class: 'card-cta' },
-        a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
+  cardText.append(
+    span({ class: 'card-date' }, publicationDate),
+    div({ class: 'card-cta' },
+    showDescription?
+    span({ class: 'card-description' }, post.description)
+    : a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
           placeholders.readMore,
           cardArrow,
         ),
       ),
-    );
-  }
+  );
+
 
   return card;
 }
@@ -74,19 +68,12 @@ export default async function decorate(block) {
 
   // render
   block.classList.add(filterKey);
-  if (block.classList.contains('customer-stories')) {
-    block.append(
-      ul(
-        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, true))),
-      ),
-    );
-  } else {
-    block.append(
-      ul(
-        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, false))),
-      ),
-    );
-  }
+  const showDescription = block.classList.contains('show-description');
+  block.append(
+    ul(
+      ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, showDescription))),
+    ),
+  );
 
   await cssPromise;
 }
