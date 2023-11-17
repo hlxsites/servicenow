@@ -55,6 +55,22 @@
   right: 0;
 }
 
+.blog-list .card .card-text .card-cta .card-description{
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
+    margin-left: 0.8rem;
+    display:block;
+    white-space: normal;
+    float: right;
+    letter-spacing: normal;
+    color: #293e40;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    webkit-text-size-adjust: 100%;
+    font-family: GilroyRegular;
+    line-height:  1.71428571;
+}
+
 .blog-list .card .card-text .card-cta a {
   font-family: var(--ff-gilroy-semibold);
   color: #293e40;

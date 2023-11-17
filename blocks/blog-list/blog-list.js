@@ -32,7 +32,29 @@ export async function renderFilterCard(post) {
       ),
     ),
   );
+  return card;
+}
 
+export async function renderCustomerStoryCard(post) {
+  const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
+  let publicationDate = '';
+  if (post.publicationDate) {
+    const date = new Date(0);
+    date.setUTCSeconds(+post.publicationDate);
+    publicationDate = formatDate(date);
+  }
+
+  const card = li(renderCard(post));
+  const cardText = card.querySelector('.card-text');
+  const cardArrow = span({ class: 'card-arrow' });
+  cardArrow.innerHTML = await arrowSvg;
+
+  cardText.append(
+     span({ class: 'card-date' }, publicationDate),
+     div({ class: 'card-cta' },
+       span({ class: 'card-description' }, post.description),
+     ),
+   );
   return card;
 }
 
@@ -65,10 +87,19 @@ export default async function decorate(block) {
 
   // render
   block.classList.add(filterKey);
-  block.append(
-    ul(
-      ...await Promise.all(blogs.map(renderFilterCard)),
-    ),
-  );
+  if(block.classList.contains('customer-stories')) {
+    block.append(
+      ul(
+       ...await Promise.all(blogs.map(renderCustomerStoryCard)),
+      ),
+    );
+  }else{
+    block.append(
+      ul(
+        ...await Promise.all(blogs.map(renderFilterCard)),
+      ),
+    );
+  }
+
   await cssPromise;
 }
