@@ -32,7 +32,7 @@ export async function renderFilterCard(post, showDescription) {
           placeholders.readMore,
           cardArrow,
         ),
-     ),
+      ),
   );
   return card;
 }
