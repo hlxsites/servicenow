@@ -1,6 +1,8 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
-import { FILTERS, fetchAPI, getLocaleBlogs } from '../../scripts/scripts.js';
+import {
+  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags,
+} from '../../scripts/scripts.js';
 
 export async function fetchHtml(path) {
   const response = await fetch(path);
@@ -18,14 +20,21 @@ export async function fetchHtml(path) {
   return text;
 }
 
-export function renderCard(post) {
+async function localizedTopic(topic) {
+  if (!topic) return topic;
+  const topicResponse = (await getTopicTags()).find((t) => t.identifier === topic);
+  if (!topicResponse) return topic;
+  return topicResponse[getLocale()] || topicResponse['en-US'] || topicResponse.identifier || topic;
+}
+
+export async function renderCard(post) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
           createOptimizedPicture(post.image, post.header),
         ),
-        post.topic ? div({ class: 'topic-tag' }, div(post.topic)) : '',
+        post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
       div({ class: 'card-text' },
         h5(post.header),
@@ -136,13 +145,13 @@ export default async function decorate(block) {
 
   // render all cards
   block.innerHTML = '';
-  cardInfos.forEach((cardInfo, idx) => {
-    if (!cardInfo) return;
 
+  await Promise.all(cardInfos.map(async (cardInfo, idx) => {
+    if (!cardInfo) return;
     if (Array.isArray(cardInfos[idx])) {
-      block.append(...cardInfos[idx].map(renderCard));
+      block.append(...await Promise.all(cardInfos[idx].map(renderCard)));
     } else {
-      block.append(renderCard(cardInfos[idx]));
+      block.append(await renderCard(cardInfos[idx]));
     }
-  });
+  }));
 }

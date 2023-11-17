@@ -19,9 +19,11 @@ import {
 import {
   a, div, p, span,
 } from './dom-helpers.js';
+import ffetch from './ffetch.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
+export const TAGS_QUERY_INDEX = '/blogs/tags.json';
 
 export async function fetchAPI(path) {
   const response = await fetch(path);
@@ -155,6 +157,23 @@ export async function getLocaleBlogs() {
   const locale = getLocale();
   window.blogs = blogs.filter((blog) => blog.locale === locale);
   return window.blogs;
+}
+
+export async function getTopicTags() {
+  if (window.blogTags) return window.blogTags;
+
+  const response = ffetch(`${TAGS_QUERY_INDEX}`)
+    .sheet('topic')
+    .all();
+
+  if (!response) {
+    // eslint-disable-next-line no-console
+    console.warn('failed to retrieve topics.');
+    return [];
+  }
+
+  window.blogTags = response;
+  return window.blogTags;
 }
 
 /**
