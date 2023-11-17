@@ -68,6 +68,7 @@ function getOriginalNewTrendTag(originalTags) {
   return originalTags.find((tag) => tag.startsWith('sn-blog-docs:new-trend'));
 }
 
+console.log('running');
 getXMLSitemapObject('https://www.servicenow.com/sitemap.xml', function(sitemapObject) {
   // retrieve properties from the sitemap object
   var urls = sitemapObject.getElementsByTagName('url');

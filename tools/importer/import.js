@@ -53,6 +53,10 @@ function getOriginalTopicTag(originalTags) {
     return originalTags.find((tag) => tag.startsWith('sn-blog-docs:topic'));
 }
 
+function getOriginalNewTrendTag(originalTags) {
+    return originalTags.find((tag) => tag.startsWith('sn-blog-docs:new-trend'));
+}
+
 const createMetadataBlock = (main, document, url) => {
     const jsonRendition = JSON.parse(fetchSync('GET', jsonRenditionURL(url)).body);
     const allTags = getAllTags();
@@ -60,6 +64,7 @@ const createMetadataBlock = (main, document, url) => {
 
     const originalCategoryTag = getOriginalCategoryTag(originalTags);
     const originalTopicTag = getOriginalTopicTag(originalTags);
+    const originalNewTrendTag = getOriginalNewTrendTag(originalTags);
 
     const meta = {};
 
@@ -76,11 +81,20 @@ const createMetadataBlock = (main, document, url) => {
     meta.Category = allTags.category.data.find((tag) => tag['legacy-identifier'] === originalCategoryTag)?.identifier;
 
     // Topic
-    meta.Topic = allTags.topic.data.find((tag) => tag['legacy-identifier'] === originalTopicTag)?.identifier;
+    meta.Topic = allTags.topic.data.find((tag) => tag['legacy-identifier-topic'] === originalTopicTag)?.identifier;
 
-    meta.Template = 'Blog Article';
+    const newTredTag = allTags.topic.data.find((tag) => tag['legacy-identifier-newtrend'] === originalTopicTag)?.identifier;
+    if (newTredTag) {
+        meta['New Trend'] = newTredTag;
+    }
 
-    // New Trend - TODO what is it used for?
+    if (originalTags.includes('sn-blog-docs:trend/trends-research')) {
+        meta['Trend'] = 'Trends and Research';
+    }
+
+    // This comes from the bulk metadata for Blog articles
+    // meta.Template = 'Blog Article';
+
 
     // Title
     const title = document.querySelector('title');
