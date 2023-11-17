@@ -61,8 +61,11 @@ function getOriginalCategoryTag(originalTags) {
 }
 
 function getOriginalTopicTag(originalTags) {
-  // TODO is this the correct tag or sn-blog-docs:new-trend ?
   return originalTags.find((tag) => tag.startsWith('sn-blog-docs:topic'));
+}
+
+function getOriginalNewTrendTag(originalTags) {
+  return originalTags.find((tag) => tag.startsWith('sn-blog-docs:new-trend'));
 }
 
 getXMLSitemapObject('https://www.servicenow.com/sitemap.xml', function(sitemapObject) {
@@ -72,6 +75,7 @@ getXMLSitemapObject('https://www.servicenow.com/sitemap.xml', function(sitemapOb
   // create an empty list of topics
   var topics = [];
   var categories = [];
+  var newTrends = [];
 
   for (var i = 0; i < urls.length; i++) {
     var urlElement = urls[i];
@@ -88,6 +92,7 @@ getXMLSitemapObject('https://www.servicenow.com/sitemap.xml', function(sitemapOb
         if (originalTags !== undefined) {
           let originalTopicTag = getOriginalTopicTag(originalTags);
           let originalCategoryTag = getOriginalCategoryTag(originalTags);
+          let originalNewTrendTag = getOriginalNewTrendTag(originalTags);
 
           // console.log(originalTopicTag);
           // if topics does not contain originalTopicTag add it
@@ -98,6 +103,10 @@ getXMLSitemapObject('https://www.servicenow.com/sitemap.xml', function(sitemapOb
           if (!categories.includes(originalCategoryTag)) {
             categories.push(originalCategoryTag);
           }
+
+          if (!newTrends.includes(originalNewTrendTag)) {
+            newTrends.push(originalNewTrendTag);
+          }
         } else {
           console.log('originalTags is undefined');
         }
@@ -105,8 +114,9 @@ getXMLSitemapObject('https://www.servicenow.com/sitemap.xml', function(sitemapOb
     }
   }
 
-  console.log(topics);
+  console.log(topics.sort());
 
-  console.log(categories);
+  console.log(categories.sort());
 
+  console.log(newTrends.sort());
 });
