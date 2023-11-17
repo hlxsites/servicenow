@@ -58,6 +58,8 @@ function buildHeroBlock(main) {
 }
 
 export const FILTERS = {
+  trend: (blogs, trend) => blogs.filter((blog) => trend === toClassName(blog.trend)),
+  newTrend: (blogs, newTrend) => blogs.filter((blog) => newTrend === toClassName(blog.newTrend)),
   category: (blogs, category) => blogs.filter((blog) => category === toClassName(blog.category)),
   topic: (blogs, topic) => blogs.filter((blog) => topic === toClassName(blog.topic)),
   year: (blogs, year) => blogs.filter((blog) => year === blog.year),
