@@ -9,7 +9,7 @@ import { fetchHtml, renderCard } from '../cards/cards.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
-export async function renderFilterCard(post) {
+export async function renderFilterCard(post, customerStory) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
   let publicationDate = '';
   if (post.publicationDate) {
@@ -23,37 +23,25 @@ export async function renderFilterCard(post) {
   const cardArrow = span({ class: 'card-arrow' });
   cardArrow.innerHTML = await arrowSvg;
 
-  cardText.append(
-    span({ class: 'card-date' }, publicationDate),
-    div({ class: 'card-cta' },
-      a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
-        placeholders.readMore,
-        cardArrow,
+  if (customerStory) {
+    cardText.append(
+      span({ class: 'card-date' }, publicationDate),
+      div({ class: 'card-cta' },
+        span({ class: 'card-description' }, post.description),
       ),
-    ),
-  );
-  return card;
-}
-
-export async function renderCustomerStoryCard(post) {
-  let publicationDate = '';
-  if (post.publicationDate) {
-    const date = new Date(0);
-    date.setUTCSeconds(+post.publicationDate);
-    publicationDate = formatDate(date);
+    );
+  } else {
+    cardText.append(
+      span({ class: 'card-date' }, publicationDate),
+      div({ class: 'card-cta' },
+        a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
+          placeholders.readMore,
+          cardArrow,
+        ),
+      ),
+    );
   }
 
-  const card = li(renderCard(post));
-  const cardText = card.querySelector('.card-text');
-  const cardArrow = span({ class: 'card-arrow' });
-  cardArrow.innerHTML = await arrowSvg;
-
-  cardText.append(
-    span({ class: 'card-date' }, publicationDate),
-    div({ class: 'card-cta' },
-      span({ class: 'card-description' }, post.description),
-    ),
-  );
   return card;
 }
 
@@ -89,13 +77,13 @@ export default async function decorate(block) {
   if (block.classList.contains('customer-stories')) {
     block.append(
       ul(
-        ...await Promise.all(blogs.map(renderCustomerStoryCard)),
+        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, true)))
       ),
     );
   } else {
     block.append(
       ul(
-        ...await Promise.all(blogs.map(renderFilterCard)),
+        ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, false)))
       ),
     );
   }
