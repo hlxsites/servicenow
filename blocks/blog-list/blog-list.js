@@ -49,11 +49,12 @@ export default async function decorate(block) {
 
   if (['category', 'topic', 'newTrend', 'trend'].includes(filterKey)) {
     filterValue = toClassName(filterValue);
-  } else {
+  } else if (filterKey === 'author') {
     // eslint-disable-next-line prefer-destructuring
     filterValue = new URL(filterValue, serviceNowDefaultOrigin).pathname.split('.')[0];
   }
 
+  console.log(filterKey, filterValue);
   // get filter function
   const filter = FILTERS[filterKey];
   if (!filter) {
