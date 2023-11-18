@@ -15,16 +15,19 @@ import {
 /**
  * Loads a fragment.
  * @param {string} path The path to the fragment
+ * @param {boolean} deferSubBlocks Leaves the sub-blocks not loaded for the fragment 
  * @returns {HTMLElement} The root element of the fragment
  */
-async function loadFragment(path) {
+async function loadFragment(path, deferSubBlocks) {
   if (path && path.startsWith('/')) {
     const resp = await fetch(`${path}.plain.html`);
     if (resp.ok) {
       const main = document.createElement('main');
       main.innerHTML = await resp.text();
       decorateMain(main);
-      await loadBlocks(main);
+      if (!deferSubBlocks) {
+        await loadBlocks(main);
+      }
       return main;
     }
   }
@@ -34,7 +37,7 @@ async function loadFragment(path) {
 export default async function decorate(block) {
   const link = block.querySelector('a');
   const path = link ? link.getAttribute('href') : block.textContent.trim();
-  const fragment = await loadFragment(path);
+  const fragment = await loadFragment(path, block.classList.contains('defer-sub-blocks'));
   if (fragment) {
     const fragmentSection = fragment.querySelector(':scope .section');
     if (fragmentSection) {
