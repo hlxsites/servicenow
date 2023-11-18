@@ -49,7 +49,6 @@ function getOriginalCategoryTag(originalTags) {
 }
 
 function getOriginalTopicTag(originalTags) {
-    // TODO is this the correct tag or sn-blog-docs:new-trend ?
     return originalTags.find((tag) => tag.startsWith('sn-blog-docs:topic'));
 }
 
@@ -83,7 +82,7 @@ const createMetadataBlock = (main, document, url) => {
     // Topic
     meta.Topic = allTags.topic.data.find((tag) => tag['legacy-identifier-topic'] === originalTopicTag)?.identifier;
 
-    const newTredTag = allTags.topic.data.find((tag) => tag['legacy-identifier-newtrend'] === originalTopicTag)?.identifier;
+    const newTredTag = allTags.topic.data.find((tag) => tag['legacy-identifier-newtrend'] === originalNewTrendTag)?.identifier;
     if (newTredTag) {
         meta['New Trend'] = newTredTag;
     }
