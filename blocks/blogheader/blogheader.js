@@ -3,9 +3,20 @@ import {
   a, button, div, form, i, input, li, span,
 } from '../../scripts/dom-helpers.js';
 import {
-  BLOG_QUERY_INDEX, debounce, getLocale, getLocaleInfo,
+  BLOG_QUERY_INDEX, getLocale, getLocaleInfo,
 } from '../../scripts/scripts.js';
 import ffetch from '../../scripts/ffetch.js';
+
+function debounce(func, delay) {
+  let debounceTimer;
+  // eslint-disable-next-line func-names
+  return function (...args) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
 

@@ -15,7 +15,7 @@ import {
 /**
  * Loads a fragment.
  * @param {string} path The path to the fragment
- * @param {boolean} deferSubBlocks Leaves the sub-blocks not loaded for the fragment 
+ * @param {boolean} deferSubBlocks Leaves the sub-blocks not loaded for the fragment
  * @returns {HTMLElement} The root element of the fragment
  */
 async function loadFragment(path, deferSubBlocks) {

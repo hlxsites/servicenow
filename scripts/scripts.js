@@ -299,7 +299,7 @@ function buildAutoBlocks(main) {
       buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
     }
 
-    const template = toClassName(getMetadata('template')); 
+    const template = toClassName(getMetadata('template'));
     if (['blog-topic', 'blog-category', 'blog-year', 'blog-author'].includes(template)) {
       buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-common-fragment`);
     }
@@ -353,16 +353,6 @@ function decorateH3(main) {
       header.classList.add('strike-line');
     });
   }
-}
-
-export function debounce(func, delay) {
-  let debounceTimer;
-  return function (...args) {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-  };
 }
 
 /**

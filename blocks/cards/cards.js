@@ -94,6 +94,7 @@ function sidebarFeaturedRule(blogs, cardInfos, idx) {
   const result = [];
   for (let i = 0; i < blogs.length; i += 1) {
     if (TRENDS_AND_RESEARCH === toClassName(blogs[i].trend)) {
+      // eslint-disable-next-line no-continue
       continue; // we keep these for the trends and research rule
     }
     result.push(blogs[i]);
@@ -126,7 +127,7 @@ const RULES = {
   'home-page-category': homepageCategoryRule,
   'sidebar-featured': sidebarFeaturedRule,
   'sidebar-trends-and-research': sidebarTrendsAndResearchRule,
-}
+};
 
 async function fetchRuleBasedCards(config, cardInfos, idx) {
   const blogs = await getLocaleBlogs();
