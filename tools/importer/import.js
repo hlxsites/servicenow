@@ -14,6 +14,7 @@
 
 const pageUrl = "https://main--servicenow--hlxsites.hlx.page";
 const liveUrl = "https://main--servicenow--hlxsites.hlx.page";
+const servicenowUrl = 'https://www.servicenow.com';
 
 function fetchSync(method, url) {
     // we use old XMLHttpRequest as fetch seams to have problems in bulk import
@@ -54,6 +55,28 @@ function getOriginalTopicTag(originalTags) {
 
 function getOriginalNewTrendTag(originalTags) {
     return originalTags.find((tag) => tag.startsWith('sn-blog-docs:new-trend'));
+}
+
+function isServiceNowLink(link) {
+    return (link.host.startsWith('localhost') || link.host.endsWith('servicenow.com'));
+}
+
+function isBlogLink(link) {
+
+    return isServiceNowLink(link) &&
+        (link.pathname.startsWith('/blogs')
+        || link.pathname.startsWith('/fr/blogs')
+        || link.pathname.startsWith('/de/blogs')
+        || link.pathname.startsWith('/uk/blogs')
+        || link.pathname.startsWith('/nk/blogs'));
+}
+
+function getServiceNowUrl(link) {
+    return new URL(new URL(link.href).pathname, servicenowUrl);
+}
+
+function getPageUrl(link) {
+    return new URL(new URL(link.href).pathname.replace('.html', ''), pageUrl);
 }
 
 const createMetadataBlock = (main, document, url) => {
@@ -160,17 +183,29 @@ export default {
 
         createMetadataBlock(main, document, url);
 
+        // CLEANUP
         main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4, .hero-image').forEach(el => el.remove());
-        
         // TODO is this ok?
         main.querySelectorAll('br, nbsp').forEach((el) => el.remove());
-
+        main.querySelectorAll('img[src^="/akam/13/pixel"]').forEach((el) => el.remove());
         // Remove copyright as we create a fragment with it.
         main.querySelectorAll('p').forEach((paragraph) => {
             if (paragraph.textContent.includes('ServiceNow, Inc. All rights reserved.')) {
                 paragraph.remove();
             }
         })
+
+        // Processing...
+        main.querySelectorAll('a').forEach((link) => {
+            if (isServiceNowLink(link)) {
+                if (isBlogLink(link)) {
+                    link.href = getPageUrl(link);
+                } else {
+                    link.href = getServiceNowUrl(link);
+                }
+            }
+        });
+
         return main;
 
     },
