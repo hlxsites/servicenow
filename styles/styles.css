@@ -181,6 +181,9 @@ h3.strike-line span {
 }
 
 @media (min-width: 1700px) {
+  h1 {
+    font-size: 4.8rem;
+  }
   h3 {
     font-size: 3.6rem;
   }
