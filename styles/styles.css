@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
- :root {
+:root {
   --ff-gilroy-regular: 'GilroyRegular', 'GilroyRegularFallback', 'helvetica neue', helvetica, arial, sans-serif;
   --ff-gilroy-bold: 'GilroyBold', 'GilroyBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
   --ff-gilroy-semibold: 'GilroySemiBold', 'GilroySemiBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
@@ -36,9 +36,7 @@
   --body-font-size-xs: 16px;
 
   /* heading sizes */
-  --heading-font-size-xxl: 48px;
-  --heading-font-size-xl: 40px;
-  --heading-font-size-l: 32px;
+  --heading-font-size-l: 2rem;
   --heading-font-size-m: 24px;
   --heading-font-size-s: 20px;
   --heading-font-size-xs: 18px;
@@ -76,11 +74,9 @@
 }
 
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
   :root {
-    --heading-font-size-xxl: 60px;
-    --heading-font-size-xl: 48px;
-    --heading-font-size-l: 36px;
+    --heading-font-size-l: 2.8rem;
     --heading-font-size-m: 1.4rem;
     --heading-font-size-s: 24px;
     --heading-font-size-xs: 22px;
@@ -150,9 +146,12 @@ h1, h2 {
 
 h3 {
   display: block;
-  font-size: 2.8rem;
-  line-height: 3.64rem;
+  font-size: var(--heading-font-size-l);
+  line-height: 2.6rem;
+  font-weight: 400;
   margin-bottom: 3rem;
+  letter-spacing: -0.02rem;
+  padding-right: 2rem;
 }
 
 h3 span {
@@ -172,6 +171,19 @@ h3.strike-line {
 
 h3.strike-line span {
   background-color: var(--background-color);
+}
+
+@media (min-width: 768px) {
+  h3 {
+    letter-spacing: unset;
+    padding-right: unset;
+  }
+}
+
+@media (min-width: 1700px) {
+  h3 {
+    font-size: 3.6rem;
+  }
 }
 
 dl, ol, ul, pre, blockquote {
@@ -223,7 +235,7 @@ a:any-link {
 }
 
 a:hover {
-    background-size: 100% 100%;
+  background-size: 100% 100%;
 }
 
 /* stylelint-disable no-descending-specificity */
