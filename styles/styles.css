@@ -179,6 +179,7 @@ h3.strike-line span {
     --heading-font-size-xl: 3.2rem;
     --heading-font-size-l: 2.8rem;
   }
+
   h3 {
     letter-spacing: unset;
     padding-right: unset;
