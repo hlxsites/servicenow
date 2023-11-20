@@ -46,6 +46,7 @@
   font-family: var(--ff-gilroy-semibold);
   font-size: 1.4rem;
   line-height: 2rem;
+  -webkit-font-smoothing: antialiased;
 }
 
 .card .card-thumbnail .topic-tag::after {
