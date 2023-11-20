@@ -4,6 +4,8 @@ import {
   FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags,
 } from '../../scripts/scripts.js';
 
+const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
+
 export async function fetchHtml(path) {
   const response = await fetch(path);
   if (!response.ok) {
@@ -76,22 +78,63 @@ function fetchAPIBasedCards(cardInfos, apis) {
   });
 }
 
+function homepageLatestRule(blogs, cardInfos, idx) {
+  cardInfos[idx] = blogs.slice(0, 3);
+}
+
+function homepageCategoryRule(blogs, cardInfos, idx, config) {
+  cardInfos[idx] = FILTERS.category(
+    // skip first 3 blogs as they are used for the homepage latest rule
+    blogs.slice(3),
+    toClassName(config.category),
+  ).slice(0, 3);
+}
+
+function sidebarFeaturedRule(blogs, cardInfos, idx) {
+  const result = [];
+  for (let i = 0; i < blogs.length; i += 1) {
+    if (TRENDS_AND_RESEARCH === toClassName(blogs[i].trend)) {
+      // eslint-disable-next-line no-continue
+      continue; // we keep these for the trends and research rule
+    }
+    result.push(blogs[i]);
+
+    if (result.length === 3) {
+      break;
+    }
+  }
+
+  cardInfos[idx] = result;
+}
+
+function sidebarTrendsAndResearchRule(blogs, cardInfos, idx) {
+  const result = [];
+  for (let i = 0; i < blogs.length; i += 1) {
+    if (TRENDS_AND_RESEARCH === toClassName(blogs[i].trend)) {
+      result.push(blogs[i]);
+    }
+
+    if (result.length === 3) {
+      break;
+    }
+  }
+
+  cardInfos[idx] = result;
+}
+
+const RULES = {
+  'home-page-latest': homepageLatestRule,
+  'home-page-category': homepageCategoryRule,
+  'sidebar-featured': sidebarFeaturedRule,
+  'sidebar-trends-and-research': sidebarTrendsAndResearchRule,
+};
+
 async function fetchRuleBasedCards(config, cardInfos, idx) {
   const blogs = await getLocaleBlogs();
-  switch (toClassName(config.rule)) {
-    case 'home-page-latest':
-      cardInfos[idx] = blogs.slice(0, 3);
-      break;
-    case 'home-page-category':
-      cardInfos[idx] = FILTERS.category(
-        // skip first 3 blogs as they are used for the latest section
-        blogs.slice(3),
-        toClassName(config.category),
-      ).slice(0, 3);
-      break;
-    default:
-      break;
-  }
+  const ruleHandler = RULES[toClassName(config.rule)];
+  if (!ruleHandler) return; // unknown rule
+
+  ruleHandler(blogs, cardInfos, idx, config);
 }
 
 export default async function decorate(block) {

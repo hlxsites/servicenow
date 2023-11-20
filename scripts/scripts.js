@@ -254,13 +254,13 @@ function hasInlinedSidebar(main) {
  * Builds an article sidebar and appends it to main in a new section.
  * @param main
  */
-function buildArticleSidebar(main) {
+function buildSidebar(main, sidebarPath) {
   if (!hasInlinedSidebar(main)) {
     // the article did not come with an inline sidebar
-    const locInfo = getLocaleInfo();
     const sidebarBlock = buildBlock('fragment', [
-      [a({ href: `${locInfo.placeholdersPrefix}/fragments/sidebar-fragment` }, 'Sidebar')],
+      [a({ href: sidebarPath }, 'Sidebar')],
     ]);
+    sidebarBlock.classList.add('defer-sub-blocks');
     sidebarBlock.dataset.eagerBlock = true;
     const sidebar = div(sidebarBlock); // wrap sidebarBlock in div to create a new section
     main.append(sidebar);
@@ -290,12 +290,20 @@ function buildAutoBlocks(main) {
     return;
   }
   try {
+    const locInfo = getLocaleInfo();
+
     if (isArticlePage()) {
       buildArticleHeader(main);
       buildArticleCopyright(main);
       buildArticleSocialShare(main);
-      buildArticleSidebar(main);
+      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
     }
+
+    const template = toClassName(getMetadata('template'));
+    if (['blog-topic', 'blog-category', 'blog-year', 'blog-author'].includes(template)) {
+      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-common-fragment`);
+    }
+
     buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -345,16 +353,6 @@ function decorateH3(main) {
       header.classList.add('strike-line');
     });
   }
-}
-
-export function debounce(func, delay) {
-  let debounceTimer;
-  return function (...args) {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-  };
 }
 
 /**
