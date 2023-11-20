@@ -195,6 +195,17 @@ ol, ul {
   list-style: none;
 }
 
+main ol, main ul {
+  list-style: unset;
+}
+
+main li {
+  font-size: 1.4rem;
+  -webkit-font-smoothing: antialiased;
+  margin-bottom: 1.2rem;
+}
+
+
 hr {
   margin-top: 1.5em;
   margin-bottom: 1.5em;
