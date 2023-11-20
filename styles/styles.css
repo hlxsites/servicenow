@@ -36,6 +36,7 @@
   --body-font-size-xs: 16px;
 
   /* heading sizes */
+  --heading-font-size-xl: 2.2rem ;
   --heading-font-size-l: 2rem;
   --heading-font-size-m: 24px;
   --heading-font-size-s: 20px;
@@ -135,7 +136,7 @@ h5 { font-size: var(--heading-font-size-s) }
 h6 { font-size: var(--heading-font-size-xs) }
 
 h1, h2 {
-  font-size: 3.6rem;
+  font-size: var(--heading-font-size-xl);
   line-height: 4.68rem;
   margin-bottom: 2rem;
 }
@@ -174,6 +175,10 @@ h3.strike-line span {
 }
 
 @media (min-width: 768px) {
+  :root {
+    --heading-font-size-xl: 3.2rem;
+    --heading-font-size-l: 2.8rem;
+  }
   h3 {
     letter-spacing: unset;
     padding-right: unset;
@@ -181,22 +186,15 @@ h3.strike-line span {
 }
 
 @media (min-width: 1700px) {
-  h1 {
-    font-size: 4.8rem;
-  }
-
-  h3 {
-    font-size: 3.6rem;
+  :root {
+    --heading-font-size-xl: 4.8rem;
+    --heading-font-size-l: 3.6rem;
   }
 }
 
 dl, ol, ul, pre, blockquote {
   margin-top: 1em;
   margin-bottom: 1em;
-}
-
-ol, ul {
-  list-style: none;
 }
 
 main ol, main ul {
