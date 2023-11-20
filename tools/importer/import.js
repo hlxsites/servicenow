@@ -121,13 +121,18 @@ const createMetadataBlock = (main, document, url) => {
     // Title
     const title = document.querySelector('title');
     if (title) {
-        meta.Title = title.textContent.replace(/[\n\t]/gm, '');
+        let titleText = title.textContent.replace(/[\n\t]/gm, '');
+        const suffix = ' – ServiceNow Blog';
+        if (titleText.endsWith(suffix)) {
+            titleText = titleText.substring(0, titleText.length - suffix.length);
+        }
+        meta.Title = titleText;
     }
 
     // Description
     const desc = document.querySelector('[property="og:description"]');
-    if (desc) {
-        meta.Description = desc.content;
+    if (desc && desc.content.trim()) {
+        meta.Description = desc.content.trim();
     }
 
     // Publication Date
