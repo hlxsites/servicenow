@@ -139,7 +139,7 @@ h1, h2 {
 }
 
 .section.no-sidebar h1 {
-  margin-top: 0rem;
+  margin-top: 0;
 }
 
 h3 {
