@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
- :root {
+:root {
   --ff-gilroy-regular: 'GilroyRegular', 'GilroyRegularFallback', 'helvetica neue', helvetica, arial, sans-serif;
   --ff-gilroy-bold: 'GilroyBold', 'GilroyBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
   --ff-gilroy-semibold: 'GilroySemiBold', 'GilroySemiBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
@@ -36,9 +36,8 @@
   --body-font-size-xs: 16px;
 
   /* heading sizes */
-  --heading-font-size-xxl: 48px;
-  --heading-font-size-xl: 40px;
-  --heading-font-size-l: 32px;
+  --heading-font-size-xl: 2.2rem ;
+  --heading-font-size-l: 2rem;
   --heading-font-size-m: 24px;
   --heading-font-size-s: 20px;
   --heading-font-size-xs: 18px;
@@ -76,11 +75,9 @@
 }
 
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
   :root {
-    --heading-font-size-xxl: 60px;
-    --heading-font-size-xl: 48px;
-    --heading-font-size-l: 36px;
+    --heading-font-size-l: 2.8rem;
     --heading-font-size-m: 1.4rem;
     --heading-font-size-s: 24px;
     --heading-font-size-xs: 22px;
@@ -131,28 +128,28 @@ h4, h5, h6 {
   -webkit-font-smoothing: antialiased;
 }
 
-/* h1 { font-size: var(--heading-font-size-xxl) }
-h2 { font-size: var(--heading-font-size-xl) }
-h3 { font-size: var(--heading-font-size-l) }  */
 h4 { font-size: var(--heading-font-size-m) }
 h5 { font-size: var(--heading-font-size-s) }
 h6 { font-size: var(--heading-font-size-xs) }
 
 h1, h2 {
-  font-size: 3.6rem;
+  font-size: var(--heading-font-size-xl);
   line-height: 4.68rem;
   margin-bottom: 2rem;
 }
 
 .section.no-sidebar h1 {
-  margin-top: 2rem;
+  margin-top: 0;
 }
 
 h3 {
   display: block;
-  font-size: 2.8rem;
-  line-height: 3.64rem;
+  font-size: var(--heading-font-size-l);
+  line-height: 2.6rem;
+  font-weight: 400;
   margin-bottom: 3rem;
+  letter-spacing: -0.02rem;
+  padding-right: 2rem;
 }
 
 h3 span {
@@ -160,7 +157,7 @@ h3 span {
   padding-right: 2rem;
 }
 
-p + h3 {
+* + h3 {
   margin-top: 3rem;
 }
 
@@ -174,14 +171,40 @@ h3.strike-line span {
   background-color: var(--background-color);
 }
 
+@media (min-width: 768px) {
+  :root {
+    --heading-font-size-xl: 3.6rem;
+    --heading-font-size-l: 2.8rem;
+  }
+
+  h3 {
+    letter-spacing: unset;
+    padding-right: unset;
+  }
+}
+
+@media (min-width: 1700px) {
+  :root {
+    --heading-font-size-xl: 4.8rem;
+    --heading-font-size-l: 3.6rem;
+  }
+}
+
 dl, ol, ul, pre, blockquote {
   margin-top: 1em;
   margin-bottom: 1em;
 }
 
-ol, ul {
-  list-style: none;
+main ol, main ul {
+  list-style: unset;
 }
+
+main li {
+  font-size: 1.4rem;
+  -webkit-font-smoothing: antialiased;
+  margin-bottom: 1.2rem;
+}
+
 
 hr {
   margin-top: 1.5em;
@@ -217,13 +240,13 @@ a:any-link {
   background: linear-gradient(var(--link-background-color),var(--link-background-color)) bottom repeat-x;
   background-size: 0.2rem 0.2rem;
   font-size: inherit;
-  padding-bottom: 0.1rem;
+  padding-bottom: 0.5rem;
   position: relative;
   transition: all .25s ease-out;
 }
 
 a:hover {
-    background-size: 100% 100%;
+  background-size: 100% 100%;
 }
 
 /* stylelint-disable no-descending-specificity */
