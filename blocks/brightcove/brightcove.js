@@ -3,12 +3,11 @@ import { readBlockConfig } from '../../scripts/aem.js';
 export default async function decorate(block) {
   const config = readBlockConfig(block);
 
-  console.log('Brightcove video config', JSON.stringify(config));
   const picture = block.querySelector('picture');
   const head = document.querySelector('head');
 
-  let account = config.account ? config.account : undefined;
-  let player = config.player ? config.player : undefined;
+  const account = config.account ? config.account : undefined;
+  const player = config.player ? config.player : undefined;
 
   if (!account || !player) {
     // eslint-disable-next-line no-console
