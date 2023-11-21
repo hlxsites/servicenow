@@ -128,9 +128,6 @@ h4, h5, h6 {
   -webkit-font-smoothing: antialiased;
 }
 
-/* h1 { font-size: var(--heading-font-size-xxl) }
-h2 { font-size: var(--heading-font-size-xl) }
-h3 { font-size: var(--heading-font-size-l) }  */
 h4 { font-size: var(--heading-font-size-m) }
 h5 { font-size: var(--heading-font-size-s) }
 h6 { font-size: var(--heading-font-size-xs) }
@@ -142,7 +139,7 @@ h1, h2 {
 }
 
 .section.no-sidebar h1 {
-  margin-top: 2rem;
+  margin-top: 0rem;
 }
 
 h3 {
@@ -160,7 +157,7 @@ h3 span {
   padding-right: 2rem;
 }
 
-p + h3 {
+* + h3 {
   margin-top: 3rem;
 }
 
@@ -176,7 +173,7 @@ h3.strike-line span {
 
 @media (min-width: 768px) {
   :root {
-    --heading-font-size-xl: 3.2rem;
+    --heading-font-size-xl: 3.6rem;
     --heading-font-size-l: 2.8rem;
   }
 
