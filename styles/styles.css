@@ -18,13 +18,16 @@
 
   /* colors */
   --arc-color-brandblue-900: #032d42;
+  --arc-color-brandgreen-500: #62d84e;
+
   --link-hover-color: #136ff6;
   --background-color: #f7f7f7;
   --overlay-background-color: #eee;
   --highlight-background-color: #ccc;
   --text-color: #293e40;
   --link-color: var(--text-color);
-  --link-background-color: #81b5a1;
+  /* --link-background-color: #81b5a1; */
+  --link-background-color: var(--arc-color-brandgreen-500);
 
   /* fonts */
   --body-font-family: var(--ff-gilroy-regular);
