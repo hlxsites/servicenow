@@ -1,3 +1,4 @@
+import { readBlockConfig } from '../../scripts/aem.js';
 /*
  * Embed Block
  * Show videos and social posts directly on your page
@@ -55,6 +56,14 @@ const embedTwitter = (url) => {
   return embedHTML;
 };
 
+const embedBrightcove = (video, account, player) => {
+  const embedHTML = `
+    <div id="myPlayerID" data-account="${account}" data-player="${player}" data-embed="default" data-video-id="${video}" class="video-js" controls></div>
+    <script src="//players.brightcove.net/${account}/${player}_default/index.min.js"></script>
+  `;
+  return embedHTML;
+}
+
 const loadEmbed = (block, link, autoplay) => {
   if (block.classList.contains('embed-is-loaded')) {
     return;
@@ -76,12 +85,17 @@ const loadEmbed = (block, link, autoplay) => {
   ];
 
   const config = EMBEDS_CONFIG.find((e) => e.match.some((match) => link.includes(match)));
-  const url = new URL(link);
   if (config) {
-    block.innerHTML = config.embed(url, autoplay);
+    block.innerHTML = config.embed(new URL(link), autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
-  } else {
-    block.innerHTML = getDefaultEmbed(url);
+  } else if(block.classList.contains('brightcove')){
+    const blockConfig = readBlockConfig(block);
+    block.innerHTML = embedBrightcove(blockConfig.brightcoveVideo,
+                           blockConfig.account ? blockConfig.account : '5703385908001',
+                           blockConfig.player ? blockConfig.player : 'default');
+    block.classList = 'block embed embed-brightcove';
+  }else{
+    block.innerHTML = getDefaultEmbed(new URL(link));
     block.classList = 'block embed';
   }
   block.classList.add('embed-is-loaded');
@@ -89,7 +103,7 @@ const loadEmbed = (block, link, autoplay) => {
 
 export default function decorate(block) {
   const placeholder = block.querySelector('picture');
-  const link = block.querySelector('a').href;
+  const link = block.querySelector('a')?block.querySelector('a').href:'';
   block.textContent = '';
 
   if (placeholder) {
