@@ -6,15 +6,8 @@ export default async function decorate(block) {
   const picture = block.querySelector('picture');
   const head = document.querySelector('head');
 
-  const account = config.account ? config.account : undefined;
-  const player = config.player ? config.player : undefined;
-
-  if (!account || !player) {
-    // eslint-disable-next-line no-console
-    console.log('Brightcove video not configured.');
-    block.innerHTML = '';
-    return;
-  }
+  const account = config.account ? config.account : '5703385908001';
+  const player = config.player ? config.player : 'default';
 
   block.innerHTML = `
     <div class="placeholder">
