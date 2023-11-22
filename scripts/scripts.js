@@ -401,11 +401,10 @@ function videoEventTracking(myPlayer, videoTagId) {
   let progress = [];
 
   myPlayer.on('timeupdate', (event) => {
-    const videoPercentage =
-        (myPlayer.currentTime() * 100) / myPlayer.duration();
+    const videoPercentage = (myPlayer.currentTime() * 100) / myPlayer.duration();
 
     switch (true) {
-      case videoPercentage == 100:
+      case videoPercentage === 100:
         eventName = 'video_completed';
         break;
       case videoPercentage > 90:
