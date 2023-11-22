@@ -26,7 +26,6 @@
   --highlight-background-color: #ccc;
   --text-color: #293e40;
   --link-color: var(--text-color);
-  /* --link-background-color: #81b5a1; */
   --link-background-color: var(--arc-color-brandgreen-500);
 
   /* fonts */
