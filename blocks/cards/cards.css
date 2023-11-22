@@ -42,7 +42,7 @@
   background: var(--link-background-color);
   padding: 0 1rem;
   margin-left: -0.8rem;
-  color: #fff;
+  color: var(--arc-color-black);
   font-family: var(--ff-gilroy-semibold);
   font-size: 1.4rem;
   line-height: 2rem;
