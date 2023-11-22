@@ -396,6 +396,102 @@ async function loadEager(doc) {
   }
 }
 
+function videoEventTracking(myPlayer, videoTagId) {
+  let eventName = 'video_started';
+  let progress = [];
+
+  myPlayer.on('timeupdate', (event) => {
+    const videoPercentage =
+        (myPlayer.currentTime() * 100) / myPlayer.duration();
+
+    switch (true) {
+      case videoPercentage == 100:
+        eventName = 'video_completed';
+        break;
+      case videoPercentage > 90:
+        eventName = 'video_reached_90_pct';
+        break;
+      case videoPercentage > 75:
+        eventName = 'video_reached_75_pct';
+        break;
+      case videoPercentage > 50:
+        eventName = 'video_reached_50_pct';
+        break;
+      case videoPercentage > 25:
+        eventName = 'video_reached_25_pct';
+        break;
+      default:
+        eventName = 'video_started';
+    }
+
+    if (!progress.includes(eventName)) {
+      progress.push(eventName);
+
+      const videoProgress = {
+        name: eventName,
+        digitalData: {
+          videoTracking: {
+            id: videoTagId,
+            name: myPlayer.mediainfo.name,
+          },
+        },
+        event,
+      };
+
+      if (eventName === 'video_completed') {
+        progress = [];
+      }
+
+      window.appEventData.push(videoProgress);
+    }
+  });
+}
+
+function socialShareTracking(doc) {
+  const socialShareBlock = doc.querySelector('.social-share');
+
+  socialShareBlock.addEventListener('click', (e) => {
+    const button = e.target.parentElement;
+
+    if (button.classList.contains('st-btn')) {
+      const networkLabel = button.getAttribute('data-network');
+
+      window.appEventData = window.appEventData || [];
+      const data = {
+        name: 'global_click',
+        digitalData: {
+          event: {
+            pageArea: 'social-sharing',
+            eVar22: `sharethis-link:${networkLabel}`,
+          },
+        },
+        event: e,
+      };
+      window.appEventData.push(data);
+    }
+  });
+}
+
+function videoTracking(doc) {
+  doc.querySelectorAll('.brightcove').forEach((videoBlock) => {
+    const newPlayerId = videoBlock.querySelector('video').getAttribute('id');
+
+    window.videojs(newPlayerId).ready(function () {
+      const myPlayer = this;
+      const videoID = document.getElementById(newPlayerId).getAttribute('data-video-id');
+      myPlayer.on('loadedmetadata', () => {
+        videoEventTracking(myPlayer, videoID);
+      });
+    });
+  });
+}
+
+function analyticsTracking(doc) {
+  // social share event tracking
+  socialShareTracking(doc);
+  videoTracking(doc);
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
@@ -410,6 +506,8 @@ async function loadLazy(doc) {
 
   loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
+
+  analyticsTracking(doc);
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
