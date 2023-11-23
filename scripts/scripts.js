@@ -355,8 +355,8 @@ function decorateH3(main) {
   }
 }
 
-function updatePageTitle(){
-  document.title  = document.title+' - Service Now'
+function updatePageTitle() {
+  document.title += ' - Service Now';
 }
 
 /**
@@ -372,7 +372,6 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateH3(main);
-  
 }
 
 /**
