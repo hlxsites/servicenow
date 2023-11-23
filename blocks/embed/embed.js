@@ -93,11 +93,12 @@ const loadEmbed = (block, link, autoplay) => {
   ];
 
   const config = EMBEDS_CONFIG.find((e) => e.match.some((match) => link.includes(match)));
+  const blockConfig = readBlockConfig(block);
+
   if (config) {
     block.innerHTML = config.embed(new URL(link), autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
-  } else if (block.classList.contains('brightcove')) {
-    const blockConfig = readBlockConfig(block);
+  } else if (blockConfig.brightcoveVideo) {
     block.innerHTML = embedBrightcove(blockConfig.brightcoveVideo,
       blockConfig.account ? blockConfig.account : '5703385908001',
       blockConfig.player ? blockConfig.player : 'default');
