@@ -59,9 +59,15 @@ const embedTwitter = (url) => {
 const embedBrightcove = (video, account, player) => {
   const embedHTML = `
    <div class="brightcove-video-wrapper">
-   <video preload="metadata" playsinline data-video-id="${video}" data-account="${account}" data-player="${player}" data-embed="default" data-application-id class="video-js video-target" controls>
-   </video>
-   <script src="//players.brightcove.net/${account}/${player}_default/index.min.js"></script>
+   <video-js
+   data-video-id="${video}"
+   data-account="${account}"
+   data-player="${player}"
+   data-embed="default"
+   data-application-id=""
+   class="video-js video-target"
+   controls>
+   </video-js>
    </div>
   `;
   return embedHTML;
@@ -95,10 +101,11 @@ const loadEmbed = (block, link, autoplay) => {
     block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (block.classList.contains('brightcove')) {
-    block.innerHTML = embedBrightcove('6331538546112', //blockConfig.brightcoveVideo,
-      blockConfig.account ? blockConfig.account : '5703385908001',
-      blockConfig.player ? blockConfig.player : 'default');
-    console.log(block.innerHTML);
+    const video = blockConfig.video ? blockConfig.video : '6331538546112';
+    const account = blockConfig.account ? blockConfig.account : '5703385908001';
+    const player = blockConfig.player ? blockConfig.player : 'default';
+    block.innerHTML = embedBrightcove(video, account, player);
+    loadScript(`https://players.brightcove.net/${account}/${player}_default/index.min.js`);
     block.classList = 'block embed embed-brightcove';
   } else {
     block.innerHTML = getDefaultEmbed(url);
