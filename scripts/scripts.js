@@ -354,7 +354,6 @@ function decorateH3(main) {
     });
   }
 }
-
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -376,6 +375,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   getLocale(); // set document.documentElement.lang for SEO
+  document.title += ' - Service Now';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
