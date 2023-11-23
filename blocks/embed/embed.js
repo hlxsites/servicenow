@@ -58,21 +58,11 @@ const embedTwitter = (url) => {
 
 const embedBrightcove = (video, account, player) => {
   const embedHTML = `
-    <div id="myPlayerID" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-      <iframe data-account="${account}" data-player="${player}" data-embed="default" data-video-id="${video}"
-        class="video-js" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
-        src="https://players.brightcove.net/${account}/${player}_default/index.html?videoId=${video}"
-        allow="autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope; picture-in-picture"
-        allowfullscreen="" scrolling="no" title="Content from Brightcove" loading="lazy"></iframe>
-      <button id="playButton" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Play</button>
-    </div>
-    <script src="https://players.brightcove.net/${account}/${player}_default/index.min.js"></script>
-    <script>
-      document.getElementById('playButton').addEventListener('click', function() {
-        var myPlayer = bc(document.getElementById('myPlayerID'));
-        myPlayer.play();
-      });
-    </script>
+   <div class="brightcove-video-wrapper">
+   <video preload="metadata" playsinline data-video-id="${video}" data-account="${account}" data-player="${player}" data-embed="default" data-application-id class="video-js video-target" controls>
+   </video>
+   <script src="//players.brightcove.net/${account}/${player}_default/index.min.js"></script>
+   </div>
   `;
   return embedHTML;
 };
