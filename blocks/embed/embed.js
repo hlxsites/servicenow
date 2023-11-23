@@ -73,7 +73,7 @@ const embedBrightcove = (videoid, account, player) => {
   return embedHTML;
 };
 
-const loadEmbed = (block, link, autoplay, blockConfig) => {
+const loadEmbed = (block, link, blockConfig, autoplay) => {
   if (block.classList.contains('embed-is-loaded')) {
     return;
   }
@@ -131,14 +131,14 @@ export default function decorate(block) {
     wrapper.innerHTML = '<div class="embed-placeholder-play"><button title="Play"></button></div>';
     wrapper.prepend(placeholder);
     wrapper.addEventListener('click', () => {
-      loadEmbed(block, link, true, blockConfig);
+      loadEmbed(block, link, blockConfig, true);
     });
     block.append(wrapper);
   } else {
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) {
         observer.disconnect();
-        loadEmbed(block, link, undefined, blockConfig);
+        loadEmbed(block, link, blockConfig);
       }
     });
     observer.observe(block);
