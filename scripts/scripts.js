@@ -354,11 +354,6 @@ function decorateH3(main) {
     });
   }
 }
-
-function updatePageTitle() {
-  document.title += ' - Service Now';
-}
-
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -380,6 +375,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   getLocale(); // set document.documentElement.lang for SEO
+  document.title += ' - Service Now';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -437,7 +433,6 @@ export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
-  updatePageTitle();
 }
 
 loadPage();
