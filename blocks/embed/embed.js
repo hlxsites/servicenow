@@ -115,7 +115,7 @@ const loadEmbed = (block, link, autoplay) => {
   block.classList.add('embed-is-loaded');
 };
 
-export default async function decorate(block) {
+export default function decorate(block) {
   const placeholder = block.querySelector('picture');
   const link = block.querySelector('a') ? block.querySelector('a').href : '';
   block.textContent = '';
