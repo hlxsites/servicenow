@@ -28,6 +28,7 @@
 
 .blog-list .card .card-thumbnail img {
   aspect-ratio: 16 / 9 ;
+  width: auto;
 }
 
 .blog-list .card .card-thumbnail .topic-tag {
