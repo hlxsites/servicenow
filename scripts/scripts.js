@@ -355,6 +355,10 @@ function decorateH3(main) {
   }
 }
 
+function updatePageTitle(){
+  document.title  = document.title+' - Service Now'
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -368,6 +372,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateH3(main);
+  
 }
 
 /**
@@ -433,6 +438,7 @@ export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
+  updatePageTitle();
 }
 
 loadPage();
