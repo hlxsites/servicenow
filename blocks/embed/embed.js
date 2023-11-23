@@ -58,11 +58,19 @@ const embedTwitter = (url) => {
 
 const embedBrightcove = (video, account, player) => {
   const embedHTML = `
-    <div id="myPlayerID" data-account="${account}" data-player="${player}" data-embed="default" data-video-id="${video}" class="video-js" controls></div>
+    <div id="myPlayerID" data-account="${account}" data-player="${player}" data-embed="default" data-video-id="${video}" class="video-js" controls>
+      <button id="playButton" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Play</button>
+    </div>
     <script src="//players.brightcove.net/${account}/${player}_default/index.min.js"></script>
+    <script>
+      document.getElementById('playButton').addEventListener('click', function() {
+        var myPlayer = bc(document.getElementById('myPlayerID'));
+        myPlayer.play();
+      });
+    </script>
   `;
   return embedHTML;
-}
+};
 
 const loadEmbed = (block, link, autoplay) => {
   if (block.classList.contains('embed-is-loaded')) {
@@ -88,13 +96,13 @@ const loadEmbed = (block, link, autoplay) => {
   if (config) {
     block.innerHTML = config.embed(new URL(link), autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
-  } else if(block.classList.contains('brightcove')){
+  } else if (block.classList.contains('brightcove')) {
     const blockConfig = readBlockConfig(block);
     block.innerHTML = embedBrightcove(blockConfig.brightcoveVideo,
-                           blockConfig.account ? blockConfig.account : '5703385908001',
-                           blockConfig.player ? blockConfig.player : 'default');
+      blockConfig.account ? blockConfig.account : '5703385908001',
+      blockConfig.player ? blockConfig.player : 'default');
     block.classList = 'block embed embed-brightcove';
-  }else{
+  } else {
     block.innerHTML = getDefaultEmbed(new URL(link));
     block.classList = 'block embed';
   }
@@ -103,7 +111,7 @@ const loadEmbed = (block, link, autoplay) => {
 
 export default function decorate(block) {
   const placeholder = block.querySelector('picture');
-  const link = block.querySelector('a')?block.querySelector('a').href:'';
+  const link = block.querySelector('a') ? block.querySelector('a').href : '';
   block.textContent = '';
 
   if (placeholder) {
