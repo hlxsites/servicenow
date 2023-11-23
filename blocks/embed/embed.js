@@ -97,6 +97,7 @@ const loadEmbed = (block, link, autoplay) => {
   const url = link ? new URL(link) : '';
   const blockConfig = readBlockConfig(block);
 
+  console.log('Block config' + JSON.stringify(blockConfig));
   if (config) {
     block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
