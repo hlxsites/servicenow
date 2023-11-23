@@ -100,7 +100,7 @@ const loadEmbed = (block, link, autoplay, blockConfig) => {
     block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (block.classList.contains('brightcove')) {
-    const videoid = blockConfig.videoid;
+    const { videoid } = blockConfig;
     if (!videoid) {
       console.error('Brightcove video id is not provided');
       return;
