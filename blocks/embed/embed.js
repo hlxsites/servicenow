@@ -93,10 +93,11 @@ const loadEmbed = (block, link, autoplay) => {
   ];
 
   const config = EMBEDS_CONFIG.find((e) => e.match.some((match) => link.includes(match)));
+  const url = link ? new URL(link) : '';
   const blockConfig = readBlockConfig(block);
 
   if (config) {
-    block.innerHTML = config.embed(new URL(link), autoplay);
+    block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (blockConfig.brightcoveVideo) {
     block.innerHTML = embedBrightcove(blockConfig.brightcoveVideo,
@@ -104,7 +105,7 @@ const loadEmbed = (block, link, autoplay) => {
       blockConfig.player ? blockConfig.player : 'default');
     block.classList = 'block embed embed-brightcove';
   } else {
-    block.innerHTML = getDefaultEmbed(new URL(link));
+    block.innerHTML = getDefaultEmbed(url);
     block.classList = 'block embed';
   }
   block.classList.add('embed-is-loaded');
