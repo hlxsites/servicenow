@@ -58,7 +58,8 @@ const embedTwitter = (url) => {
 
 const embedBrightcove = (video, account, player) => {
   const embedHTML = `
-    <div id="myPlayerID" data-account="${account}" data-player="${player}" data-embed="default" data-video-id="${video}" class="video-js" controls>
+    <div id="myPlayerID" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+      <iframe data-account="${account}" data-player="${player}" data-embed="default" data-video-id="${video}" class="video-js" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="//players.brightcove.net/${account}/${player}_default/index.html?videoId=${video}"></iframe>
       <button id="playButton" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Play</button>
     </div>
     <script src="//players.brightcove.net/${account}/${player}_default/index.min.js"></script>
