@@ -95,9 +95,10 @@ const loadEmbed = (block, link, autoplay) => {
     block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (block.classList.contains('brightcove')) {
-    block.innerHTML = embedBrightcove(blockConfig.brightcoveVideo,
+    block.innerHTML = embedBrightcove('6331538546112', //blockConfig.brightcoveVideo,
       blockConfig.account ? blockConfig.account : '5703385908001',
       blockConfig.player ? blockConfig.player : 'default');
+    console.log(block.innerHTML);
     block.classList = 'block embed embed-brightcove';
   } else {
     block.innerHTML = getDefaultEmbed(url);
@@ -106,7 +107,7 @@ const loadEmbed = (block, link, autoplay) => {
   block.classList.add('embed-is-loaded');
 };
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const placeholder = block.querySelector('picture');
   const link = block.querySelector('a') ? block.querySelector('a').href : '';
   block.textContent = '';
