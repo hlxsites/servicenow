@@ -211,6 +211,20 @@ export default {
             }
         });
 
+        main.querySelectorAll('.brightcove-video-wrapper video').forEach((brightcoveVideo) => {
+            const defaultBCAccountId = '5703385908001';
+            const defaultBCPlayer = 'default';
+
+            const brightcoveRows = [['Embed (Brightcove)'], ['Video ID', brightcoveVideo.dataset.videoId]];
+            if (brightcoveVideo.dataset.account !== defaultBCAccountId) {
+                brightcoveRows.push(['Account', brightcoveVideo.dataset.account]);
+            }
+            if (brightcoveVideo.dataset.player !== defaultBCPlayer) {
+                brightcoveRows.push(['Player', brightcoveVideo.dataset.player]);
+            }
+            brightcoveVideo.replaceWith(WebImporter.DOMUtils.createTable(brightcoveRows, document));
+        });
+
         return main;
 
     },
