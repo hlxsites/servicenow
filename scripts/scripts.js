@@ -441,6 +441,8 @@ function videoEventTracking(myPlayer, videoTagId) {
         progress = [];
       }
 
+      window.appEventData = window.appEventData || [];
+
       window.appEventData.push(videoProgress);
     }
   });
