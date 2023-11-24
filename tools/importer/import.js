@@ -225,6 +225,18 @@ export default {
             brightcoveVideo.replaceWith(WebImporter.DOMUtils.createTable(brightcoveRows, document));
         });
 
+        main.querySelectorAll('b').forEach((bold) => {
+            if (bold.textContent.trim() === bold.parentElement.textContent.trim()
+                && !bold.textContent.startsWith('Click')
+                && !bold.closest('ul')
+                && !bold.closest('ol')
+            ) {
+                const h3 = document.createElement('h3');
+                h3.textContent = bold.textContent;
+                bold.parentElement.replaceWith(h3);
+            }
+        })
+
         return main;
 
     },
