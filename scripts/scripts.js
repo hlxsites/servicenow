@@ -354,6 +354,36 @@ function decorateH3(main) {
     });
   }
 }
+function handleLinks(main) {
+    // Get all anchor elements within the main container
+    var links = main.getElementsByTagName('a');
+    // Loop through each anchor element and add a target based on the business condition
+      for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        var href = link.getAttribute('href');
+        // Check if the link is from the same domain
+        if (!isSameDomainOrPdf(href)) {
+          // Add a target attribute to open in a new tab for external links
+          link.setAttribute('target', '_blank');
+        } else {
+            link.setAttribute('target', '_self');
+        }
+      }
+}
+
+// Function to check if a URL is from the same domain or ends with pdf
+function isSameDomainOrPdf(url) {
+  // Create an anchor element to parse the URL
+  var a = document.createElement('a');
+  a.href = url;
+
+  // Check if the URL ends with ".pdf" or is from the same domain
+  return (
+    window.location.hostname === a.hostname ||
+    a.pathname.toLowerCase().endsWith('.pdf')
+  );
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -367,6 +397,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateH3(main);
+  handleLinks(main);
 }
 
 /**
