@@ -189,7 +189,7 @@ export default {
         createMetadataBlock(main, document, url);
 
         // CLEANUP
-        main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4, .hero-image').forEach(el => el.remove());
+        main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
         // TODO is this ok?
         main.querySelectorAll('br, nbsp').forEach((el) => el.remove());
         main.querySelectorAll('img[src^="/akam/13/pixel"]').forEach((el) => el.remove());
@@ -215,7 +215,7 @@ export default {
             const defaultBCAccountId = '5703385908001';
             const defaultBCPlayer = 'default';
 
-            const brightcoveRows = [['Embed (Brightcove)'], ['Video ID', brightcoveVideo.dataset.videoId]];
+            const brightcoveRows = [['Embed (Brightcove)'], ['VideoID', brightcoveVideo.dataset.videoId]];
             if (brightcoveVideo.dataset.account !== defaultBCAccountId) {
                 brightcoveRows.push(['Account', brightcoveVideo.dataset.account]);
             }
