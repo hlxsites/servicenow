@@ -84,12 +84,12 @@ export default async function decorate(block) {
 
   cardList.append(
     ...(await Promise.all(
-      chunks[0].map((blog) => renderCard(blog, showDescription)),
+      chunks[0].map((blog) => renderFilterCard(blog, showDescription)),
     )),
   );
   for (let i = 1; i < chunks.length; i += 1) {
     Promise.all(
-      chunks[i].map((blog) => renderCard(blog, showDescription)),
+      chunks[i].map((blog) => renderFilterCard(blog, showDescription)),
     ).then((cards) => cardList.append(...cards));
   }
 
