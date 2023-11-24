@@ -20,7 +20,7 @@ export async function renderFilterCard(post, showDescription) {
     publicationDate = formatDate(date);
   }
 
-  const card = li(await renderCard(post));
+  const card = li(await renderCard(post, false));
   const cardText = card.querySelector('.card-text');
   const cardArrow = span({ class: 'card-arrow' });
   cardArrow.innerHTML = await arrowSvg;
