@@ -72,12 +72,26 @@ export default async function decorate(block) {
 
   // render
   block.classList.add(filterKey);
+  const chunks = [];
+  const chunkSize = 50;
+  for (let i = 0; i < blogs.length; i += chunkSize) {
+    chunks.push(blogs.slice(i, i + chunkSize));
+  }
+
   const showDescription = block.classList.contains('show-description');
-  block.append(
-    ul(
-      ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, showDescription))),
-    ),
+  const cardList = ul();
+  block.append(cardList);
+
+  cardList.append(
+    ...(await Promise.all(
+      chunks[0].map((blog) => renderCard(blog, showDescription)),
+    )),
   );
+  for (let i = 1; i < chunks.length; i += 1) {
+    Promise.all(
+      chunks[i].map((blog) => renderCard(blog, showDescription)),
+    ).then((cards) => cardList.append(...cards));
+  }
 
   await cssPromise;
 }
