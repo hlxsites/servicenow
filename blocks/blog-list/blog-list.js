@@ -39,6 +39,26 @@ export async function renderFilterCard(post, showDescription) {
   return card;
 }
 
+async function renderChunk(cardList, chunks, idx, showDescription) {
+  if (idx >= chunks.length) {
+    return;
+  }
+
+  cardList.append(
+    ...await Promise.all(
+      chunks[idx].map((blog) => renderFilterCard(blog, showDescription)),
+    ),
+  );
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      observer.disconnect();
+      renderChunk(cardList, chunks, idx + 1, showDescription);
+    }
+  });
+  observer.observe(cardList.children[cardList.children.length - 1]);
+}
+
 export default async function decorate(block) {
   const cssPromise = loadCSS(`${window.hlx.codeBasePath}/blocks/cards/cards.css`);
 
@@ -77,21 +97,10 @@ export default async function decorate(block) {
   for (let i = 0; i < blogs.length; i += chunkSize) {
     chunks.push(blogs.slice(i, i + chunkSize));
   }
-
   const showDescription = block.classList.contains('show-description');
   const cardList = ul();
   block.append(cardList);
 
-  cardList.append(
-    ...(await Promise.all(
-      chunks[0].map((blog) => renderFilterCard(blog, showDescription)),
-    )),
-  );
-  // for (let i = 1; i < chunks.length; i += 1) {
-  //   Promise.all(
-  //     chunks[i].map((blog) => renderFilterCard(blog, showDescription)),
-  //   ).then((cards) => cardList.append(...cards));
-  // }
-
+  await renderChunk(cardList, chunks, 0, showDescription);
   await cssPromise;
 }
