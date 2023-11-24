@@ -19,7 +19,7 @@ const getItems = async (folderKey, page = 1) => {
     }
 
     return [
-        { key: 'Topics', name: 'Topics' },
+        { key: 'Topics', name: 'Topics / New Trends' },
         { key: 'Categories', name: 'Categories' },
         { key: 'Date Picker', name: 'Date Picker' },
     ];
