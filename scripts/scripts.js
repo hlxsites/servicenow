@@ -354,36 +354,39 @@ function decorateH3(main) {
     });
   }
 }
-function handleLinks(main) {
-    // Get all anchor elements within the main container
-    var links = main.getElementsByTagName('a');
-    // Loop through each anchor element and add a target based on the business condition
-      for (var i = 0; i < links.length; i++) {
-        var link = links[i];
-        var href = link.getAttribute('href');
-        // Check if the link is from the same domain
-        if (!isSameDomainOrPdf(href)) {
-          // Add a target attribute to open in a new tab for external links
-          link.setAttribute('target', '_blank');
-        } else {
-            link.setAttribute('target', '_self');
-        }
-      }
-}
 
-// Function to check if a URL is from the same domain or ends with pdf
+/**
+ * Checks for the same domain or not and if ends with pdf
+ */
 function isSameDomainOrPdf(url) {
   // Create an anchor element to parse the URL
-  var a = document.createElement('a');
-  a.href = url;
+  const ancElement = document.createElement('a');
+  ancElement.href = url;
 
   // Check if the URL ends with ".pdf" or is from the same domain
   return (
-    window.location.hostname === a.hostname ||
-    a.pathname.toLowerCase().endsWith('.pdf')
+    window.location.hostname === ancElement.hostname || ancElement.pathname.toLowerCase().endsWith('.pdf')
   );
 }
 
+function handleLinks(main) {
+  // Get all anchor elements within the main container
+  const links = main.getElementsByTagName('a');
+
+  // Loop through each anchor element and add a target based on the business condition
+  for (let i = 0; i < links.length; i += 1) {
+    const link = links[i];
+    const href = link.getAttribute('href');
+
+    // Check if the link is from the same domain
+    if (!isSameDomainOrPdf(href)) {
+      // Add a target attribute to open in a new tab for external links
+      link.setAttribute('target', '_blank');
+    } else {
+      link.setAttribute('target', '_self');
+    }
+  }
+}
 /**
  * Decorates the main element.
  * @param {Element} main The main element
