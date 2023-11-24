@@ -36,3 +36,58 @@
     font-weight: normal;
     font-style: normal
 }
+
+:root,
+:host {
+  --fa-style-family-brands: "Font Awesome 6 Brands";
+  --fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands";
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../fonts/fa-brands-400.woff2") format("woff2");
+}
+
+.fab,
+.fa-brands {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+}
+
+.fab,
+.fa-brands {
+  font-weight: 400;
+}
+.fa-facebook:before {
+  content: "";
+}
+.fa-facebook-f:before {
+  content: "";
+}
+.fa-instagram:before {
+  content: "";
+}
+.fa-linkedin:before {
+  content: "";
+}
+.fa-linkedin-in:before {
+  content: "";
+}
+.fa-square-x-twitter:before {
+  content: "";
+}
+.fa-tiktok:before {
+  content: "";
+}
+.fa-twitter:before {
+  content: "";
+}
+.fa-x-twitter:before {
+  content: "";
+}
+.fa-youtube:before {
+  content: "";
+}
