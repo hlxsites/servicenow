@@ -56,7 +56,6 @@ const embedTwitter = (url) => {
   return embedHTML;
 };
 
-
 function videoEventTracking(myPlayer, videoTagId) {
   let eventName = 'video_started';
   let progress = [];
@@ -108,7 +107,6 @@ function videoEventTracking(myPlayer, videoTagId) {
     }
   });
 }
-
 
 function videoTracking(block) {
   const newPlayerId = block.querySelector('video').getAttribute('id');
