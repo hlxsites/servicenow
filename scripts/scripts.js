@@ -448,30 +448,6 @@ function videoEventTracking(myPlayer, videoTagId) {
   });
 }
 
-function socialShareTracking(doc) {
-  const socialShareBlock = doc.querySelector('.social-share');
-
-  socialShareBlock.addEventListener('click', (e) => {
-    const button = e.target.parentElement;
-
-    if (button.classList.contains('st-btn')) {
-      const networkLabel = button.getAttribute('data-network');
-
-      window.appEventData = window.appEventData || [];
-      const data = {
-        name: 'global_click',
-        digitalData: {
-          event: {
-            pageArea: 'social-sharing',
-            eVar22: `sharethis-link:${networkLabel}`,
-          },
-        },
-        event: e,
-      };
-      window.appEventData.push(data);
-    }
-  });
-}
 
 function videoTracking(doc) {
   doc.querySelectorAll('.brightcove').forEach((videoBlock) => {
@@ -489,7 +465,6 @@ function videoTracking(doc) {
 
 function analyticsTracking(doc) {
   // social share event tracking
-  socialShareTracking(doc);
   videoTracking(doc);
 }
 
