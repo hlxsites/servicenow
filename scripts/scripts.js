@@ -369,7 +369,7 @@ function isSameDomainOrPdf(url) {
   );
 }
 
-async function handleLinks(main) {
+function handleLinks(main) {
   // Get all anchor elements within the main container
   const links = main.getElementsByTagName('a');
 
