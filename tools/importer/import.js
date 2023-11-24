@@ -200,7 +200,7 @@ export default {
             }
         })
 
-        // Processing...
+        // Processing Links
         main.querySelectorAll('a').forEach((link) => {
             if (isServiceNowLink(link)) {
                 if (isBlogLink(link)) {
@@ -211,6 +211,7 @@ export default {
             }
         });
 
+        // Brightcove videos
         main.querySelectorAll('.brightcove-video-wrapper video').forEach((brightcoveVideo) => {
             const defaultBCAccountId = '5703385908001';
             const defaultBCPlayer = 'default';
@@ -225,6 +226,15 @@ export default {
             brightcoveVideo.replaceWith(WebImporter.DOMUtils.createTable(brightcoveRows, document));
         });
 
+        // Youtube Videos
+        main.querySelectorAll('.comp-youtube-video iframe').forEach((youtubeIframe) => {
+            const youtubeLink = document.createElement('a');
+            youtubeLink.href = youtubeIframe.src;
+            youtubeLink.textContent = youtubeIframe.src;
+            youtubeIframe.replaceWith(WebImporter.DOMUtils.createTable([['Embed'], [ youtubeLink ]], document));
+        });
+
+        // Replace legacy standlone bold elements with h3s
         main.querySelectorAll('b').forEach((bold) => {
             if (bold.textContent.trim() === bold.parentElement.textContent.trim()
                 && !bold.textContent.startsWith('Click')
@@ -235,10 +245,9 @@ export default {
                 h3.textContent = bold.textContent;
                 bold.parentElement.replaceWith(h3);
             }
-        })
+        });
 
         return main;
-
     },
 
     /**
