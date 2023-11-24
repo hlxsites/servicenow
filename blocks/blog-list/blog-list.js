@@ -73,7 +73,7 @@ export default async function decorate(block) {
   // render
   block.classList.add(filterKey);
   const chunks = [];
-  const chunkSize = 10;
+  const chunkSize = 50;
   for (let i = 0; i < blogs.length; i += chunkSize) {
     chunks.push(blogs.slice(i, i + chunkSize));
   }
