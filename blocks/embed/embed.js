@@ -56,6 +56,72 @@ const embedTwitter = (url) => {
   return embedHTML;
 };
 
+
+function videoEventTracking(myPlayer, videoTagId) {
+  let eventName = 'video_started';
+  let progress = [];
+
+  myPlayer.on('timeupdate', (event) => {
+    const videoPercentage = (myPlayer.currentTime() * 100) / myPlayer.duration();
+
+    switch (true) {
+      case videoPercentage === 100:
+        eventName = 'video_completed';
+        break;
+      case videoPercentage > 90:
+        eventName = 'video_reached_90_pct';
+        break;
+      case videoPercentage > 75:
+        eventName = 'video_reached_75_pct';
+        break;
+      case videoPercentage > 50:
+        eventName = 'video_reached_50_pct';
+        break;
+      case videoPercentage > 25:
+        eventName = 'video_reached_25_pct';
+        break;
+      default:
+        eventName = 'video_started';
+    }
+
+    if (!progress.includes(eventName)) {
+      progress.push(eventName);
+
+      const videoProgress = {
+        name: eventName,
+        digitalData: {
+          videoTracking: {
+            id: videoTagId,
+            name: myPlayer.mediainfo.name,
+          },
+        },
+        event,
+      };
+
+      if (eventName === 'video_completed') {
+        progress = [];
+      }
+
+      window.appEventData = window.appEventData || [];
+
+      window.appEventData.push(videoProgress);
+    }
+  });
+}
+
+
+function videoTracking(block) {
+  const newPlayerId = block.querySelector('video').getAttribute('id');
+
+  window.videojs(newPlayerId).ready(function () {
+    const myPlayer = this;
+    const videoID = document.getElementById(newPlayerId).getAttribute('data-video-id');
+    myPlayer.on('loadedmetadata', () => {
+      videoEventTracking(myPlayer, videoID);
+    });
+  });
+}
+
 const embedBrightcove = (videoid, account, player) => {
   const embedHTML = `
    <div class="brightcove-video-wrapper">
@@ -109,8 +175,13 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
     const player = blockConfig.player || 'default';
     block.innerHTML = embedBrightcove(videoid, account, player);
     const script = document.createElement('script');
-    script.setAttribute('src', `https://players.brightcove.net/${account}/${player}_default/index.min.js`);
+
     block.querySelector('div').append(script);
+    script.onload = () => {
+      videoTracking(block);
+    };
+
+    script.setAttribute('src', `https://players.brightcove.net/${account}/${player}_default/index.min.js`);
     block.classList = 'block embed embed-brightcove';
   } else {
     block.innerHTML = getDefaultEmbed(url);
