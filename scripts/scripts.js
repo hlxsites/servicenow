@@ -367,7 +367,6 @@ function isSameDomainOrPdf(url) {
     || ancUrl.pathname.toLowerCase().endsWith('.pdf')
     || ancUrl.pathname.toLowerCase().endsWith('.hlx.live')
     || ancUrl.pathname.toLowerCase().endsWith('.hlx.page')
-    || ancUrl.hostname.endsWith('servicenow.com')
   );
 }
 
