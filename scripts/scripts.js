@@ -366,7 +366,8 @@ function decorateLinkedPictures(container) {
       const link = parent.nextElementSibling?.querySelector('a[href]');
       try {
         return parent.childElementCount === 1 && link
-          && new URL(link.href).pathname === new URL(link.textContent).pathname;
+          && new URL(link.href).pathname === new URL(link.textContent).pathname
+          && link.parentElement.childElementCount === 1;
       } catch (err) {
         return false;
       }
