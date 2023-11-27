@@ -360,9 +360,7 @@ function decorateH3(main) {
  */
 function isSameDomainOrPdf(url) {
   const isPdf = url.toLowerCase().endsWith('.pdf');
-  const ancUrl = (url.indexOf('://') > 0 || url.indexOf('//') === 0)
-    ? new URL(url)
-    : new URL(window.location.origin + url);
+  const ancUrl = new URL(url);
   return (
     !isPdf
     && (window.location.hostname === ancUrl.hostname
@@ -377,7 +375,7 @@ function decorateLinks(main) {
   const links = main.querySelectorAll('a');
   // Loop through each anchor element and add a target based on the business condition
   links.forEach((link) => {
-    const href = link.getAttribute('href');
+    const href = link.href;
     // Check if the link is from the same domain or ends with ".pdf"
     if (!isSameDomainOrPdf(href)) {
       // Add a target attribute to open in a new tab for external links
