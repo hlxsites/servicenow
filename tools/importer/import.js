@@ -12,8 +12,8 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
-const pageUrl = "https://main--servicenow--hlxsites.hlx.page";
-const liveUrl = "https://main--servicenow--hlxsites.hlx.page";
+const pageUrl = "https://main--aemeds--servicenow-martech.hlx.page";
+const liveUrl = "https://main--aemeds--servicenow-martech.hlx.live";
 const servicenowUrl = 'https://www.servicenow.com';
 
 function fetchSync(method, url) {
@@ -208,6 +208,14 @@ export default {
                 } else {
                     link.href = getServiceNowUrl(link);
                 }
+            }
+        });
+
+        main.querySelectorAll('a img, a picture').forEach((image) => {
+            const link = image.closest('a');
+            link.before(image, document.createElement('br'));
+            if (link.textContent.trim() === '') {
+              link.textContent = link.href;
             }
         });
 
