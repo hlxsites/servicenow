@@ -15,16 +15,18 @@
   --ff-gilroy-bold: 'GilroyBold', 'GilroyBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
   --ff-gilroy-semibold: 'GilroySemiBold', 'GilroySemiBoldFallback', 'helvetica neue', helvetica, arial, sans-serif;
 
-
   /* colors */
   --arc-color-brandblue-900: #032d42;
+  --arc-color-brandgreen-500: #62d84e;
+  --arc-color-neutral-900: #1d1d1d;
+  --arc-color-black: #000;
   --link-hover-color: #136ff6;
   --background-color: #f7f7f7;
   --overlay-background-color: #eee;
   --highlight-background-color: #ccc;
-  --text-color: #293e40;
+  --text-color: var(--arc-color-neutral-900);
   --link-color: var(--text-color);
-  --link-background-color: #81b5a1;
+  --link-background-color: var(--arc-color-brandgreen-500);
 
   /* fonts */
   --body-font-family: var(--ff-gilroy-regular);

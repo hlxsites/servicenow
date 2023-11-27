@@ -2,6 +2,7 @@
 .blog-list li {
   padding: 0;
   margin: 0;
+  list-style: none;
 }
 
 .blog-list li {
@@ -28,6 +29,7 @@
 
 .blog-list .card .card-thumbnail img {
   aspect-ratio: 16 / 9 ;
+  width: auto;
 }
 
 .blog-list .card .card-thumbnail .topic-tag {
@@ -55,7 +57,7 @@
   right: 0;
 }
 
-.blog-list .card .card-text .card-description{
+.blog-list .card .card-text .card-description {
     margin-top: 0.8rem;
     margin-bottom: 0.8rem;
     margin-left: 0.8rem;
@@ -63,7 +65,7 @@
     white-space: normal;
     float: right;
     letter-spacing: normal;
-    color: #293e40;
+    color: var(--text-color);
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
     line-height:  1.7143;
@@ -71,7 +73,7 @@
 
 .blog-list .card .card-text .card-cta a {
   font-family: var(--ff-gilroy-semibold);
-  color: #293e40;
+  color: var(--text-color);
   font-size:1.8rem;
   line-height: 1.4rem;
   letter-spacing: 0;

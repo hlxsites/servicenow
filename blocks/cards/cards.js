@@ -29,14 +29,14 @@ async function localizedTopic(topic) {
   return topicResponse[getLocale()] || topicResponse['en-US'] || topicResponse.identifier || topic;
 }
 
-export async function renderCard(post) {
+export async function renderCard(post, renderTopic = true) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
           createOptimizedPicture(post.image, post.header),
         ),
-        post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
+        renderTopic && post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
       div({ class: 'card-text' },
         h5(post.header),
