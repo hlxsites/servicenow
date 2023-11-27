@@ -20,7 +20,7 @@ export async function renderFilterCard(post, showDescription) {
     publicationDate = formatDate(date);
   }
 
-  const card = li(await renderCard(post));
+  const card = li(await renderCard(post, false));
   const cardText = card.querySelector('.card-text');
   const cardArrow = span({ class: 'card-arrow' });
   cardArrow.innerHTML = await arrowSvg;
@@ -37,6 +37,26 @@ export async function renderFilterCard(post, showDescription) {
       ),
   );
   return card;
+}
+
+async function renderChunk(cardList, chunks, idx, showDescription) {
+  if (idx >= chunks.length) {
+    return;
+  }
+
+  cardList.append(
+    ...await Promise.all(
+      chunks[idx].map((blog) => renderFilterCard(blog, showDescription)),
+    ),
+  );
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      observer.disconnect();
+      renderChunk(cardList, chunks, idx + 1, showDescription);
+    }
+  });
+  observer.observe(cardList.children[cardList.children.length - 1]);
 }
 
 export default async function decorate(block) {
@@ -72,12 +92,15 @@ export default async function decorate(block) {
 
   // render
   block.classList.add(filterKey);
+  const chunks = [];
+  const chunkSize = 20;
+  for (let i = 0; i < blogs.length; i += chunkSize) {
+    chunks.push(blogs.slice(i, i + chunkSize));
+  }
   const showDescription = block.classList.contains('show-description');
-  block.append(
-    ul(
-      ...await Promise.all(blogs.map((blog) => renderFilterCard(blog, showDescription))),
-    ),
-  );
+  const cardList = ul();
+  block.append(cardList);
 
+  await renderChunk(cardList, chunks, 0, showDescription);
   await cssPromise;
 }
