@@ -375,7 +375,7 @@ function decorateLinks(main) {
   const links = main.querySelectorAll('a');
   // Loop through each anchor element and add a target based on the business condition
   links.forEach((link) => {
-    const href = link.href;
+    const { href } = link;
     // Check if the link is from the same domain or ends with ".pdf"
     if (!isSameDomainOrPdf(href)) {
       // Add a target attribute to open in a new tab for external links
