@@ -367,17 +367,16 @@ function isSameDomainOrPdf(url) {
     || ancUrl.pathname.toLowerCase().endsWith('.pdf')
     || ancUrl.pathname.toLowerCase().endsWith('.hlx.live')
     || ancUrl.pathname.toLowerCase().endsWith('.hlx.page')
+    || ancUrl.hostname.toLowerCase().startsWith('servicenow.com')
   );
 }
 
 function decorateLinks(main) {
   // Get all anchor elements within the main container
   const links = main.querySelectorAll('a');
-
   // Loop through each anchor element and add a target based on the business condition
   links.forEach((link) => {
     const href = link.getAttribute('href');
-
     // Check if the link is from the same domain or ends with ".pdf"
     if (!isSameDomainOrPdf(href)) {
       // Add a target attribute to open in a new tab for external links
