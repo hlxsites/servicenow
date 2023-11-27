@@ -383,8 +383,8 @@ function decorateLinkedPictures(container) {
     });
 }
 
-/*
-* Checks for the same domain or not and if ends with pdf
+/**
+ * Checks for the same domain or not and if ends with pdf
  */
 function isSameDomainOrPdf(url) {
   const isPdf = url.toLowerCase().endsWith('.pdf');
