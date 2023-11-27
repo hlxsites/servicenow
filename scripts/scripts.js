@@ -362,12 +362,13 @@ function isSameDomainOrPdf(url) {
   const ancUrl = (url.indexOf('://') > 0 || url.indexOf('//') === 0)
     ? new URL(url)
     : new URL(window.location.origin + url);
+    console.log(ancUrl.hostname);
   return (
     window.location.hostname === ancUrl.hostname
     || ancUrl.pathname.toLowerCase().endsWith('.pdf')
-    || ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
-    || ancUrl.hostname.toLowerCase().endsWith('.hlx.page')
-    || ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
+    || !ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
+    || !ancUrl.hostname.toLowerCase().endsWith('.hlx.page')
+    || !ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
   );
 }
 
