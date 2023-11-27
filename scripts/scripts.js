@@ -359,16 +359,16 @@ function decorateH3(main) {
  * Checks for the same domain or not and if ends with pdf
  */
 function isSameDomainOrPdf(url) {
+  const isPdf = url.toLowerCase().endsWith('.pdf');
   const ancUrl = (url.indexOf('://') > 0 || url.indexOf('//') === 0)
     ? new URL(url)
     : new URL(window.location.origin + url);
-    console.log(ancUrl.hostname);
   return (
-    window.location.hostname === ancUrl.hostname
-    || ancUrl.pathname.toLowerCase().endsWith('.pdf')
-    || !ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
-    || !ancUrl.hostname.toLowerCase().endsWith('.hlx.page')
-    || !ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
+    !isPdf
+    && (window.location.hostname === ancUrl.hostname
+      || ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.page'))
   );
 }
 
