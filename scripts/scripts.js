@@ -382,6 +382,36 @@ function decorateLinkedPictures(container) {
     });
 }
 
+/*
+* Checks for the same domain or not and if ends with pdf
+ */
+function isSameDomainOrPdf(url) {
+  const isPdf = url.toLowerCase().endsWith('.pdf');
+  const ancUrl = new URL(url);
+  return (
+    !isPdf
+    && (window.location.hostname === ancUrl.hostname
+      || ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.page'))
+  );
+}
+
+function decorateLinks(main) {
+  // Get all anchor elements within the main container
+  const links = main.querySelectorAll('a');
+  // Loop through each anchor element and add a target based on the business condition
+  links.forEach((link) => {
+    const { href } = link;
+    // Check if the link is from the same domain or ends with ".pdf"
+    if (!isSameDomainOrPdf(href)) {
+      // Add a target attribute to open in a new tab for external links
+      link.setAttribute('target', '_blank');
+    } else {
+      link.setAttribute('target', '_self');
+    }
+  });
+}
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -396,6 +426,7 @@ export function decorateMain(main) {
   decorateBlocks(main);
   decorateH3(main);
   decorateLinkedPictures(main);
+  decorateLinks(main);
 }
 
 /**
@@ -404,6 +435,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   getLocale(); // set document.documentElement.lang for SEO
+  document.title += ' - Service Now';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {

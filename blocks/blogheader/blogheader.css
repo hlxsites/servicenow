@@ -19,7 +19,7 @@ nav#blogheader ul {
   margin: 0;
   margin-bottom: 3rem;
   width: 100%;
-  background-color: var(--text-color);
+  background-color: var(--arc-color-brandblue-900);
 }
 
 nav#blogheader li {

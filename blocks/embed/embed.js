@@ -1,3 +1,4 @@
+import { readBlockConfig } from '../../scripts/aem.js';
 /*
  * Embed Block
  * Show videos and social posts directly on your page
@@ -55,7 +56,24 @@ const embedTwitter = (url) => {
   return embedHTML;
 };
 
-const loadEmbed = (block, link, autoplay) => {
+const embedBrightcove = (videoid, account, player) => {
+  const embedHTML = `
+   <div class="brightcove-video-wrapper">
+   <video-js
+   data-video-id="${videoid}"
+   data-account="${account}"
+   data-player="${player}"
+   data-embed="default"
+   data-application-id=""
+   class="video-js video-target"
+   controls>
+   </video-js>
+   </div>
+  `;
+  return embedHTML;
+};
+
+const loadEmbed = (block, link, blockConfig, autoplay) => {
   if (block.classList.contains('embed-is-loaded')) {
     return;
   }
@@ -76,10 +94,24 @@ const loadEmbed = (block, link, autoplay) => {
   ];
 
   const config = EMBEDS_CONFIG.find((e) => e.match.some((match) => link.includes(match)));
-  const url = new URL(link);
+  const url = link ? new URL(link) : '';
+
   if (config) {
     block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
+  } else if (block.classList.contains('brightcove')) {
+    const { videoid } = blockConfig;
+    if (!videoid) {
+      console.error('Brightcove video id is not provided');
+      return;
+    }
+    const account = blockConfig.account || '5703385908001';
+    const player = blockConfig.player || 'default';
+    block.innerHTML = embedBrightcove(videoid, account, player);
+    const script = document.createElement('script');
+    script.setAttribute('src', `https://players.brightcove.net/${account}/${player}_default/index.min.js`);
+    block.querySelector('div').append(script);
+    block.classList = 'block embed embed-brightcove';
   } else {
     block.innerHTML = getDefaultEmbed(url);
     block.classList = 'block embed';
@@ -89,7 +121,8 @@ const loadEmbed = (block, link, autoplay) => {
 
 export default function decorate(block) {
   const placeholder = block.querySelector('picture');
-  const link = block.querySelector('a').href;
+  const link = block.querySelector('a') ? block.querySelector('a').href : '';
+  const blockConfig = readBlockConfig(block);
   block.textContent = '';
 
   if (placeholder) {
@@ -98,14 +131,14 @@ export default function decorate(block) {
     wrapper.innerHTML = '<div class="embed-placeholder-play"><button title="Play"></button></div>';
     wrapper.prepend(placeholder);
     wrapper.addEventListener('click', () => {
-      loadEmbed(block, link, true);
+      loadEmbed(block, link, blockConfig, true);
     });
     block.append(wrapper);
   } else {
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) {
         observer.disconnect();
-        loadEmbed(block, link);
+        loadEmbed(block, link, blockConfig);
       }
     });
     observer.observe(block);
