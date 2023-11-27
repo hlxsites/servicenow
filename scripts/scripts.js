@@ -359,33 +359,34 @@ function decorateH3(main) {
  * Checks for the same domain or not and if ends with pdf
  */
 function isSameDomainOrPdf(url) {
-  // Create an anchor element to parse the URL
-  const ancElement = document.createElement('a');
-  ancElement.href = url;
-
-  // Check if the URL ends with ".pdf" or is from the same domain
+  const ancUrl = (url.indexOf('://') > 0 || url.indexOf('//') === 0)
+    ? new URL(url)
+    : new URL(window.location.origin + url);
   return (
-    window.location.hostname === ancElement.hostname || ancElement.pathname.toLowerCase().endsWith('.pdf')
+    window.location.hostname === ancUrl.hostname
+    || ancUrl.pathname.toLowerCase().endsWith('.pdf')
+    || ancUrl.pathname.toLowerCase().endsWith('.hlx.live')
+    || ancUrl.pathname.toLowerCase().endsWith('.hlx.page')
+    || ancUrl.hostname.endsWith('servicenow.com')
   );
 }
 
-function handleLinks(main) {
+function decorateLinks(main) {
   // Get all anchor elements within the main container
-  const links = main.getElementsByTagName('a');
+  const links = main.querySelectorAll('a');
 
   // Loop through each anchor element and add a target based on the business condition
-  for (let i = 0; i < links.length; i += 1) {
-    const link = links[i];
+  links.forEach((link) => {
     const href = link.getAttribute('href');
 
-    // Check if the link is from the same domain
+    // Check if the link is from the same domain or ends with ".pdf"
     if (!isSameDomainOrPdf(href)) {
       // Add a target attribute to open in a new tab for external links
       link.setAttribute('target', '_blank');
     } else {
       link.setAttribute('target', '_self');
     }
-  }
+  });
 }
 /**
  * Decorates the main element.
@@ -400,7 +401,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateH3(main);
-  handleLinks(main);
+  decorateLinks(main);
 }
 
 /**
