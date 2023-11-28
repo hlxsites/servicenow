@@ -356,6 +356,34 @@ function decorateH3(main) {
 }
 
 /**
+ * Wraps images followed by links within a matching <a> tag.
+ * @param {Element} container The container element
+ */
+function decorateLinkedPictures(container) {
+  [...container.querySelectorAll('picture')]
+    .filter((picture) => {
+      const parent = picture.parentElement;
+      const link = parent.nextElementSibling?.querySelector('a[href]');
+      try {
+        return parent.childElementCount === 1 && link
+          && new URL(link.href).pathname === new URL(link.textContent).pathname
+          && link.parentElement.childElementCount === 1;
+      } catch (err) {
+        return false;
+      }
+    })
+    .forEach((picture) => {
+      const parent = picture.parentElement;
+      const link = parent.nextElementSibling.querySelector('a[href]');
+      link.className = '';
+      link.innerHTML = '';
+      link.append(picture);
+      link.parentElement.classList.toggle('button-container', false);
+      parent.remove();
+    });
+}
+
+/**
  * Checks for the same domain or not and if ends with pdf
  */
 function isSameDomainOrPdf(url) {
@@ -398,6 +426,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateH3(main);
+  decorateLinkedPictures(main);
   decorateLinks(main);
 }
 
