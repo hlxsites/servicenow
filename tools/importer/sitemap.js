@@ -41,11 +41,11 @@ async function main() {
   for (let i = 0; i < urlElements.length; i++) {
     const urlElement = urlElements[i];
     urls.push(urlElement.getElementsByTagName('loc')[0].textContent);
-    edsURL.push(new URL(new URL(urls[i]).pathname, 'https://main--aemeds--servicenow-martech.hlx.live/').toString());
+    edsURL.push(new URL(new URL(urls[i]).pathname.replace('.html', ''), 'https://main--aemeds--servicenow-martech.hlx.live/').toString());
   }
 
   //urls.forEach((url) => console.log(url));
-  //edsURL.forEach((url) => console.log(url));
+  edsURL.forEach((url) => console.log(url));
 }
 
 main();
