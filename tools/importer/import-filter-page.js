@@ -29,7 +29,7 @@ function jsonRenditionURL(url, depth = 1) {
 }
 
 function getAllTags() {
-    const tagsURL = 'https://main--servicenow--hlxsites.hlx.live/blogs/tags.json';
+    const tagsURL = 'https://main--servicenow--hlxsites.hlx.live/drafts/import/tags.json';
     const response = fetchSync('GET', tagsURL);
     if (response.status === 200) {
         return JSON.parse(response.body);
