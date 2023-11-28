@@ -192,7 +192,7 @@ export default async function decorate(block) {
   await Promise.all(cardInfos.map(async (cardInfo, idx) => {
     if (!cardInfo) return;
     if (Array.isArray(cardInfos[idx])) {
-      block.append(...await Promise.all(cardInfos[idx].map(renderCard)));
+      block.append(...await Promise.all(cardInfos[idx].map((card) => renderCard(card))));
     } else {
       block.append(await renderCard(cardInfos[idx]));
     }
