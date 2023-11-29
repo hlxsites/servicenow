@@ -119,6 +119,18 @@ p {
   margin: 0 0 12px;
 }
 
+p.image-left {
+  float: left;
+  width: 25%;
+}
+
+p.content-right {
+  float: left;
+  display: inline-block;
+  width: 75%;
+  padding-left: 24px;
+}
+
 h1, h2, h3,
 h4, h5, h6 {
   font-family: var(--heading-font-family);
@@ -382,6 +394,7 @@ body:not(.blog-home-page) main .section:nth-child(2)::after {
   background: url('/images/blog-diagonal-lines.webp') repeat 0 0;
   margin: 2.4rem auto 3rem;
   max-width: calc(1200px - 2.4rem);
+  clear: both;
 }
 
 @media (max-width: 1224px) {
