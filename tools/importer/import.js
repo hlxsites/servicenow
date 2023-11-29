@@ -58,11 +58,14 @@ function getOriginalNewTrendTag(originalTags) {
 }
 
 function isServiceNowLink(link) {
-    return (link.host.startsWith('localhost') || link.host.endsWith('servicenow.com'));
+    // we don't want to overwrite subdomains, so we use strict host check
+    // see https://github.com/hlxsites/servicenow/issues/124
+    return (link.host.startsWith('localhost')
+        || link.host === 'www.servicenow.com'
+        || link.host === 'servicenow.com');
 }
 
 function isBlogLink(link) {
-
     return isServiceNowLink(link) &&
         (link.pathname.startsWith('/blogs')
         || link.pathname.startsWith('/fr/blogs')
