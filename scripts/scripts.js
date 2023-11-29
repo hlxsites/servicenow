@@ -436,7 +436,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   getLocale(); // set document.documentElement.lang for SEO
-  document.title += ' - Service Now';
+  document.title += ' - ServiceNow Blog';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
