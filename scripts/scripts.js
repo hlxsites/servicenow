@@ -413,6 +413,16 @@ function decorateLinks(main) {
     }
   });
 }
+
+function decorateAuthorBlock(main) {
+  const isAuthorPage = document.body.classList.contains('blog-author');
+  const authorBlock = main.querySelector('.section:not(.blogheader-container):not(.blog-list-container):not(.sidebar)');
+  if (isAuthorPage && authorBlock) {
+    authorBlock.querySelectorAll('p')[0]?.classList.add('image-left');
+    authorBlock.querySelectorAll('p')[1]?.classList.add('content-right');
+  }
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -428,6 +438,7 @@ export function decorateMain(main) {
   decorateH3(main);
   decorateLinkedPictures(main);
   decorateLinks(main);
+  decorateAuthorBlock(main);
 }
 
 /**
