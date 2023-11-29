@@ -29,17 +29,12 @@ async function localizedTopic(topic) {
   return topicResponse[getLocale()] || topicResponse['en-US'] || topicResponse.identifier || topic;
 }
 
-function validPostImage(image) {
-  if (image.startsWith(window.origin)) return image;
-  return (image.charAt(0) === '.') ? window.origin + image.substring(1) : window.origin + image;
-}
-
 export async function renderCard(post, renderTopic = true) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
-          createOptimizedPicture(validPostImage(post.image), post.header),
+          createOptimizedPicture(new URL(post.image, window.origin).toString(), post.header),
         ),
         renderTopic && post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
