@@ -34,7 +34,7 @@ export async function renderCard(post, renderTopic = true) {
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
-          createOptimizedPicture(post.image, post.header),
+          createOptimizedPicture(validPostImage(post.image), post.header),
         ),
         renderTopic && post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
@@ -43,6 +43,12 @@ export async function renderCard(post, renderTopic = true) {
       ),
     )
   );
+}
+
+
+function validPostImage(image) {
+   if (image.startsWith(window.origin)) return image;
+   return (image.charAt(0) === '.') ? window.origin+image.substring(1) : window.origin+image;
 }
 
 function isApiCall(path) {
