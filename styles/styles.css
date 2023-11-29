@@ -198,10 +198,6 @@ dl, ol, ul, pre, blockquote {
   margin-bottom: 1em;
 }
 
-main ol, main ul {
-  list-style: unset;
-}
-
 main li {
   font-size: 1.4rem;
   -webkit-font-smoothing: antialiased;
