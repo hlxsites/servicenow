@@ -34,7 +34,7 @@ export async function renderCard(post, renderTopic = true) {
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
-          createOptimizedPicture(post.image, post.header),
+          createOptimizedPicture(new URL(post.image, window.origin).toString(), post.header),
         ),
         renderTopic && post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
