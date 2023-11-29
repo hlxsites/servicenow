@@ -29,6 +29,11 @@ async function localizedTopic(topic) {
   return topicResponse[getLocale()] || topicResponse['en-US'] || topicResponse.identifier || topic;
 }
 
+function validPostImage(image) {
+  if (image.startsWith(window.origin)) return image;
+  return (image.charAt(0) === '.') ? window.origin + image.substring(1) : window.origin+image;
+}
+
 export async function renderCard(post, renderTopic = true) {
   return (
     div({ class: 'card' },
@@ -43,12 +48,6 @@ export async function renderCard(post, renderTopic = true) {
       ),
     )
   );
-}
-
-
-function validPostImage(image) {
-   if (image.startsWith(window.origin)) return image;
-   return (image.charAt(0) === '.') ? window.origin+image.substring(1) : window.origin+image;
 }
 
 function isApiCall(path) {
