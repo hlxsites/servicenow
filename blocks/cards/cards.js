@@ -6,6 +6,20 @@ import {
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
 
+async function waitForEagerImageLoad(img) {
+  if (!img) return;
+
+  await new Promise((resolve) => {
+    if (img && !img.complete) {
+      img.setAttribute('loading', 'eager');
+      img.addEventListener('load', resolve);
+      img.addEventListener('error', resolve);
+    } else {
+      resolve();
+    }
+  });
+}
+
 export async function fetchHtml(path) {
   const response = await fetch(path);
   if (!response.ok) {
@@ -197,4 +211,8 @@ export default async function decorate(block) {
       block.append(await renderCard(cardInfos[idx]));
     }
   }));
+
+  if (block.classList.contains('teaser')) {
+    await waitForEagerImageLoad(block.querySelector('img'));
+  }
 }
