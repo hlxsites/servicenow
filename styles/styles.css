@@ -345,6 +345,7 @@ main img {
   width: auto;
   height: auto;
   vertical-align: middle;
+  margin-bottom: 24px;
 }
 
 .icon {
