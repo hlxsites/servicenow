@@ -34,6 +34,8 @@ export default async function decorate(block) {
         'data-domain': dataDomain,
         'data-myaccount': 'hide',
         'data-search': 'hide',
+        'data-sourceId': 'blogs',
+        'data-lslinkshard': 'on',
       }),
     );
 
