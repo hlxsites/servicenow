@@ -32,11 +32,12 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
+  aspect-ratio: 764 / 355;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .card .card-thumbnail img {
-    aspect-ratio: 764 / 355;
+    aspect-ratio: auto;
   }
 }
 
