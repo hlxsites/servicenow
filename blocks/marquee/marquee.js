@@ -23,6 +23,20 @@ function optimisedImage(imageUrl) {
   return `${origin}${pathname}?width=1920&format=webply&optimize=medium`;
 }
 
+function parseBrightcoveUrl(brightcoveUrl) {
+  const url = new URL(brightcoveUrl);
+  const videoId = url.searchParams.get('videoId');
+  const pathnameParts = url.pathname.split('/');
+  const accountId = pathnameParts[1];
+  const player = pathnameParts[2].split('_')[0];
+
+  return {
+    'account-id': accountId,
+    'video-id': videoId,
+    'player-id': player,
+  }
+}
+
 export default async function decorate(block) {
   const background = block.querySelector('picture');
   background && background.parentElement.remove();
@@ -83,9 +97,7 @@ export default async function decorate(block) {
               size: 'regular',
               label: 'icon-leading',
               surface,
-              'account-id': '5703385908001',
-              'video-id': '6320941653112',
-              'player-id': 'default',
+              ...parseBrightcoveUrl(primaryButton.href),
               autoplay: '',
               slot: 'button-primary',
             },
@@ -99,7 +111,7 @@ export default async function decorate(block) {
               mode: 'link',
               size: 'regular',
               label: 'icon-trailing',
-              href: '/lpdem/demonow-all.html',
+              href: secondaryButton.href,
               target: '_self',
               surface,
               slot: 'button-secondary'
