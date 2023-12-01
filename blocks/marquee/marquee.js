@@ -19,7 +19,7 @@ function srcSet(imageUrl) {
 function optimisedImage(imageUrl) {
   const url = new URL(imageUrl.split('?')[0], window.location.href);
   const { origin, pathname } = url;
-  return `${origin}${pathname}?width=2560&format=webply&optimize=high`;
+  return `${origin}${pathname}?width=1920&format=webply&optimize=medium`;
 }
 
 export default async function decorate(block) {
