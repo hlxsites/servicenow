@@ -97,7 +97,8 @@ export default async function decorate(block) {
             slot: 'asset',
             alt: background.querySelector('img').alt,
             position: 'top',
-            fit: 'cover', 
+            fit: 'cover',
+            // TODO use the src set, but doesn't seem to be supported without specific extensions
             srcset: optimisedImage(background.querySelector('img').src),
           },
         ),
