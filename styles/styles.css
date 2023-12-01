@@ -366,12 +366,12 @@ main img {
   padding: 0 1.2rem;
 }
 
-@media (min-width: 900px) {
+/* @media (min-width: 900px) {
   .section > div {
     max-width: 1200px;
     margin: auto;
   }
-}
+} */
 
 /* section metadata */
 body:not(.blog-home-page) main .section:nth-child(2)::after {
