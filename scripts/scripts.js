@@ -280,6 +280,15 @@ function isArticlePage() {
   return blogPage;
 }
 
+function buildAuthorBlock() {
+  const isAuthorPage = document.body.classList.contains('blog-author');
+  const authorBlock = document.querySelector('.blog-author h1').parentNode;
+  if (isAuthorPage && authorBlock) {
+    authorBlock.querySelectorAll('p')[0]?.classList.add('image-left');
+    authorBlock.querySelectorAll('p')[1]?.classList.add('content-right');
+  }
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -305,7 +314,7 @@ function buildAutoBlocks(main) {
     }
 
     buildBlogHeader(main);
-    buildAuthorBlock(main);
+    buildAuthorBlock();
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -413,15 +422,6 @@ function decorateLinks(main) {
       link.setAttribute('target', '_self');
     }
   });
-}
-
-function buildAuthorBlock(main) {
-  const isAuthorPage = document.body.classList.contains('blog-author');
-  const authorBlock = document.querySelector('.blog-author h1').parentNode;
-  if (isAuthorPage && authorBlock) {
-    authorBlock.querySelectorAll('p')[0]?.classList.add('image-left');
-    authorBlock.querySelectorAll('p')[1]?.classList.add('content-right');
-  }
 }
 
 /**
