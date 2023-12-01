@@ -97,3 +97,11 @@ export function article(...items) { return domEl('article', ...items); }
 export function strong(...items) { return domEl('strong', ...items); }
 export function select(...items) { return domEl('select', ...items); }
 export function option(...items) { return domEl('option', ...items); }
+
+export function arcMarqueeLarge(...items) { return domEl('arc-marquee-large', ...items); }
+export function arcHeadingBlock(...items) { return domEl('arc-heading-block', ...items); }
+export function arcHeading(...items) { return domEl('arc-heading', ...items); }
+export function arcXText(...items) { return domEl('arc-x-text', ...items); }
+export function richText(...items) { return domEl('rich-text', ...items); }
+export function arcButton(...items) { return domEl('arc-button', ...items); }
+export function arcImage(...items) { return domEl('arc-image', ...items); }
