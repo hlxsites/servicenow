@@ -43,12 +43,18 @@ export default async function decorate(block) {
 
   block.innerHTML = '';
 
+  let surface = 'dark';
+  const surfaceVariant = [...block.classList].find((clazz) => clazz.startsWith('surface-'));
+  if (surfaceVariant) {
+    surface = surfaceVariant.split('-')[1];
+  }
+
   block.append(
     div({ class: 'arc-marquee-large' },
       arcMarqueeLarge(
         { 
           class: 'arc-ds-component',
-          surface: 'dark',
+          surface,
           layout: 'asset-right',
           appearance: 'full-width',
           background: 'white',
@@ -57,13 +63,13 @@ export default async function decorate(block) {
         },
         arcHeadingBlock(
           {
-            surface: 'dark',
+            surface,
             alignment: 'left',
             orientation: 'vertical',
             'heading-level': '1',
             slot: 'content',
           },
-          arcHeading({ 'heading-level': "1", surface: 'dark', slot: 'heading' },
+          arcHeading({ 'heading-level': "1", surface, slot: 'heading' },
             header.textContent.toUpperCase(),
           ),
           arcXText({ slot: 'description' },
@@ -76,7 +82,7 @@ export default async function decorate(block) {
               mode: 'button',
               size: 'regular',
               label: 'icon-leading',
-              surface: 'dark',
+              surface,
               'account-id': '5703385908001',
               'video-id': '6320941653112',
               'player-id': 'default',
@@ -95,7 +101,7 @@ export default async function decorate(block) {
               label: 'icon-trailing',
               href: '/lpdem/demonow-all.html',
               target: '_self',
-              surface: 'dark',
+              surface,
               slot: 'button-secondary'
             },
             secondaryButtonIcon,
