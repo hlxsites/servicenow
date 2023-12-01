@@ -1,5 +1,27 @@
 import { arcButton, arcHeading, arcHeadingBlock, arcImage, arcMarqueeLarge, arcXText, div, richText } from '../../scripts/dom-helpers.js';
 
+function srcSet(imageUrl) {
+  const set = [
+    { width: 2560, optimise: 'high' },
+    { width: 1920, optimise: 'high' },
+    { width: 1920, optimise: 'high' },
+    { width: 1280, optimise: 'medium' },
+    { width: 960, optimise: 'medium' },
+    { width: 640, optimise: 'medium' },
+  ]
+
+  const url = new URL(imageUrl.split('?')[0], window.location.href);
+  const { origin, pathname } = url;
+
+  return set.map((src) => `${origin}${pathname}?width=${src.width}&format=webply&optimize=${src.optimise}`).join(', ');
+}
+
+function optimisedImage(imageUrl) {
+  const url = new URL(imageUrl.split('?')[0], window.location.href);
+  const { origin, pathname } = url;
+  return `${origin}${pathname}?width=2560&format=webply&optimize=high`;
+}
+
 export default async function decorate(block) {
   const background = block.querySelector('picture');
   background && background.parentElement.remove();
@@ -76,7 +98,7 @@ export default async function decorate(block) {
             alt: background.querySelector('img').alt,
             position: 'top',
             fit: 'cover', 
-            srcset: background.querySelector('img').src, // TODO get all src set.
+            srcset: optimisedImage(background.querySelector('img').src),
           },
         ),
       ),
