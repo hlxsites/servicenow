@@ -402,6 +402,15 @@ function decorateIcon(span, prefix = '') {
   const iconName = Array.from(span.classList)
     .find((c) => c.startsWith('icon-'))
     .substring(5);
+
+  const fontAwesomePrefix = 'fa-';
+  if (iconName.startsWith(fontAwesomePrefix)) {
+    const i = document.createElement('i');
+    i.classList.add(iconName);
+    span.replaceWith(i);
+    return;
+  }
+
   const img = document.createElement('img');
   img.dataset.iconName = iconName;
   img.alt = iconName.replace('-', ' ');

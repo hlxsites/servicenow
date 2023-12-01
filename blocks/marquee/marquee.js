@@ -1,3 +1,4 @@
+import { decorateIcons } from '../../scripts/aem.js';
 import { arcButton, arcHeading, arcHeadingBlock, arcImage, arcMarqueeLarge, arcXText, div, richText } from '../../scripts/dom-helpers.js';
 
 function srcSet(imageUrl) {
@@ -26,9 +27,16 @@ export default async function decorate(block) {
   const background = block.querySelector('picture');
   background && background.parentElement.remove();
   const primaryButton = block.querySelector('.button.primary');
-  primaryButton && primaryButton.remove();
+  const primaryButtonIcon = primaryButton.querySelector('i');
+  primaryButtonIcon.classList.add('fa-light');
+  primaryButtonIcon.slot = 'label-icon';
+  primaryButton.remove();
+
   const secondaryButton = block.querySelector('.button.secondary');
-  secondaryButton && secondaryButton.remove();
+  const secondaryButtonIcon = secondaryButton.querySelector('i');
+  secondaryButtonIcon.slot = 'label-icon';
+  secondaryButtonIcon.classList.add('fa-light');
+  secondaryButton.remove();
 
   const header = block.querySelector('h1');
   const subheader = block.querySelector('p:not(.button-container)');
@@ -75,6 +83,7 @@ export default async function decorate(block) {
               autoplay: '',
               slot: 'button-primary',
             },
+            primaryButtonIcon,
             arcXText({ slot: 'label-text' }, primaryButton.textContent),
           ),
           arcButton(
@@ -89,6 +98,7 @@ export default async function decorate(block) {
               surface: 'dark',
               slot: 'button-secondary'
             },
+            secondaryButtonIcon,
             arcXText({ slot: 'label-text' }, secondaryButton.textContent),
           ),
         ),
