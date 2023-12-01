@@ -127,7 +127,7 @@ p.image-left {
 }
 
 p.content-right {
-  float: left;
+  float: right;
   display: inline-block;
   width: 75%;
   padding-left: 24px;
