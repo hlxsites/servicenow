@@ -305,6 +305,7 @@ function buildAutoBlocks(main) {
     }
 
     buildBlogHeader(main);
+    buildAuthorBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -414,9 +415,9 @@ function decorateLinks(main) {
   });
 }
 
-function decorateAuthorBlock(main) {
+function buildAuthorBlock(main) {
   const isAuthorPage = document.body.classList.contains('blog-author');
-  const authorBlock = main.querySelector('.section:not(.blogheader-container):not(.blog-list-container):not(.sidebar)');
+  const authorBlock = document.querySelector('.blog-author h1').parentNode;
   if (isAuthorPage && authorBlock) {
     authorBlock.querySelectorAll('p')[0]?.classList.add('image-left');
     authorBlock.querySelectorAll('p')[1]?.classList.add('content-right');
@@ -438,7 +439,6 @@ export function decorateMain(main) {
   decorateH3(main);
   decorateLinkedPictures(main);
   decorateLinks(main);
-  decorateAuthorBlock(main);
 }
 
 /**
