@@ -1,4 +1,4 @@
-import { arcHeading, arcHeadingBlock, arcMarqueeLarge, arcXText, div, richText } from "../../scripts/dom-helpers";
+import { arcButton, arcHeading, arcHeadingBlock, arcImage, arcMarqueeLarge, arcXText, div, richText } from '../../scripts/dom-helpers.js';
 
 export default async function decorate(block) {
   const background = block.querySelector('picture');
@@ -35,7 +35,46 @@ export default async function decorate(block) {
           ),
           arcXText({ slot: 'description' },
             richText(subheader.textContent),
-          )
+          ),
+          arcButton(
+            {
+              behavior: 'brightcove-modal',
+              appearance: 'solid',
+              mode: 'button',
+              size: 'regular',
+              label: 'icon-leading',
+              surface: 'dark',
+              'account-id': '5703385908001',
+              'video-id': '6320941653112',
+              'player-id': 'default',
+              autoplay: '',
+              slot: 'button-primary',
+            },
+            arcXText({ slot: 'label-text' }, primaryButton.textContent),
+          ),
+          arcButton(
+            {
+              behavior: 'default',
+              appearance: 'inline',
+              mode: 'link',
+              size: 'regular',
+              label: 'icon-trailing',
+              href: '/lpdem/demonow-all.html',
+              target: '_self',
+              surface: 'dark',
+              slot: 'button-secondary'
+            },
+            arcXText({ slot: 'label-text' }, secondaryButton.textContent),
+          ),
+        ),
+        arcImage(
+          {
+            slot: 'asset',
+            alt: background.querySelector('img').alt,
+            position: 'top',
+            fit: 'cover', 
+            srcset: background.querySelector('img').src, // TODO get all src set.
+          },
         ),
       ),
     ),
