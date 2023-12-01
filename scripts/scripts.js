@@ -364,22 +364,8 @@ async function loadLazy(doc) {
 
   await loadBlocks(main);
 
-  await Promise.all([
-    loadHeader(doc.querySelector('header')),
-    loadFooter(doc.querySelector('footer')),
-  ]);
-
-  await new Promise((resolve) => {
-    document.addEventListener('nass-header-rendered', () => {
-      // work-around
-      if (window.location.host !== 'www.servicenow.com') {
-        document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
-          .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
-      }
-      resolve();
-    });
-    window.document.dispatchEvent(new Event('DOMContentLoaded'));
-  });
+  await loadHeader(doc.querySelector('header'));
+  await loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();

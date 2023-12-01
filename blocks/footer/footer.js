@@ -24,11 +24,20 @@ export default async function decorate(block) {
       }),
     );
 
-    // trigger NaaS JS
+    // load NaaS footer code
     await Promise.all([
       loadCSS(`${dataDomain}/nas/csi/footer/v1/footerCSR.bundle.css`),
       loadScript(`${dataDomain}/nas/csi/footer/v1/footerCSR.bundle.js`),
     ]);
+
+    // trigger and wait for NaaS footer rendering
+    await new Promise((resolve) => {
+      document.addEventListener('nass-footer-rendered', () => {
+        resolve();
+      });
+      
+      document.dispatchEvent(new CustomEvent('naas-load-footer'));
+    });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e);
