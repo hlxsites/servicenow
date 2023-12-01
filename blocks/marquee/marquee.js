@@ -2,8 +2,11 @@ import { arcButton, arcHeading, arcHeadingBlock, arcImage, arcMarqueeLarge, arcX
 
 export default async function decorate(block) {
   const background = block.querySelector('picture');
+  background && background.parentElement.remove();
   const primaryButton = block.querySelector('.button.primary');
+  primaryButton && primaryButton.remove();
   const secondaryButton = block.querySelector('.button.secondary');
+  secondaryButton && secondaryButton.remove();
 
   const header = block.querySelector('h1');
   const subheader = block.querySelector('p:not(.button-container)');

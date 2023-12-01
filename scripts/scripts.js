@@ -304,7 +304,7 @@ function buildAutoBlocks(main) {
       buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-common-fragment`);
     }
 
-    buildBlogHeader(main);
+    // buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
