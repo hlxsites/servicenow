@@ -1,27 +1,6 @@
-import { decorateIcons } from '../../scripts/aem.js';
-import { arcButton, arcHeading, arcHeadingBlock, arcImage, arcMarqueeLarge, arcXText, div, richText } from '../../scripts/dom-helpers.js';
-
-function srcSet(imageUrl) {
-  const set = [
-    { width: 2560, optimise: 'high' },
-    { width: 1920, optimise: 'high' },
-    { width: 1920, optimise: 'high' },
-    { width: 1280, optimise: 'medium' },
-    { width: 960, optimise: 'medium' },
-    { width: 640, optimise: 'medium' },
-  ]
-
-  const url = new URL(imageUrl.split('?')[0], window.location.href);
-  const { origin, pathname } = url;
-
-  return set.map((src) => `${origin}${pathname}?width=${src.width}&format=webply&optimize=${src.optimise}`).join(', ');
-}
-
-function optimisedImage(imageUrl) {
-  const url = new URL(imageUrl.split('?')[0], window.location.href);
-  const { origin, pathname } = url;
-  return `${origin}${pathname}?width=1920&format=webply&optimize=medium`;
-}
+import {
+  arcButton, arcHeading, arcHeadingBlock, arcImage, arcMarqueeLarge, arcXText, div, richText,
+} from '../../scripts/dom-helpers.js';
 
 function parseBrightcoveUrl(brightcoveUrl) {
   const url = new URL(brightcoveUrl);
@@ -126,7 +105,6 @@ export default async function decorate(block) {
             alt: background.querySelector('img').alt,
             position: 'top',
             fit: 'cover',
-            // TODO use the src set, but doesn't seem to be supported without specific extensions
             srcset: background.querySelector('img').currentSrc,
           },
         ),
