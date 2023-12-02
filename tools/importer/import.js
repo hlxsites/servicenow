@@ -267,16 +267,40 @@ export default {
             console.log('Skipping h3 conversion for URL', params.originalURL)
         }
 
-        main.querySelectorAll('br').forEach((br) => {
-            const parent = br.parentElement;
-            if (!parent) return;
-            if (!parent.nextElementSibling) return;
+        let edited;
+        do {
+            edited = false;
+            const BRs = [...main.querySelectorAll('br')];
+            for (let i = 0; i < BRs.length; i++) {
+                const br = BRs[i];
+                const parent = br.parentElement;
+                if (!parent) return;
 
-            if (parent.innerHTML.trim().endsWith('<br>') && parent.nextElementSibling.tagName === 'P') {
-                parent.innerHTML += '\n' + parent.nextElementSibling.innerHTML;
-                parent.nextElementSibling.remove();
-            }
-        })
+                // used in https://www.servicenow.com/blogs/2022/data-augmentation-intent-classification.html
+                if (parent.previousElementSibling
+                    && parent.innerHTML.trim().startsWith('<br>\n<sup>')
+                    && parent.previousElementSibling.tagName === 'P') {
+
+                    while(parent.querySelector('br:last-child')) {
+                        parent.querySelector('br:last-child').remove();
+                    }
+
+                    parent.previousElementSibling.innerHTML += '\n<br>\n' + parent.innerHTML;
+                    parent.remove();
+                    edited = true;
+                    break;
+                }
+
+                if (parent.nextElementSibling
+                    && parent.innerHTML.trim().endsWith('<br>')
+                    && parent.nextElementSibling.tagName === 'P') {
+                    parent.innerHTML += '\n' + parent.nextElementSibling.innerHTML;
+                    parent.nextElementSibling.remove();
+                    edited = true;
+                    break;
+                }
+            };
+        } while(edited);
 
         return main;
     },
