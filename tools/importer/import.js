@@ -173,6 +173,10 @@ const createMetadataBlock = (main, document, url) => {
     return meta;
 };
 
+const h3ConvertExceptions = [
+    'https://www.servicenow.com/blogs/2022/nvidia-gtc-22-leaders-ai-panel-q-and-a.html',
+];
+
 export default {
     /**
      * Apply DOM operations to the provided document and return
@@ -187,6 +191,7 @@ export default {
                        // eslint-disable-next-line no-unused-vars
                        document, url, html, params,
                    }) => {
+
         const main = document.querySelector('body');
 
         createMetadataBlock(main, document, url);
@@ -194,7 +199,6 @@ export default {
         // CLEANUP
         main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
         // TODO is this ok?
-        main.querySelectorAll('br, nbsp').forEach((el) => el.remove());
         main.querySelectorAll('img[src^="/akam/13/pixel"]').forEach((el) => el.remove());
         // Remove copyright as we create a fragment with it.
         main.querySelectorAll('p').forEach((paragraph) => {
@@ -216,7 +220,7 @@ export default {
 
         main.querySelectorAll('a img, a picture').forEach((image) => {
             const link = image.closest('a');
-            link.before(image, document.createElement('br'));
+            link.parentElement.before(image);
             if (link.textContent.trim() === '') {
               link.textContent = link.href;
             }
@@ -245,18 +249,34 @@ export default {
             youtubeIframe.replaceWith(WebImporter.DOMUtils.createTable([['Embed'], [ youtubeLink ]], document));
         });
 
-        // Replace legacy standlone bold elements with h3s
-        main.querySelectorAll('b').forEach((bold) => {
-            if (bold.textContent.trim() === bold.parentElement.textContent.trim()
-                && !bold.textContent.startsWith('Click')
-                && !bold.closest('ul')
-                && !bold.closest('ol')
-            ) {
-                const h3 = document.createElement('h3');
-                h3.textContent = bold.textContent;
-                bold.parentElement.replaceWith(h3);
+        if (!h3ConvertExceptions.includes(params.originalURL)) {
+            // Replace legacy standlone bold elements with h3s
+            main.querySelectorAll('b').forEach((bold) => {
+                if (bold.textContent.trim() === bold.parentElement.textContent.trim()
+                    && (bold.textContent.length < 100)
+                    && !bold.textContent.startsWith('Click')
+                    && !bold.closest('ul')
+                    && !bold.closest('ol')
+                ) {
+                    const h3 = document.createElement('h3');
+                    h3.textContent = bold.textContent;
+                    bold.parentElement.replaceWith(h3);
+                }
+            });
+        } else {
+            console.log('Skipping h3 conversion for URL', params.originalURL)
+        }
+
+        main.querySelectorAll('br').forEach((br) => {
+            const parent = br.parentElement;
+            if (!parent) return;
+            if (!parent.nextElementSibling) return;
+
+            if (parent.innerHTML.trim().endsWith('<br>') && parent.nextElementSibling.tagName === 'P') {
+                parent.innerHTML += '\n' + parent.nextElementSibling.innerHTML;
+                parent.nextElementSibling.remove();
             }
-        });
+        })
 
         return main;
     },
