@@ -127,7 +127,7 @@ export default async function decorate(block) {
             position: 'top',
             fit: 'cover',
             // TODO use the src set, but doesn't seem to be supported without specific extensions
-            srcset: optimisedImage(background.querySelector('img').src),
+            srcset: background.querySelector('img').currentSrc,
           },
         ),
       ),
