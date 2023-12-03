@@ -17,7 +17,7 @@ import {
   readBlockConfig,
 } from './aem.js';
 import {
-  a, div, p, span,
+  a, div, span,
 } from './dom-helpers.js';
 import ffetch from './ffetch.js';
 
@@ -31,19 +31,6 @@ export const TAGS_QUERY_INDEX = '/blogs/tags.json';
 
 export function getTemplate() {
   return toClassName(getMetadata('template'));
-}
-
-async function decorateTemplate(main) {
-  const template = toClassName(getMetadata('template'));
-  if (!template) return;
-
-  if (template.startsWith('blog')) {
-    await loadTemplateModule(main, 'blog-commons');
-  }
-
-  if (TEMPLATES.includes(template)) {
-    await loadTemplateModule(main, template);
-  }
 }
 
 /**
@@ -61,6 +48,19 @@ async function loadTemplateModule(main, template) {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(`Template ${template}  Auto Blocking failed`, error);
+  }
+}
+
+async function decorateTemplate(main) {
+  const template = toClassName(getMetadata('template'));
+  if (!template) return;
+
+  if (template.startsWith('blog')) {
+    await loadTemplateModule(main, 'blog-commons');
+  }
+
+  if (TEMPLATES.includes(template)) {
+    await loadTemplateModule(main, template);
   }
 }
 
@@ -258,9 +258,8 @@ function buildAutoBlocks(main) {
     return;
   }
 
-  // Global Autoblocks
-
   try {
+    // Global Autoblocks
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);

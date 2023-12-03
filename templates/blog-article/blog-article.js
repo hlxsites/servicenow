@@ -18,7 +18,7 @@ function buildArticleHeader(main) {
   const publicationDate = formatDate(getMetadata('publication-date'));
 
   const blogheaderSection = main.querySelector('.blogheader').parentElement;
-  
+
   blogheaderSection.after(
     div( // section
       buildBlock('article-header', [
