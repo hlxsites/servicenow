@@ -1,7 +1,7 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import {
-  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags,
+  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags, getTemplate,
 } from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
@@ -155,7 +155,8 @@ let waitedForLCP = false;
 async function optimiseLCP(block) {
   if (waitedForLCP) return;
 
-  if (block.classList.contains('teaser')) {
+  const template = getTemplate();
+  if (template && template === 'blog-home-page' && block.classList.contains('teaser')) {
     waitedForLCP = true;
     await waitForEagerImageLoad(block.querySelector('img'));
   }
