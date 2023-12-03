@@ -30,7 +30,7 @@ export default async function decorate(block) {
     loadScript('https://platform-api.sharethis.com/js/sharethis.js#property=5cae6f10a8698b001266ffd9&product=inline-share-buttons');
   }
 
-  if (window.location.origin.endsWith('hlx.live') || window.location.origin.endsWith('hlx.live')) {
+  if (window.location.hostname !== 'www.servicenow.com' && window.location.hostname !== 'localhost') {
     block.dataset.url = `https://www.servicenow.com${window.location.pathname}.html`;
   }
 
