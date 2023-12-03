@@ -21,9 +21,48 @@ import {
 } from './dom-helpers.js';
 import ffetch from './ffetch.js';
 
+const TEMPLATES = [
+  'blog-article',
+];
+
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
 export const TAGS_QUERY_INDEX = '/blogs/tags.json';
+
+export function getTemplate() {
+  return toClassName(getMetadata('template'));
+}
+
+async function decorateTemplate(main) {
+  const template = toClassName(getMetadata('template'));
+  if (!template) return;
+
+  if (template.startsWith('blog')) {
+    await loadTemplateModule(main, 'blog-commons');
+  }
+
+  if (TEMPLATES.includes(template)) {
+    await loadTemplateModule(main, template);
+  }
+}
+
+/**
+ * Run template specific decoration code.
+ * @param {Element} main The container element
+ */
+async function loadTemplateModule(main, template) {
+  try {
+    const cssPromise = loadCSS(`${window.hlx.codeBasePath}/templates/${template}/${template}.css`);
+    const mod = await import(`../templates/${template}/${template}.js`);
+    if (mod.default) {
+      await mod.default(main);
+    }
+    await cssPromise;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Template ${template}  Auto Blocking failed`, error);
+  }
+}
 
 export async function fetchAPI(path) {
   const response = await fetch(path);
@@ -39,22 +78,6 @@ export async function fetchAPI(path) {
     return null;
   }
   return json;
-}
-
-/**
- * Builds hero block and prepends to main in a new section.
- * @param {Element} main The container element
- */
-// eslint-disable-next-line no-unused-vars
-function buildHeroBlock(main) {
-  const h1 = main.querySelector('h1');
-  const picture = main.querySelector('picture');
-  // eslint-disable-next-line no-bitwise
-  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
-    const section = document.createElement('div');
-    section.append(buildBlock('hero', { elems: [picture, h1] }));
-    main.prepend(section);
-  }
 }
 
 export const FILTERS = {
@@ -193,48 +216,6 @@ export function formatDate(date) {
   });
 }
 
-function buildBlogHeader(main) {
-  const section = document.createElement('div');
-  section.append(buildBlock('blogheader', { elems: [] }));
-  main.prepend(section);
-}
-
-/**
- * Builds an article header and prepends to main in a new section.
- * @param main
- */
-function buildArticleHeader(main) {
-  if (main.querySelector('.article-header')) {
-    // already got an article header
-    return;
-  }
-
-  //
-  const author = getMetadata('author');
-  const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
-  const publicationDate = formatDate(getMetadata('publication-date'));
-  //
-  main.prepend(div(buildBlock('article-header', [
-    [main.querySelector('h1')],
-    [
-      p(a({ href: authorURL }, author)),
-      p(publicationDate),
-    ],
-  ])));
-}
-
-function buildArticleCopyright(main) {
-  if (main.querySelector('.article-copyright')) {
-    return;
-  }
-
-  main.append(div(buildBlock('article-copyright', { elems: [] })));
-}
-
-function buildArticleSocialShare(main) {
-  main.append(div(buildBlock('social-share', { elems: [] })));
-}
-
 function hasInlinedSidebar(main) {
   const sectionMetas = [...main.querySelectorAll('div.section-metadata')];
   for (let i = sectionMetas.length - 1; i >= 0; i -= 1) {
@@ -254,7 +235,7 @@ function hasInlinedSidebar(main) {
  * Builds an article sidebar and appends it to main in a new section.
  * @param main
  */
-function buildSidebar(main, sidebarPath) {
+export function buildSidebar(main, sidebarPath) {
   if (!hasInlinedSidebar(main)) {
     // the article did not come with an inline sidebar
     const sidebarBlock = buildBlock('fragment', [
@@ -268,19 +249,6 @@ function buildSidebar(main, sidebarPath) {
 }
 
 /**
- * Returns true if the page is an article based on the template metadata.
- * @returns {boolean}
- */
-function isArticlePage() {
-  let blogPage = false;
-  const template = getMetadata('template');
-  if (template && template === 'Blog Article') {
-    blogPage = true;
-  }
-  return blogPage;
-}
-
-/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
@@ -289,22 +257,10 @@ function buildAutoBlocks(main) {
   if (main.parentNode !== document.body) { // don't build auto blocks in fragments
     return;
   }
+
+  // Global Autoblocks
+
   try {
-    const locInfo = getLocaleInfo();
-
-    if (isArticlePage()) {
-      buildArticleHeader(main);
-      buildArticleCopyright(main);
-      buildArticleSocialShare(main);
-      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
-    }
-
-    const template = toClassName(getMetadata('template'));
-    if (['blog-topic', 'blog-category', 'blog-year', 'blog-author'].includes(template)) {
-      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-common-fragment`);
-    }
-
-    buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -436,10 +392,10 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   getLocale(); // set document.documentElement.lang for SEO
-  document.title += ' - ServiceNow Blog';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    await decorateTemplate(main);
     decorateMain(main);
     await loadEagerBlocks(main);
     await detectSidebar(main);
