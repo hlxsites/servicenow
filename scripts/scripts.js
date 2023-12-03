@@ -451,7 +451,7 @@ async function loadEager(doc) {
     await loadEagerBlocks(main);
     await detectSidebar(main);
     document.body.classList.add('appear');
-    if (LCP_WAIT_SKIP_TEMPLATE.includes(getTemplate())) {
+    if (!LCP_WAIT_SKIP_TEMPLATE.includes(getTemplate())) {
       await waitForLCP(LCP_BLOCKS);
     }
   }
