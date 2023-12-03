@@ -293,6 +293,7 @@ export default {
                 }
 
                 if (parent.nextElementSibling
+                    && parent.tagName !== 'H3'
                     && parent.innerHTML.trim().endsWith('<br>')
                     && parent.nextElementSibling.tagName === 'P') {
                     parent.innerHTML += '\n' + parent.nextElementSibling.innerHTML;
