@@ -22,8 +22,15 @@ import {
 import ffetch from './ffetch.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
+const LCP_WAIT_SKIP_TEMPLATE = [
+  'blog-home-page',
+];
 export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
 export const TAGS_QUERY_INDEX = '/blogs/tags.json';
+
+export function getTemplate() {
+  return toClassName(getMetadata('template'));
+}
 
 export async function fetchAPI(path) {
   const response = await fetch(path);
@@ -444,7 +451,9 @@ async function loadEager(doc) {
     await loadEagerBlocks(main);
     await detectSidebar(main);
     document.body.classList.add('appear');
-    await waitForLCP(LCP_BLOCKS);
+    if (LCP_WAIT_SKIP_TEMPLATE.includes(getTemplate())) {
+      await waitForLCP(LCP_BLOCKS);
+    }
   }
 
   try {

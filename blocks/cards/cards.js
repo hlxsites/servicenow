@@ -151,6 +151,16 @@ async function fetchRuleBasedCards(config, cardInfos, idx) {
   ruleHandler(blogs, cardInfos, idx, config);
 }
 
+let waitedForLCP = false;
+async function optimiseLCP(block) {
+  if (waitedForLCP) return;
+
+  if (block.classList.contains('teaser')) {
+    waitedForLCP = true;
+    await waitForEagerImageLoad(block.querySelector('img'));
+  }
+}
+
 export default async function decorate(block) {
   const apis = [];
   const links = [];
@@ -212,7 +222,5 @@ export default async function decorate(block) {
     }
   }));
 
-  if (block.classList.contains('teaser')) {
-    await waitForEagerImageLoad(block.querySelector('img'));
-  }
+  await optimiseLCP(block);
 }
