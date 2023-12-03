@@ -175,6 +175,7 @@ const createMetadataBlock = (main, document, url) => {
 
 const h3ConvertExceptions = [
     'https://www.servicenow.com/blogs/2022/nvidia-gtc-22-leaders-ai-panel-q-and-a.html',
+    'https://www.servicenow.com/blogs/2022/knowledge-2022-social-media-contest-rules.html',
 ];
 
 export default {
