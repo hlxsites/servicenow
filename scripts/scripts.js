@@ -55,13 +55,17 @@ async function decorateTemplate(main) {
   const template = toClassName(getMetadata('template'));
   if (!template) return;
 
+  const templateModules = [];
+
   if (template.startsWith('blog')) {
-    await loadTemplateModule(main, 'blog-commons');
+    templateModules.push('blog-commons');
   }
 
   if (TEMPLATES.includes(template)) {
-    await loadTemplateModule(main, template);
+    templateModules.push(template);
   }
+
+  await Promise.all(templateModules.map((module) => loadTemplateModule(main, module)));
 }
 
 export async function fetchAPI(path) {
