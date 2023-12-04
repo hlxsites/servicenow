@@ -211,11 +211,12 @@ function buildArticleHeader(main) {
 
   //
   const author = getMetadata('author');
-  let authorURL = getMetadata('author-link');
-  if (authorURL) {
-    authorURL = new URL(authorURL, window.location.origin).pathname;
+  let authorHref = getMetadata('author-link');
+  if (authorHref) {
+    authorHref = new URL(authorHref, window.location.origin).pathname;
   } else {
-    authorURL = `/author/${toClassName(author)}`
+    // best effort
+    authorHref = `/author/${toClassName(author)}`
   }
 
   const publicationDate = formatDate(getMetadata('publication-date'));
@@ -223,7 +224,7 @@ function buildArticleHeader(main) {
   main.prepend(div(buildBlock('article-header', [
     [main.querySelector('h1')],
     [
-      p(a({ href: authorURL }, author)),
+      p(a({ href: authorHref }, author)),
       p(publicationDate),
     ],
   ])));
