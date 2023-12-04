@@ -211,7 +211,13 @@ function buildArticleHeader(main) {
 
   //
   const author = getMetadata('author');
-  const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
+  let authorURL = getMetadata('author-link');
+  if (authorURL) {
+    authorURL = new URL(authorURL, window.location.origin).pathname;
+  } else {
+    authorURL = `/author/${toClassName(author)}`
+  }
+
   const publicationDate = formatDate(getMetadata('publication-date'));
   //
   main.prepend(div(buildBlock('article-header', [
