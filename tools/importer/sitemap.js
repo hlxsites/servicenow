@@ -44,8 +44,8 @@ async function main() {
     edsURL.push(new URL(new URL(urls[i]).pathname.replace('.html', ''), 'https://main--aemeds--servicenow-martech.hlx.live/').toString());
   }
 
-  //urls.forEach((url) => console.log(url));
-  edsURL.forEach((url) => console.log(url));
+  urls.forEach((url) => console.log(url));
+  //edsURL.forEach((url) => console.log(url));
 }
 
 main();

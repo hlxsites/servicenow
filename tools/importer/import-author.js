@@ -12,7 +12,7 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
-const pageUrl = "https://main--servicenow--hlxsites.hlx.page";
+const pageUrl = "https://main--aemeds--servicenow-martech.hlx.page";
 const servicenowUrl = 'https://www.servicenow.com';
 
 function isServiceNowLink(link) {
@@ -34,7 +34,7 @@ function getServiceNowUrl(link) {
 }
 
 function getPageUrl(link) {
-    return new URL(new URL(link.href).pathname.replace('.html', ''), pageUrl);
+    return new URL(new URL(link).pathname.replace('.html', ''), pageUrl);
 }
 
 const createMetadataBlock = (main, document, url) => {
@@ -44,11 +44,12 @@ const createMetadataBlock = (main, document, url) => {
     // Title
     const title = document.querySelector('title');
     if (title) {
-        let titleText = title.textContent.replace(/[\n\t]/gm, '');
+        let titleText = title.textContent.replace(/[\n\t]/gm, '').trim();
         const suffix = 'ServiceNow Blog';
         if (titleText.endsWith(suffix)) {
             titleText = titleText.substring(0, titleText.length - (suffix.length + 3)).trim();
         }
+        console.log(titleText);
         meta.Title = titleText;
     }
 
@@ -71,8 +72,19 @@ const createMetadataBlock = (main, document, url) => {
         authorUrl = author.content.trim();
     }
 
-    const authorPicture = document.querySelector('.image img');
-    const authorDescription = document.querySelectorAll('.text p');
+    let authorPicture = document.querySelector('.image img');
+    if (!authorPicture) {
+        authorPicture = document.createElement('img');
+        authorPicture.src = '/blogs/author/servicenow-blog/_jcr_content/root/responsivegrid/responsivegrid/responsivegrid_387144068/image.coreimg.png/1619481053507/servicenow-blog.png';
+    }
+
+    let authorDescription = document.querySelectorAll('.text p');
+    if (authorDescription.length === 0 && document.querySelector('.cmp-text')) {
+        const paragraph = document.createElement('p');
+        paragraph.textContent = document.querySelector('.cmp-text').textContent;
+        document.querySelector('.cmp-text').remove();
+        authorDescription = [ paragraph ];
+    }
 
     const authorColumns = WebImporter.DOMUtils.createTable([
         ['Columns (Blog Authors)'], 
@@ -84,7 +96,7 @@ const createMetadataBlock = (main, document, url) => {
     const hr = document.createElement('hr');
     main.append(hr);
 
-    const blogList = WebImporter.DOMUtils.createTable([['Blog List'], ['Author ', authorUrl]], document);
+    const blogList = WebImporter.DOMUtils.createTable([['Blog List'], ['Author ', getPageUrl(authorUrl)]], document);
     const metadataBlock = WebImporter.Blocks.getMetadataBlock(document, meta);
 
     main.append(blogList);

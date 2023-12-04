@@ -124,7 +124,7 @@ const createMetadataBlock = (main, document, url) => {
     // Title
     const title = document.querySelector('title');
     if (title) {
-        let titleText = title.textContent.replace(/[\n\t]/gm, '');
+        let titleText = title.textContent.replace(/[\n\t]/gm, '').trim();
         const suffix = 'ServiceNow Blog';
         if (titleText.endsWith(suffix)) {
             titleText = titleText.substring(0, titleText.length - (suffix.length + 3)).trim();
