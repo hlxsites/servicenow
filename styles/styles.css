@@ -58,7 +58,7 @@
 
 @font-face {
   font-family: GilroyRegularFallback;
-  size-adjust: 102.00%; /* TODO finetune */
+  size-adjust: 100.06%; /* TODO finetune */
   ascent-override: 95%; /* TODO finetune */
   src: local('Arial');
 }
