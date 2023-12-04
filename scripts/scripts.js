@@ -216,7 +216,7 @@ function buildArticleHeader(main) {
     authorHref = new URL(authorHref, window.location.origin).pathname;
   } else {
     // best effort
-    authorHref = `/author/${toClassName(author)}`
+    authorHref = `/author/${toClassName(author)}`;
   }
 
   const publicationDate = formatDate(getMetadata('publication-date'));
