@@ -45,9 +45,9 @@ const createMetadataBlock = (main, document, url) => {
     const title = document.querySelector('title');
     if (title) {
         let titleText = title.textContent.replace(/[\n\t]/gm, '');
-        const suffix = ' – ServiceNow Blog';
+        const suffix = 'ServiceNow Blog';
         if (titleText.endsWith(suffix)) {
-            titleText = titleText.substring(0, titleText.length - suffix.length);
+            titleText = titleText.substring(0, titleText.length - (suffix.length + 3)).trim();
         }
         meta.Title = titleText;
     }
@@ -70,6 +70,16 @@ const createMetadataBlock = (main, document, url) => {
     if (author && author.content.trim()) {
         authorUrl = author.content.trim();
     }
+
+    const authorPicture = document.querySelector('.image img');
+    const authorDescription = document.querySelectorAll('.text p');
+
+    const authorColumns = WebImporter.DOMUtils.createTable([
+        ['Columns (Blog Authors)'], 
+        [ authorPicture, [...authorDescription]]
+    ], document);
+    main.append(authorColumns);
+
     // insert new hr element as last element of main
     const hr = document.createElement('hr');
     main.append(hr);
