@@ -347,7 +347,12 @@ main img {
   vertical-align: middle;
 }
 
-.default-content-wrapper img {
+.default-content-wrapper .article-image {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.default-content-wrapper .hero-image {
   margin-bottom: 24px;
 }
 
