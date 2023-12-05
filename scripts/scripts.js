@@ -429,19 +429,19 @@ function decorateLinks(main) {
 }
 
 function decorateImages(main) {
-    // Get all img elements within the main container
-    const images = main.querySelectorAll('img');
+  // Get all img elements within the main container
+  const images = main.querySelectorAll('img');
 
-    // Get the first image and set class to hero-image
-    const firstImage = images[0];
-    if (firstImage) {
-        firstImage.classList.add('hero-image');
-    }
+  // Get the first image and set class to hero-image
+  const firstImage = images[0];
+  if (firstImage) {
+      firstImage.classList.add('hero-image');
+  }
 
-    // Loop through the rest of the images and set class to article-image
-    for (let i = 1; i < images.length; i++) {
-        images[i].classList.add('article-image');
-    }
+  // Loop through the rest of the images and set class to article-image
+  for (let i = 1; i < images.length; i++) {
+     images[i].classList.add('article-image');
+  }
 }
 
 /**
