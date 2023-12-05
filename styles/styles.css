@@ -121,18 +121,6 @@ p {
   margin: 0 0 12px;
 }
 
-p.image-left {
-  float: left;
-  width: 25%;
-}
-
-p.content-right {
-  float: right;
-  display: inline-block;
-  width: 75%;
-  padding-left: 24px;
-}
-
 h1, h2, h3,
 h4, h5, h6 {
   font-family: var(--heading-font-family);
@@ -378,6 +366,14 @@ main img {
   padding: 0 1.2rem;
 }
 
+.blog-authors.columns > div > div.columns-img-col {
+  padding-bottom: 20px;
+}
+
+.blog-authors.columns > div {
+  font-size: 1.4rem;
+}
+
 @media (min-width: 900px) {
   .section > div {
     max-width: 1200px;
@@ -436,6 +432,10 @@ main .section.highlight {
 
   main.has-sidebar > .section.full-width.no-sidebar {
     grid-column: 1 / 4;
+  }
+
+  .blog-authors.columns > div > div.columns-img-col {
+    padding-bottom: 0;
   }
 }
 

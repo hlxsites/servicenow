@@ -30,4 +30,21 @@
     flex: 1;
     order: unset;
   }
+
+  .blog-authors.columns {
+    display: flex;
+  }
+
+  .blog-authors.columns > div {
+    align-items:normal;
+    gap: 24px;
+  }
+
+  .blog-authors.columns > div > div.columns-img-col {
+    max-width: 25%;
+  }
+
+  .blog-authors.columns > div > div {
+    flex: 1 1;
+  }
 }
