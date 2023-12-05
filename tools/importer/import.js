@@ -272,7 +272,18 @@ export default {
                     h3.textContent = bold.textContent;
                     bold.parentElement.replaceWith(h3);
                 }
+
+                if ((bold.nextElementSibling.tagName === 'BR' || bold.innerHTML.trim().endsWith('<br>')) && bold.textContent.length < 100) {
+                    const h3 = document.createElement('h3');
+                    h3.textContent = bold.textContent;
+                    
+                    const parent = bold.parentElement;
+                    bold.remove();
+                    parent.before(h3);
+                }
             });
+
+
 
             main.querySelectorAll('h6').forEach((h6) => {
                 const h3 = document.createElement('h3');
