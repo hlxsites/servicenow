@@ -1,10 +1,24 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import {
-  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags,
+  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags, getTemplate,
 } from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
+
+async function waitForEagerImageLoad(img) {
+  if (!img) return;
+
+  await new Promise((resolve) => {
+    if (img && !img.complete) {
+      img.setAttribute('loading', 'eager');
+      img.addEventListener('load', resolve);
+      img.addEventListener('error', resolve);
+    } else {
+      resolve();
+    }
+  });
+}
 
 export async function fetchHtml(path) {
   const response = await fetch(path);
@@ -137,6 +151,17 @@ async function fetchRuleBasedCards(config, cardInfos, idx) {
   ruleHandler(blogs, cardInfos, idx, config);
 }
 
+let waitedForLCP = false;
+async function optimiseLCP(block) {
+  if (waitedForLCP) return;
+
+  const template = getTemplate();
+  if (template && template === 'blog-home-page' && block.classList.contains('teaser')) {
+    waitedForLCP = true;
+    await waitForEagerImageLoad(block.querySelector('img'));
+  }
+}
+
 export default async function decorate(block) {
   const apis = [];
   const links = [];
@@ -197,4 +222,6 @@ export default async function decorate(block) {
       block.append(await renderCard(cardInfos[idx]));
     }
   }));
+
+  await optimiseLCP(block);
 }
