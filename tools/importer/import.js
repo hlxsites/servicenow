@@ -273,7 +273,7 @@ export default {
                     bold.parentElement.replaceWith(h3);
                 }
 
-                if ((bold.nextElementSibling.tagName === 'BR' || bold.innerHTML.trim().endsWith('<br>')) && bold.textContent.length < 100) {
+                if (((bold.nextSibling && bold.nextSibling.tagName === 'BR') || bold.innerHTML.trim().endsWith('<br>')) && bold.textContent.length < 100) {
                     const h3 = document.createElement('h3');
                     h3.textContent = bold.textContent;
                     
