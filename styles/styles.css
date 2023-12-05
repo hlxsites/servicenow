@@ -239,7 +239,7 @@ a:any-link {
   background: linear-gradient(var(--link-background-color),var(--link-background-color)) bottom repeat-x;
   background-size: 0.2rem 0.2rem;
   font-size: inherit;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.1rem;
   position: relative;
   transition: all .25s ease-out;
 }
