@@ -439,7 +439,7 @@ function decorateImages(main) {
   }
 
   // Loop through the rest of the images and set class to article-image
-  for (let i = 1; i < images.length; i+=1) {
+  for (let i = 1; i < images.length; i += 1) {
     images[i].classList.add('article-image');
   }
 }
