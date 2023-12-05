@@ -179,6 +179,15 @@ const h3ConvertExceptions = [
 ];
 
 export default {
+    onLoad: async ({ document, url, params }) => {
+        [...document.querySelectorAll('p')].forEach((paragraph) => {
+            if (paragraph.querySelector('br') && paragraph.innerHTML.trim().endsWith('&nbsp;')) {
+                paragraph.dataset.endsWithNBSPPresent = true;
+            }
+        });
+
+      },
+
     /**
      * Apply DOM operations to the provided document and return
      * the root element to be then transformed to Markdown.
@@ -296,6 +305,10 @@ export default {
                     && parent.tagName !== 'H3'
                     && parent.innerHTML.trim().endsWith('<br>')
                     && parent.nextElementSibling.tagName === 'P') {
+                    if (parent.dataset.endsWithNBSPPresent) {
+                        parent.innerHTML += '\n<br>';
+                    }
+                    
                     parent.innerHTML += '\n' + parent.nextElementSibling.innerHTML;
                     parent.nextElementSibling.remove();
                     edited = true;
