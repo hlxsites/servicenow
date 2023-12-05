@@ -273,6 +273,12 @@ export default {
                     bold.parentElement.replaceWith(h3);
                 }
             });
+
+            main.querySelectorAll('h6').forEach((h6) => {
+                const h3 = document.createElement('h3');
+                h3.textContent = h6.textContent;
+                h6.replaceWith(h3);
+            });
         } else {
             console.log('Skipping h3 conversion for URL', params.originalURL)
         }
