@@ -294,6 +294,22 @@ function isArticlePage() {
   return blogPage;
 }
 
+function decorateImages(main) {
+  // Get all img elements within the main container
+  const images = main.querySelectorAll('img');
+
+  // Get the first image and set class to hero-image
+  const firstImage = images[0];
+  if (firstImage) {
+    firstImage.classList.add('hero-image');
+  }
+
+  // Loop through the rest of the images and set class to article-image
+  for (let i = 0; i < images.length; i += 1) {
+    images[i].classList.add('article-image');
+  }
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -311,6 +327,7 @@ function buildAutoBlocks(main) {
       buildArticleCopyright(main);
       buildArticleSocialShare(main);
       buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
+      decorateImages(main);
     }
 
     const template = toClassName(getMetadata('template'));
@@ -427,6 +444,7 @@ function decorateLinks(main) {
     }
   });
 }
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element

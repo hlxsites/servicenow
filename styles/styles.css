@@ -347,6 +347,15 @@ main img {
   vertical-align: middle;
 }
 
+.blog-article .default-content-wrapper .article-image {
+  margin-top: 2.4rem;
+  margin-bottom: 2.4rem;
+}
+
+.blog-article .default-content-wrapper .article-image.hero-image {
+  margin-top: 0;
+}
+
 .icon {
   display: inline-block;
   height: 24px;
