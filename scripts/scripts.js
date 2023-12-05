@@ -415,7 +415,7 @@ function decorateLinks(main) {
 }
 
 function decorateImages(main) {
-    // Get all anchor elements within the main container
+    // Get all img elements within the main container
     const images = main.querySelectorAll('img');
 
     // Get the first image and set class to hero-image
@@ -428,8 +428,8 @@ function decorateImages(main) {
     for (let i = 1; i < images.length; i++) {
         images[i].classList.add('article-image');
     }
-
 }
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
