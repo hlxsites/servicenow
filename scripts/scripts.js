@@ -435,12 +435,12 @@ function decorateImages(main) {
   // Get the first image and set class to hero-image
   const firstImage = images[0];
   if (firstImage) {
-      firstImage.classList.add('hero-image');
+    firstImage.classList.add('hero-image');
   }
 
   // Loop through the rest of the images and set class to article-image
-  for (let i = 1; i < images.length; i++) {
-     images[i].classList.add('article-image');
+  for (let i = 1; i < images.length; i+=1) {
+    images[i].classList.add('article-image');
   }
 }
 
