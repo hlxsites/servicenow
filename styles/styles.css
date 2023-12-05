@@ -348,12 +348,13 @@ main img {
 }
 
 .blog-article .default-content-wrapper .article-image {
-  margin-top: 24px;
-  margin-bottom: 24px;
+  margin-top: 2.4rem;
+  margin-bottom: 2.4rem;
 }
 
-.blog-article .default-content-wrapper .hero-image {
-  margin-bottom: 24px;
+.blog-article .default-content-wrapper .article-image.hero-image {
+  margin-bottom: 2.4rem;
+  margin-top: 0;
 }
 
 .icon {
