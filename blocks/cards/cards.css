@@ -123,6 +123,10 @@
     display: flex;
   }
 
+  .card .card-thumbnail img {
+    aspect-ratio: 375 / 211;
+  }
+
   .cards.sidebar .card .card-thumbnail {
     flex: 0 0 22rem;
   }
