@@ -1,7 +1,7 @@
 import { loadScript, getMetadata } from '../../scripts/aem.js';
 
 // FIXME: update date before launch
-const esdCutOff = new Date('2023-06-30');
+const esdCutOff = new Date('2024-01-08'); // 8 January 2024
 
 function socialShareTracking(block) {
   block.addEventListener('click', (e) => {
@@ -34,13 +34,16 @@ export default async function decorate(block) {
   }
 
   if (window.location.hostname !== 'www.servicenow.com' && window.location.hostname !== 'localhost') {
+    // this default allows .page and .live variants to show the counter of the published page
+    let dataUrl = `https://www.servicenow.com${window.location.pathname}`;
     const pubDateStr = getMetadata('publication-date');
     if (pubDateStr) {
       const pubDate = new Date(pubDateStr);
       if (pubDate < esdCutOff) {
-        block.dataset.url = `https://www.servicenow.com${window.location.pathname}.html`;
+        dataUrl = `https://www.servicenow.com${window.location.pathname}.html`;
       }
     }
+    block.dataset.url = dataUrl;
   }
 
   const observer = new IntersectionObserver((entries) => {
