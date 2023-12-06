@@ -366,14 +366,6 @@ main img {
   padding: 0 1.2rem;
 }
 
-.blog-authors.columns > div > div.columns-img-col {
-  padding-bottom: 20px;
-}
-
-.blog-authors.columns > div {
-  font-size: 1.4rem;
-}
-
 @media (min-width: 900px) {
   .section > div {
     max-width: 1200px;
@@ -431,10 +423,6 @@ main .section.highlight {
 
   main.has-sidebar > .section.full-width.no-sidebar {
     grid-column: 1 / 4;
-  }
-
-  .blog-authors.columns > div > div.columns-img-col {
-    padding-bottom: 0;
   }
 }
 
