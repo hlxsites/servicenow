@@ -36,7 +36,6 @@ export function getAnalyticsSiteName() {
   return 'SN Blogs';
 }
 
-
 export async function fetchAPI(path) {
   const response = await fetch(path);
   if (!response.ok) {
