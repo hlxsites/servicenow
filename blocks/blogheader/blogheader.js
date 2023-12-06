@@ -133,7 +133,7 @@ function addClickTracking(link, block) {
             ctaText: link.textContent,
             pageArea: 'body',
             section: 'heading',
-          }
+          },
         },
       },
       event: e,
