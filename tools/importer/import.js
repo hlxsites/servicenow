@@ -215,6 +215,10 @@ export default {
             if (paragraph.textContent.includes('ServiceNow, Inc. All rights reserved.')) {
                 paragraph.remove();
             }
+
+            if (paragraph.textContent.includes('ServiceNow, the ServiceNow logo, Now, and other ServiceNow marks are trademarks')) {
+                paragraph.remove();
+            }
         })
 
         // Processing Links
