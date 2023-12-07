@@ -1,8 +1,8 @@
-import { fetchAPI, getLocaleInfo } from '../../scripts/scripts.js';
+import { fetchAPI, getLocale } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
   const responseYears = await fetchAPI('/blogs/query-index.json?sheet=years');
-  const localeInfo = getLocaleInfo();
+  const localeInfo = getLocale();
   const blogYears = responseYears.data;
   const filteredBlogYears = blogYears.filter((item) => item.locale === localeInfo);
   filteredBlogYears.slice(0, 4).forEach((item) => {
