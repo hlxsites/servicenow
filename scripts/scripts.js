@@ -200,37 +200,6 @@ export function formatDate(date) {
   });
 }
 
-function addBlogTopics(main) {
-  const sidebarBolgTopic = main.querySelector('.blog-topics');
-  const apiUrl = '/blogs/query-index.json?sheet=topics';
-  if (sidebarBolgTopic) {
-    fetch(apiUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        const blogTitles = data.data;
-        blogTitles.forEach((item) => {
-          const pTag = document.createElement('p');
-          pTag.setAttribute('class', 'button-container');
-          const aTag = document.createElement('a');
-          aTag.setAttribute('href', item.path);
-          aTag.setAttribute('title', item.header);
-          const textNode = document.createTextNode(item.header);
-          aTag.appendChild(textNode);
-          pTag.appendChild(aTag);
-          sidebarBolgTopic.appendChild(pTag);
-        });
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }
-}
-
 function buildBlogHeader(main) {
   const section = document.createElement('div');
   section.append(buildBlock('blogheader', { elems: [] }));
@@ -367,7 +336,6 @@ function buildAutoBlocks(main) {
     }
 
     buildBlogHeader(main);
-    addBlogTopics(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
