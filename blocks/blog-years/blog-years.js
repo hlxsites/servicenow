@@ -14,7 +14,7 @@ async function getTopicYears() {
 export default async function decorate(block) {
   const blogYears = await getTopicYears();
   block.append(
-    ...blogYears.map((item) => (
+    ...blogYears.slice(0, 4).map((item) => (
       p({ class: 'button-container' },
         a({ href: item.path, title: item.title }, item.header),
       )
