@@ -85,7 +85,7 @@ function getPageUrl(link) {
 const createMetadataBlock = (main, document, url) => {
     const jsonRendition = JSON.parse(fetchSync('GET', jsonRenditionURL(url)).body);
     const allTags = getAllTags();
-    const originalTags = getOriginalTags(jsonRendition);
+    const originalTags = getOriginalTags(jsonRendition) || [];
 
     const originalCategoryTag = getOriginalCategoryTag(originalTags);
     const originalTopicTag = getOriginalTopicTag(originalTags);
@@ -265,7 +265,7 @@ export default {
 
         if (!h3ConvertExceptions.includes(params.originalURL)) {
             // Replace legacy standlone bold elements with h3s
-            main.querySelectorAll('b').forEach((bold) => {
+            main.querySelectorAll('strong, b').forEach((bold) => {
                 if (bold.textContent.trim() === bold.parentElement.textContent.trim()
                     && (bold.textContent.length < 100)
                     && !bold.textContent.startsWith('Click')
