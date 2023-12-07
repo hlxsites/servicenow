@@ -4,7 +4,7 @@ import { p, a } from '../../scripts/dom-helpers.js';
 
 async function getTopicYears() {
   const locale = getLocale();
-  window.sidebarTopics = ffetch(`${BLOG_QUERY_INDEX}`)
+  window.sidebarYears = ffetch(`${BLOG_QUERY_INDEX}`)
     .sheet('years')
     .filter((entry) => entry.locale === locale)
     .all();
