@@ -95,19 +95,19 @@ const LOCALE_INFO = {
     placeholdersPrefix: '/blogs',
   },
   'en-UK': {
-    urlPrefix: 'uk',
+    urlPrefix: '/uk',
     placeholdersPrefix: '/uk/blogs',
   },
   'de-DE': {
-    urlPrefix: 'de',
+    urlPrefix: '/de',
     placeholdersPrefix: '/de/blogs',
   },
   'fr-FR': {
-    urlPrefix: 'fr',
+    urlPrefix: '/fr',
     placeholdersPrefix: '/fr/blogs',
   },
   'nl-NL': {
-    urlPrefix: 'nl',
+    urlPrefix: '/nl',
     placeholdersPrefix: '/nl/blogs',
   },
 };
@@ -120,11 +120,17 @@ export function getLocale() {
   if (document.documentElement.lang) return document.documentElement.lang;
 
   document.documentElement.lang = 'en-US';
+  const localeMeta = getMetadata('locale');
+  if (localeMeta) {
+    document.documentElement.lang = localeMeta;
+    return document.documentElement.lang;
+  }
+
   const segs = window.location.pathname.split('/');
   if (segs && segs.length > 0) {
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(LOCALE_INFO)) {
-      if (value.urlPrefix === segs[1]) {
+      if (value.urlPrefix.replace('/', '') === segs[1]) {
         document.documentElement.lang = key;
         break;
       }
