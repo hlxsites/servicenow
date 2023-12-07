@@ -12,6 +12,6 @@ export default async function decorate(block) {
     const textNode = document.createTextNode(item.header);
     aTag.appendChild(textNode);
     pTag.appendChild(aTag);
-    sidebarBolgTopic.appendChild(pTag);
+    block.appendChild(pTag);
   });
 }
