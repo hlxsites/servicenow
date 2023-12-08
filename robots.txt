@@ -1,0 +1,4 @@
+user-agent: *
+disallow: /
+
+Sitemap: https://main--servicenow--hlxsites.hlx.live/blogs/sitemap-index.xml
