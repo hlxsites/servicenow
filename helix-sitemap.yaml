@@ -1,6 +1,7 @@
 version: 1
 sitemaps:
   default:
+    origin: https://www.servicenow.com
     source: /blogs/query-index.json
     destination: /blogs/sitemap.xml
     lastmod: YYYY-MM-DD
