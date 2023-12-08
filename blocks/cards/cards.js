@@ -1,7 +1,8 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
+import ffetch from '../../scripts/ffetch.js';
 import {
-  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags, getTemplate,
+  fetchAPI, getLocale, getTopicTags, getTemplate, BLOG_QUERY_INDEX,
 } from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
@@ -92,48 +93,44 @@ function fetchAPIBasedCards(cardInfos, apis) {
   });
 }
 
-function homepageLatestRule(blogs, cardInfos, idx) {
-  cardInfos[idx] = blogs.slice(0, 3);
+async function homepageLatestRule(blogs, cardInfos, idx) {
+  cardInfos[idx] = await blogs
+    .filter(FILTERS.locale)
+    .limit(3)
+    .all();
 }
 
-function homepageCategoryRule(blogs, cardInfos, idx, config) {
-  cardInfos[idx] = FILTERS.category(
-    // skip first 3 blogs as they are used for the homepage latest rule
-    blogs.slice(3),
-    toClassName(config.category),
-  ).slice(0, 3);
+export const FILTERS = {
+  locale: (blog) => getLocale() === blog.locale,
+  trend: (trend, blog) => FILTERS.locale(blog) && trend === toClassName(blog.trend),
+  newTrend: (newTrend, blog) => FILTERS.locale(blog) && newTrend === toClassName(blog.newTrend),
+  category: (category, blog) => FILTERS.locale(blog) && category === toClassName(blog.category),
+  topic: (topic, blog) =>  FILTERS.locale(blog) && topic === toClassName(blog.topic),
+  year: (year, blog) => FILTERS.locale(blog) && year === blog.year,
+  author: (authorUrl, blog) => FILTERS.locale(blog) && 
+    authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0],
+};
+
+async function homepageCategoryRule(blogs, cardInfos, idx, config) {
+  cardInfos[idx] = await blogs
+    .filter((blog) => FILTERS.category(toClassName(config.category), blog))
+    .skip(3)
+    .limit(3)
+    .all();
 }
 
-function sidebarFeaturedRule(blogs, cardInfos, idx) {
-  const result = [];
-  for (let i = 0; i < blogs.length; i += 1) {
-    if (TRENDS_AND_RESEARCH === toClassName(blogs[i].trend)) {
-      // eslint-disable-next-line no-continue
-      continue; // we keep these for the trends and research rule
-    }
-    result.push(blogs[i]);
-
-    if (result.length === 3) {
-      break;
-    }
-  }
-
-  cardInfos[idx] = result;
+async function sidebarFeaturedRule(blogs, cardInfos, idx) {
+  cardInfos[idx] = await blogs
+    .filter((blog) => !FILTERS.trend(toClassName(blogs[i].trend), blog))
+    .limit(3)
+    .all();
 }
 
-function sidebarTrendsAndResearchRule(blogs, cardInfos, idx) {
-  const result = [];
-  for (let i = 0; i < blogs.length; i += 1) {
-    if (TRENDS_AND_RESEARCH === toClassName(blogs[i].trend)) {
-      result.push(blogs[i]);
-    }
-
-    if (result.length === 3) {
-      break;
-    }
-  }
-
-  cardInfos[idx] = result;
+async function sidebarTrendsAndResearchRule(blogs, cardInfos, idx) {
+  cardInfos[idx] = await blogs
+    .filter((blog) => FILTERS.trend(toClassName(blogs[i].trend), blog))
+    .limit(3)
+    .all();
 }
 
 const RULES = {
@@ -144,11 +141,16 @@ const RULES = {
 };
 
 async function fetchRuleBasedCards(config, cardInfos, idx) {
-  const blogs = await getLocaleBlogs();
+  const blogs = ffetch(BLOG_QUERY_INDEX)
+    .chunks(250)
+    .sheet('blogs');
+
+  console.log(blogs);
+
   const ruleHandler = RULES[toClassName(config.rule)];
   if (!ruleHandler) return; // unknown rule
 
-  ruleHandler(blogs, cardInfos, idx, config);
+  await ruleHandler(blogs, cardInfos, idx, config);
 }
 
 let waitedForLCP = false;
