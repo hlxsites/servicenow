@@ -1,19 +1,23 @@
-import { fetchAPI, getLocale } from '../../scripts/scripts.js';
+import ffetch from '../../scripts/ffetch.js';
+import { BLOG_QUERY_INDEX, getLocale } from '../../scripts/scripts.js';
+import { p, a } from '../../scripts/dom-helpers.js';
+
+async function getTopicYears() {
+  const locale = getLocale();
+  window.sidebarYears = ffetch(`${BLOG_QUERY_INDEX}`)
+    .sheet('years')
+    .filter((entry) => entry.locale === locale)
+    .all();
+  return window.sidebarYears;
+}
 
 export default async function decorate(block) {
-  const responseYears = await fetchAPI('/blogs/query-index.json?sheet=years');
-  const localeInfo = getLocale();
-  const blogYears = responseYears.data;
-  const filteredBlogYears = blogYears.filter((item) => item.locale === localeInfo);
-  filteredBlogYears.slice(0, 4).forEach((item) => {
-    const pTag = document.createElement('p');
-    pTag.setAttribute('class', 'button-container');
-    const aTag = document.createElement('a');
-    aTag.setAttribute('href', item.path);
-    aTag.setAttribute('title', item.title);
-    const textNode = document.createTextNode(item.header);
-    aTag.appendChild(textNode);
-    pTag.appendChild(aTag);
-    block.appendChild(pTag);
-  });
+  const blogYears = await getTopicYears();
+  block.append(
+    ...blogYears.slice(0, 4).map((item) => (
+      p({ class: 'button-container' },
+        a({ href: item.path, title: item.title }, item.header),
+      )
+    )),
+  );
 }
