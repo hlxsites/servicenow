@@ -175,6 +175,8 @@ const createMetadataBlock = (main, document, url) => {
 const h3ConvertExceptions = [
     'https://www.servicenow.com/blogs/2022/nvidia-gtc-22-leaders-ai-panel-q-and-a.html',
     'https://www.servicenow.com/blogs/2022/knowledge-2022-social-media-contest-rules.html',
+    'https://www.servicenow.com/de/blogs/2020/servicenow-bei-boehringer-ingelheim-one-stop-shop-fuer-exzellenten-service-und-best-in-class-customer-experience.html',
+    'https://www.servicenow.com/de/blogs/2020/loesungen-fuer-die-finanzbranche-quasi-make-up-mit-tiefenwirkung.html',
 ];
 
 export default {
@@ -184,7 +186,6 @@ export default {
                 paragraph.dataset.endsWithNBSPPresent = true;
             }
         });
-
       },
 
     /**
@@ -207,7 +208,7 @@ export default {
 
         // CLEANUP
         main.querySelectorAll('.legacyHTML, .social-sharing, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
-        // TODO is this ok?
+
         main.querySelectorAll('img[src^="/akam/13/pixel"], noscript').forEach((el) => el.remove());
         // Remove copyright as we create a fragment with it.
         main.querySelectorAll('p').forEach((paragraph) => {
@@ -289,8 +290,6 @@ export default {
                     parent.before(h3);
                 }
             });
-
-
 
             main.querySelectorAll('h6').forEach((h6) => {
                 const h3 = document.createElement('h3');
