@@ -89,6 +89,7 @@ export default async function decorate(block) {
 
   // retrieve and filter blog entries
   let blogs = await ffetch(BLOG_QUERY_INDEX)
+    .chunks(10000)
     .sheet('blogs')
     .filter(FILTERS.locale)
     .filter((blog) => filter(filterValue, blog))
