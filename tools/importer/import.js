@@ -141,8 +141,7 @@ const createMetadataBlock = (main, document, url) => {
     // Publication Date
     const date = document.querySelector('.cmp-blog-author-info__date');
     if (date) {
-        const dateStr = date.textContent.trim();
-        const dateObj = new Date(dateStr);
+        const dateObj = new Date(jsonRendition['jcr:content'].date);
         // format date to mm/dd/yyyy
         meta['Publication Date'] = dateObj.toLocaleDateString(
             'en-US',
@@ -207,9 +206,9 @@ export default {
         createMetadataBlock(main, document, url);
 
         // CLEANUP
-        main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
+        main.querySelectorAll('.legacyHTML, .social-sharing, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
         // TODO is this ok?
-        main.querySelectorAll('img[src^="/akam/13/pixel"]').forEach((el) => el.remove());
+        main.querySelectorAll('img[src^="/akam/13/pixel"], noscript').forEach((el) => el.remove());
         // Remove copyright as we create a fragment with it.
         main.querySelectorAll('p').forEach((paragraph) => {
             if (paragraph.textContent.includes('ServiceNow, Inc. All rights reserved.')) {
@@ -217,6 +216,10 @@ export default {
             }
 
             if (paragraph.textContent.includes('ServiceNow, the ServiceNow logo, Now, and other ServiceNow marks are trademarks')) {
+                paragraph.remove();
+            }
+
+            if (paragraph.textContent.includes('ServiceNow, Inc. Alle Rechte vorbehalten. ServiceNow, das ServiceNow-Logo, Now und andere Marken')) {
                 paragraph.remove();
             }
         })
