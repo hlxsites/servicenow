@@ -2,12 +2,14 @@ import {
   fetchPlaceholders, loadCSS, toCamelCase, toClassName,
 } from '../../scripts/aem.js';
 import {
-  FILTERS, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
+  BLOG_QUERY_INDEX,
+  FILTERS, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
+import ffetch from '../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
@@ -86,9 +88,13 @@ export default async function decorate(block) {
   }
 
   // retrieve and filter blog entries
-  let blogs = await getLocaleBlogs();
-  if (!blogs) return;
-  blogs = filter(blogs, filterValue);
+  let blogs = await ffetch(BLOG_QUERY_INDEX)
+    .sheet('blogs')
+    .filter(FILTERS.locale)
+    .filter((blog) => filter(filterValue, blog))
+    .all();
+
+  if (!blogs.length) return;
 
   // render
   block.classList.add(filterKey);
