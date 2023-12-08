@@ -129,7 +129,7 @@ export default {
         main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4, .hero-image, .com-seperator, .servicenow-blog-list--block').forEach(el => el.remove());
 
         main.querySelectorAll('br, nbsp').forEach((el) => el.remove());
-        main.querySelectorAll('img[src^="/akam/13/pixel"]').forEach((el) => el.remove());
+        main.querySelectorAll('img[src^="/akam/13/pixel"], noscript').forEach((el) => el.remove());
 
 
         // Processing...

@@ -55,9 +55,10 @@ const createMetadataBlock = (main, document, url) => {
     const desc = document.querySelector('[property="og:description"]');
     if (desc && desc.content.trim()) {
         meta.Description = desc.content.trim();
-    } else {
-        meta.Description = 'Read about ServiceNow\'s Company News, Announcements, and Updates.';
-    }
+    } 
+    // else {
+    //     meta.Description = 'Read about ServiceNow\'s Company News, Announcements, and Updates.';
+    // }
 
     // Keywords
     const keywords = document.querySelector('meta[name="keywords"]');
@@ -86,6 +87,7 @@ export default {
                        document, url, html, params,
                    }) => {
         const main = document.querySelector('body');
+        main.querySelectorAll('img[src^="/akam/13/pixel"], noscript').forEach((el) => el.remove());
 
         // CLEANUP
         main.querySelectorAll('.legacyHTML, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4, .hero-image').forEach(el => el.remove());
