@@ -12,20 +12,31 @@
 
 /* eslint-disable no-restricted-syntax,  no-await-in-loop */
 
+const memoryCache = {};
+
 async function* request(url, context) {
   const { chunkSize, sheetName, fetch } = context;
   for (let offset = 0, total = Infinity; offset < total; offset += chunkSize) {
     const params = new URLSearchParams(`offset=${offset}&limit=${chunkSize}`);
     if (sheetName) params.append('sheet', sheetName);
-    const resp = await fetch(`${url}?${params.toString()}`);
-    if (resp.ok) {
-      const json = await resp.json();
-      total = json.total;
-      context.total = total;
-      for (const entry of json.data) yield entry;
+
+    const requestPath = `${url}?${params.toString()}`;
+    let json = null;
+    if (memoryCache[requestPath]) {
+      json = memoryCache[requestPath];
     } else {
-      return;
+      const resp = await fetch(requestPath);
+      if (resp.ok) {
+        json = await resp.json();
+      }
+      memoryCache[requestPath] = json;
     }
+
+    if (!json) return;
+
+    total = json.total;
+    context.total = total;
+    for (const entry of json.data) yield entry;
   }
 }
 
