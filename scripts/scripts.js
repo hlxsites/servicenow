@@ -64,17 +64,6 @@ function buildHeroBlock(main) {
   }
 }
 
-export const FILTERS = {
-  locale: (blog) => getLocale() === blog.locale,
-  trend: (trend, blog) => trend === toClassName(blog.trend),
-  newTrend: (newTrend, blog) => newTrend === toClassName(blog.newTrend),
-  category: (category, blog) => category === toClassName(blog.category),
-  topic: (topic, blog) =>  topic === toClassName(blog.topic),
-  year: (year, blog) => year === blog.year,
-  author: (authorUrl, blog) =>
-    authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0],
-};
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -138,6 +127,18 @@ export function getLocale() {
   }
   return document.documentElement.lang;
 }
+
+export const BLOG_FILTERS = {
+  locale: (blog) => getLocale() === blog.locale,
+  trend: (trend, blog) => trend === toClassName(blog.trend),
+  newTrend: (newTrend, blog) => newTrend === toClassName(blog.newTrend),
+  category: (category, blog) => category === toClassName(blog.category),
+  topic: (topic, blog) => topic === toClassName(blog.topic),
+  year: (year, blog) => year === blog.year,
+  author: (authorUrl, blog) => (
+    authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0]
+  ),
+};
 
 /**
  * Returns the locale information

@@ -3,7 +3,7 @@ import {
 } from '../../scripts/aem.js';
 import {
   BLOG_QUERY_INDEX,
-  FILTERS, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
+  BLOG_FILTERS, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
@@ -41,10 +41,11 @@ export async function renderFilterCard(post, showDescription) {
   return card;
 }
 
-async function renderChunk(cardList, blogs,  showDescription) {
+async function renderChunk(cardList, blogs, showDescription) {
   let done = false;
-  let chunk = []
-  for (let i = 0; i < 20; i++) {
+  const chunk = [];
+  for (let i = 0; i < 20; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
     const generate = await blogs.next();
     done = generate.done;
     if (done) {
@@ -64,7 +65,7 @@ async function renderChunk(cardList, blogs,  showDescription) {
   const observer = new IntersectionObserver((entries) => {
     if (entries.some((e) => e.isIntersecting)) {
       observer.disconnect();
-      renderChunk(cardList, blogs,  showDescription);
+      renderChunk(cardList, blogs, showDescription);
     }
   });
   observer.observe(cardList.children[cardList.children.length - 1]);
@@ -89,7 +90,7 @@ export default async function decorate(block) {
   }
 
   // get filter function
-  const filter = FILTERS[filterKey];
+  const filter = BLOG_FILTERS[filterKey];
   if (!filter) {
     // eslint-disable-next-line no-console
     console.warn(`no filter function found for '${filterKey}'`);
@@ -97,10 +98,10 @@ export default async function decorate(block) {
   }
 
   // retrieve and filter blog entries
-  let blogs = ffetch(BLOG_QUERY_INDEX)
+  const blogs = ffetch(BLOG_QUERY_INDEX)
     .chunks(250)
     .sheet('blogs')
-    .filter(FILTERS.locale)
+    .filter(BLOG_FILTERS.locale)
     .filter((blog) => filter(filterValue, blog));
 
   // render

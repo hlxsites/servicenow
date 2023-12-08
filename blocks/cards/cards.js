@@ -2,7 +2,7 @@ import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scri
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
 import {
-  FILTERS, fetchAPI, getLocale, getTopicTags, getTemplate, BLOG_QUERY_INDEX,
+  BLOG_FILTERS, fetchAPI, getLocale, getTopicTags, getTemplate, BLOG_QUERY_INDEX,
 } from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
@@ -96,8 +96,8 @@ function fetchAPIBasedCards(cardInfos, apis) {
 
 async function homepageLatestRule(blogs, cardInfos, idx) {
   cardInfos[idx] = await blogs
-    .filter(FILTERS.locale)
-    .filter((blog) => !FILTERS.category(RESEARCH_CATEGORY, blog))
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => !BLOG_FILTERS.category(RESEARCH_CATEGORY, blog))
     .limit(3)
     .all();
 }
@@ -107,26 +107,24 @@ async function homepageCategoryRule(blogs, cardInfos, idx, config) {
     .map((link) => new URL(link.href).pathname);
 
   cardInfos[idx] = await blogs
-    .filter(FILTERS.locale)
-    .filter((blog) => 
-      FILTERS.category(toClassName(config.category), blog) &&
-      !latestLinks.includes(blog.path)
-    )
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => BLOG_FILTERS.category(toClassName(config.category), blog)
+      && !latestLinks.includes(blog.path))
     .limit(3)
     .all();
 }
 
 async function sidebarFeaturedRule(blogs, cardInfos, idx) {
   cardInfos[idx] = await blogs
-    .filter(FILTERS.locale)
-    .filter((blog) => !FILTERS.trend(TRENDS_AND_RESEARCH, blog))
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => !BLOG_FILTERS.trend(TRENDS_AND_RESEARCH, blog))
     .limit(3)
     .all();
 }
 
 async function sidebarTrendsAndResearchRule(blogs, cardInfos, idx) {
-  cardInfos[idx] = await blogs.filter(FILTERS.locale)
-    .filter((blog) => FILTERS.trend(TRENDS_AND_RESEARCH, blog))
+  cardInfos[idx] = await blogs.filter(BLOG_FILTERS.locale)
+    .filter((blog) => BLOG_FILTERS.trend(TRENDS_AND_RESEARCH, blog))
     .limit(3)
     .all();
 }
