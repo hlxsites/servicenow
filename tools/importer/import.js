@@ -223,6 +223,14 @@ export default {
             if (paragraph.textContent.includes('ServiceNow, Inc. Alle Rechte vorbehalten. ServiceNow, das ServiceNow-Logo, Now und andere Marken')) {
                 paragraph.remove();
             }
+
+            if (paragraph.textContent.includes('ServiceNow, Inc. Tous droits réservés. ServiceNow, le logo ServiceNow, Now et les autres')) {
+                paragraph.remove();
+            }
+
+            if (paragraph.textContent.includes('ServiceNow, Inc. Alle rechten voorbehouden. ServiceNow, het ServiceNow-logo, Now en alle overige')) {
+                paragraph.remove();
+            }
         })
 
         // Processing Links
