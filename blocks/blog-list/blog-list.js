@@ -2,12 +2,14 @@ import {
   fetchPlaceholders, loadCSS, toCamelCase, toClassName,
 } from '../../scripts/aem.js';
 import {
-  FILTERS, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
+  BLOG_QUERY_INDEX,
+  BLOG_FILTERS, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
+import ffetch from '../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
@@ -39,21 +41,31 @@ export async function renderFilterCard(post, showDescription) {
   return card;
 }
 
-async function renderChunk(cardList, chunks, idx, showDescription) {
-  if (idx >= chunks.length) {
-    return;
+async function renderChunk(cardList, blogs, showDescription) {
+  let done = false;
+  const chunk = [];
+  for (let i = 0; i < 20; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const generate = await blogs.next();
+    done = generate.done;
+    if (done) {
+      break;
+    }
+    chunk.push(generate.value);
   }
 
   cardList.append(
     ...await Promise.all(
-      chunks[idx].map((blog) => renderFilterCard(blog, showDescription)),
+      chunk.map((blog) => renderFilterCard(blog, showDescription)),
     ),
   );
+
+  if (done) return;
 
   const observer = new IntersectionObserver((entries) => {
     if (entries.some((e) => e.isIntersecting)) {
       observer.disconnect();
-      renderChunk(cardList, chunks, idx + 1, showDescription);
+      renderChunk(cardList, blogs, showDescription);
     }
   });
   observer.observe(cardList.children[cardList.children.length - 1]);
@@ -78,7 +90,7 @@ export default async function decorate(block) {
   }
 
   // get filter function
-  const filter = FILTERS[filterKey];
+  const filter = BLOG_FILTERS[filterKey];
   if (!filter) {
     // eslint-disable-next-line no-console
     console.warn(`no filter function found for '${filterKey}'`);
@@ -86,21 +98,18 @@ export default async function decorate(block) {
   }
 
   // retrieve and filter blog entries
-  let blogs = await getLocaleBlogs();
-  if (!blogs) return;
-  blogs = filter(blogs, filterValue);
+  const blogs = ffetch(BLOG_QUERY_INDEX)
+    .chunks(250)
+    .sheet('blogs')
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => filter(filterValue, blog));
 
   // render
   block.classList.add(filterKey);
-  const chunks = [];
-  const chunkSize = 20;
-  for (let i = 0; i < blogs.length; i += chunkSize) {
-    chunks.push(blogs.slice(i, i + chunkSize));
-  }
   const showDescription = block.classList.contains('show-description');
   const cardList = ul();
   block.append(cardList);
 
-  await renderChunk(cardList, chunks, 0, showDescription);
+  await renderChunk(cardList, blogs, showDescription);
   await cssPromise;
 }

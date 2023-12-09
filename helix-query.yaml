@@ -13,6 +13,11 @@ indices:
       - '/fr/blogs/fragments/**'
       - '/nl/blogs/fragments/**'
       - '/uk/blogs/fragments/**'
+      - '/blogs/drafts/**'
+      - '/de/blogs/drafts/**'
+      - '/fr/blogs/drafts/**'
+      - '/nl/blogs/drafts/**'
+      - '/uk/blogs/drafts/**'
     target: /blogs/query-index.json
     properties:
       type:

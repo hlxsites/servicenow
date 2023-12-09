@@ -4,8 +4,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--gap);
-  margin-bottom: 1.5rem;
   align-items: stretch;
+  margin-bottom: 3rem;
 }
 
 .card {
@@ -103,8 +103,6 @@
 /* SIDEBAR */
 .cards.sidebar {
   --gap: 1.5rem;
-
-  margin-bottom: 3rem;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
@@ -118,6 +116,10 @@
 }
 
 @media (max-width: 768px) {
+  .cards .card .card-thumbnail img {
+    aspect-ratio: 375 / 211;
+  }
+
   .cards.sidebar .card {
     flex-direction: row;
     display: flex;
