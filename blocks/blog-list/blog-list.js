@@ -13,7 +13,7 @@ import ffetch from '../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
-function addClickTracking(card) {
+function clickTrack(card) {
   const h1 = document.querySelector('h1')?.textContent || '';
   const cardTitle = card.querySelector('h5')?.textContent || '';
   const ctaText = card.querySelector('.cta-readmore')?.textContent || '';
@@ -43,7 +43,10 @@ function addClickTracking(card) {
       window.appEventData.push(data);
     });
   });
+
+  return card;
 }
+
 
 export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
@@ -71,7 +74,6 @@ export async function renderFilterCard(post, showDescription) {
       ),
   );
 
-  addClickTracking(card);
   return card;
 }
 
@@ -90,7 +92,7 @@ async function renderChunk(cardList, blogs, showDescription) {
 
   cardList.append(
     ...await Promise.all(
-      chunk.map((blog) => renderFilterCard(blog, showDescription)),
+      chunk.map((blog) => clickTrack(renderFilterCard(blog, showDescription))),
     ),
   );
 
