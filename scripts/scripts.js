@@ -36,6 +36,10 @@ export function getAnalyticsSiteName() {
   return 'SN Blogs';
 }
 
+export function analyticsCanonicStr(str) {
+  return (str || '').trim().replaceAll(':', '').toLowerCase();
+}
+
 export function analyticsGlobalClickTrack(digitalData, event) {
   window.appEventData = window.appEventData || [];
   const data = {
@@ -44,6 +48,8 @@ export function analyticsGlobalClickTrack(digitalData, event) {
     event,
   };
   window.appEventData.push(data);
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(window.appEventData, undefined, 4));
 }
 
 export async function fetchAPI(path) {
@@ -280,15 +286,10 @@ function buildSidebar(main, sidebarPath) {
  * @returns {boolean}
  */
 function isArticlePage() {
-  let blogPage = false;
-  const template = getMetadata('template');
-  if (template && template === 'Blog Article') {
-    blogPage = true;
-  }
-  return blogPage;
+  return getMetadata('template') === 'Blog Article';
 }
 
-function decorateImages(main) {
+function decorateArticleImages(main) {
   // Get all img elements within the main container
   const images = main.querySelectorAll('img');
 
@@ -302,6 +303,37 @@ function decorateImages(main) {
   for (let i = 0; i < images.length; i += 1) {
     images[i].classList.add('article-image');
   }
+}
+
+function articleLinksClickTrack(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      let ctaText = link.textContent || '';
+      const image = link.querySelector('img');
+      if (!ctaText && image) {
+        ctaText = image.alt;
+      }
+      ctaText = analyticsCanonicStr(ctaText);
+
+      const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+      const eVar22 = `${h1}:${ctaText}`;
+
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'body',
+          eVar22,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: link.closest('.block')?.classList[0] || 'default-content-wrapper',
+            destination: link.href,
+            ctaText,
+            pageArea: 'body',
+            section: h1,
+          },
+        },
+      }, e);
+    });
+  });
 }
 
 /**
@@ -320,8 +352,9 @@ function buildAutoBlocks(main) {
       buildArticleHeader(main);
       buildArticleCopyright(main);
       buildArticleSocialShare(main);
+      articleLinksClickTrack(main);
       buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
-      decorateImages(main);
+      decorateArticleImages(main);
     }
 
     const template = toClassName(getMetadata('template'));

@@ -3,7 +3,12 @@ import {
   a, button, div, form, i, input, li, span,
 } from '../../scripts/dom-helpers.js';
 import {
-  BLOG_QUERY_INDEX, analyticsGlobalClickTrack, getAnalyticsSiteName, getLocale, getLocaleInfo,
+  BLOG_QUERY_INDEX,
+  analyticsCanonicStr,
+  analyticsGlobalClickTrack,
+  getAnalyticsSiteName,
+  getLocale,
+  getLocaleInfo,
 } from '../../scripts/scripts.js';
 import ffetch from '../../scripts/ffetch.js';
 
@@ -123,7 +128,7 @@ function addClickTracking(link, block) {
       {
         event: {
           pageArea: 'body',
-          eVar22: `blogs:heading:${link.textContent.toLowerCase()}`,
+          eVar22: `blogs:heading:${analyticsCanonicStr(link.textContent)}`,
           eVar30: getAnalyticsSiteName(),
           click: {
             componentName: block.classList[0],

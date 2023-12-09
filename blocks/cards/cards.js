@@ -10,6 +10,7 @@ import {
   BLOG_QUERY_INDEX,
   getAnalyticsSiteName,
   analyticsGlobalClickTrack,
+  analyticsCanonicStr,
 } from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
@@ -74,8 +75,8 @@ function clickTrack(card) {
       const section = (
         closestH3(card) || document.querySelector('h1')?.textContent || ''
       ).replaceAll(':', '');
-      const cardTitle = (card.querySelector('h5')?.textContent || '').replaceAll(':', '');
-      const eVar22 = `${section}:${cardTitle}`.toLowerCase();
+      const cardTitle = analyticsCanonicStr(card.querySelector('h5')?.textContent);
+      const eVar22 = `${section}:${cardTitle}`;
 
       analyticsGlobalClickTrack({
         event: {

@@ -9,6 +9,7 @@ import {
   serviceNowDefaultOrigin,
   getAnalyticsSiteName,
   analyticsGlobalClickTrack,
+  analyticsCanonicStr,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
@@ -21,10 +22,10 @@ const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 function clickTrack(card) {
   card.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', (e) => {
-      const h1 = (document.querySelector('h1')?.textContent || '').replace(':', '');
-      const cardTitle = (card.querySelector('h5')?.textContent || '').replace(':', '');
-      const ctaText = (card.querySelector('.cta-readmore')?.textContent || '').replace(':', '');
-      const eVar22 = `${h1}:${cardTitle}:${ctaText}`.toLowerCase();
+      const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+      const cardTitle = analyticsCanonicStr(card.querySelector('h5')?.textContent);
+      const ctaText = analyticsCanonicStr(card.querySelector('.cta-readmore')?.textContent);
+      const eVar22 = `${h1}:${cardTitle}:${ctaText}`;
 
       analyticsGlobalClickTrack({
         event: {
