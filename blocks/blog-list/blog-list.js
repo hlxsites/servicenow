@@ -3,7 +3,7 @@ import {
 } from '../../scripts/aem.js';
 import {
   BLOG_QUERY_INDEX,
-  BLOG_FILTERS, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
+  BLOG_FILTERS, formatDate, getLocaleInfo, serviceNowDefaultOrigin, getAnalyticsSiteName,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
@@ -12,6 +12,38 @@ import { fetchHtml, renderCard } from '../cards/cards.js';
 import ffetch from '../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
+
+function addClickTracking(card) {
+  const h1 = document.querySelector('h1')?.textContent || '';
+  const cardTitle = card.querySelector('h5')?.textContent || '';
+  const ctaText = card.querySelector('.cta-readmore')?.textContent || '';
+  const eVar22 = `${h1}:${cardTitle}:${ctaText}`.toLowerCase();
+
+  card.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      window.appEventData = window.appEventData || [];
+      const data = {
+        name: 'global_click',
+        digitalData: {
+          event: {
+            pageArea: 'body',
+            eVar22,
+            eVar30: getAnalyticsSiteName(),
+            click: {
+              componentName: 'blog-list',
+              destination: link.href,
+              ctaText,
+              pageArea: 'body',
+              section: h1,
+            },
+          },
+        },
+        event: e,
+      };
+      window.appEventData.push(data);
+    });
+  });
+}
 
 export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
@@ -38,6 +70,8 @@ export async function renderFilterCard(post, showDescription) {
         ),
       ),
   );
+
+  addClickTracking(card);
   return card;
 }
 

@@ -129,7 +129,7 @@ function addClickTracking(link, block) {
           eVar30: getAnalyticsSiteName(),
           click: {
             componentName: block.classList[0],
-            destination: new URL(link.href).pathname,
+            destination: link.href,
             ctaText: link.textContent,
             pageArea: 'body',
             section: 'heading',
