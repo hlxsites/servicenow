@@ -111,6 +111,7 @@ function videoEventTracking(myPlayer, videoTagId) {
 function videoTracking(block) {
   const newPlayerId = block.querySelector('video').getAttribute('id');
 
+  // eslint-disable-next-line func-names
   window.videojs(newPlayerId).ready(function () {
     const myPlayer = this;
     const videoID = document.getElementById(newPlayerId).getAttribute('data-video-id');
@@ -166,6 +167,7 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
   } else if (block.classList.contains('brightcove')) {
     const { videoid } = blockConfig;
     if (!videoid) {
+      // eslint-disable-next-line no-console
       console.error('Brightcove video id is not provided');
       return;
     }

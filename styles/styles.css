@@ -325,20 +325,14 @@ main input:hover {
 }
 
 main blockquote {
+  margin: 45px 0 45px 50px;
+}
+
+main blockquote p {
+  border-left: 3px solid #ccc;
   font-style: italic;
-  margin: 3rem;
-  text-indent: -1rem;
-  hanging-punctuation: first;
-}
-
-main blockquote p::before {
-  content: "“";
-  line-height: 0;
-}
-
-main blockquote p::after {
-  content: "”";
-  line-height: 0;
+  font-size: 1.75rem;
+  padding: 12px 24px 12px 15px;
 }
 
 main img {
