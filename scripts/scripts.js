@@ -36,6 +36,16 @@ export function getAnalyticsSiteName() {
   return 'SN Blogs';
 }
 
+export function analyticsGlobalClickTrack(digitalData, event) {
+  window.appEventData = window.appEventData || [];
+  const data = {
+    name: 'global_click',
+    digitalData,
+    event,
+  };
+  window.appEventData.push(data);
+}
+
 export async function fetchAPI(path) {
   const response = await fetch(path);
   if (!response.ok) {

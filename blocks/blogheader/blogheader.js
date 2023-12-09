@@ -3,7 +3,7 @@ import {
   a, button, div, form, i, input, li, span,
 } from '../../scripts/dom-helpers.js';
 import {
-  BLOG_QUERY_INDEX, getAnalyticsSiteName, getLocale, getLocaleInfo,
+  BLOG_QUERY_INDEX, analyticsGlobalClickTrack, getAnalyticsSiteName, getLocale, getLocaleInfo,
 } from '../../scripts/scripts.js';
 import ffetch from '../../scripts/ffetch.js';
 
@@ -119,10 +119,8 @@ async function handleSearch(block) {
 
 function addClickTracking(link, block) {
   link.addEventListener('click', (e) => {
-    window.appEventData = window.appEventData || [];
-    const data = {
-      name: 'global_click',
-      digitalData: {
+    analyticsGlobalClickTrack(
+      {
         event: {
           pageArea: 'body',
           eVar22: `blogs:heading:${link.textContent.toLowerCase()}`,
@@ -136,9 +134,8 @@ function addClickTracking(link, block) {
           },
         },
       },
-      event: e,
-    };
-    window.appEventData.push(data);
+      e,
+    );
   });
 }
 
