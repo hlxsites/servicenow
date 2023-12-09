@@ -183,6 +183,7 @@ h3.strike-line span {
   h3 {
     letter-spacing: unset;
     padding-right: unset;
+    line-height: 3.12rem;
   }
 }
 
