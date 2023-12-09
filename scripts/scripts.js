@@ -64,17 +64,6 @@ function buildHeroBlock(main) {
   }
 }
 
-export const FILTERS = {
-  trend: (blogs, trend) => blogs.filter((blog) => trend === toClassName(blog.trend)),
-  newTrend: (blogs, newTrend) => blogs.filter((blog) => newTrend === toClassName(blog.newTrend)),
-  category: (blogs, category) => blogs.filter((blog) => category === toClassName(blog.category)),
-  topic: (blogs, topic) => blogs.filter((blog) => topic === toClassName(blog.topic)),
-  year: (blogs, year) => blogs.filter((blog) => year === blog.year),
-  author: (blogs, authorUrl) => blogs.filter(
-    (blog) => authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0],
-  ),
-};
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -139,39 +128,24 @@ export function getLocale() {
   return document.documentElement.lang;
 }
 
+export const BLOG_FILTERS = {
+  locale: (blog) => getLocale() === blog.locale,
+  trend: (trend, blog) => trend === toClassName(blog.trend),
+  newTrend: (newTrend, blog) => newTrend === toClassName(blog.newTrend),
+  category: (category, blog) => category === toClassName(blog.category),
+  topic: (topic, blog) => topic === toClassName(blog.topic),
+  year: (year, blog) => year === blog.year,
+  author: (authorUrl, blog) => (
+    authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0]
+  ),
+};
+
 /**
  * Returns the locale information
  * @returns {Object}
  */
 export function getLocaleInfo() {
   return LOCALE_INFO[getLocale()] || LOCALE_INFO['en-US'];
-}
-
-/**
- * Retrievs and retuns the list of blogs for the current locale based on the index
- * Read Only: Consumers of this API should not modify the list, as it is cached
- * @returns {Array} array of blog objects
- */
-export async function getLocaleBlogs() {
-  if (window.blogs) return window.blogs;
-
-  const response = await fetchAPI(`${BLOG_QUERY_INDEX}?sheet=blogs&limit=10000`);
-  if (!response) {
-    // eslint-disable-next-line no-console
-    console.warn('failed to retrieve blogs.');
-    return [];
-  }
-
-  const blogs = response.data;
-  if (!blogs) {
-    // eslint-disable-next-line no-console
-    console.warn('failed to retrieve blogs.');
-    return [];
-  }
-
-  const locale = getLocale();
-  window.blogs = blogs.filter((blog) => blog.locale === locale);
-  return window.blogs;
 }
 
 export async function getTopicTags() {

@@ -1,14 +1,12 @@
 import ffetch from '../../scripts/ffetch.js';
-import { BLOG_QUERY_INDEX, getLocale } from '../../scripts/scripts.js';
+import { BLOG_QUERY_INDEX, BLOG_FILTERS } from '../../scripts/scripts.js';
 import { p, a } from '../../scripts/dom-helpers.js';
 
 async function getTopicYears() {
-  const locale = getLocale();
-  window.sidebarYears = ffetch(`${BLOG_QUERY_INDEX}`)
+  return ffetch(`${BLOG_QUERY_INDEX}`)
     .sheet('years')
-    .filter((entry) => entry.locale === locale)
+    .filter(BLOG_FILTERS.locale)
     .all();
-  return window.sidebarYears;
 }
 
 export default async function decorate(block) {

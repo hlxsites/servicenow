@@ -1,10 +1,12 @@
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
+import ffetch from '../../scripts/ffetch.js';
 import {
-  FILTERS, fetchAPI, getLocaleBlogs, getLocale, getTopicTags, getTemplate,
+  BLOG_FILTERS, fetchAPI, getLocale, getTopicTags, getTemplate, BLOG_QUERY_INDEX,
 } from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
+const RESEARCH_CATEGORY = toClassName('ServiceNow Research');
 
 async function waitForEagerImageLoad(img) {
   if (!img) return;
@@ -92,48 +94,39 @@ function fetchAPIBasedCards(cardInfos, apis) {
   });
 }
 
-function homepageLatestRule(blogs, cardInfos, idx) {
-  cardInfos[idx] = blogs.slice(0, 3);
+async function homepageLatestRule(blogs, cardInfos, idx) {
+  cardInfos[idx] = await blogs
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => !BLOG_FILTERS.category(RESEARCH_CATEGORY, blog))
+    .limit(3)
+    .all();
 }
 
-function homepageCategoryRule(blogs, cardInfos, idx, config) {
-  cardInfos[idx] = FILTERS.category(
-    // skip first 3 blogs as they are used for the homepage latest rule
-    blogs.slice(3),
-    toClassName(config.category),
-  ).slice(0, 3);
+async function homepageCategoryRule(blogs, cardInfos, idx, config) {
+  const latestLinks = [...document.querySelectorAll('.home-page-latest a')]
+    .map((link) => new URL(link.href).pathname);
+
+  cardInfos[idx] = await blogs
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => BLOG_FILTERS.category(toClassName(config.category), blog)
+      && !latestLinks.includes(blog.path))
+    .limit(3)
+    .all();
 }
 
-function sidebarFeaturedRule(blogs, cardInfos, idx) {
-  const result = [];
-  for (let i = 0; i < blogs.length; i += 1) {
-    if (TRENDS_AND_RESEARCH === toClassName(blogs[i].trend)) {
-      // eslint-disable-next-line no-continue
-      continue; // we keep these for the trends and research rule
-    }
-    result.push(blogs[i]);
-
-    if (result.length === 3) {
-      break;
-    }
-  }
-
-  cardInfos[idx] = result;
+async function sidebarFeaturedRule(blogs, cardInfos, idx) {
+  cardInfos[idx] = await blogs
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => !BLOG_FILTERS.trend(TRENDS_AND_RESEARCH, blog))
+    .limit(3)
+    .all();
 }
 
-function sidebarTrendsAndResearchRule(blogs, cardInfos, idx) {
-  const result = [];
-  for (let i = 0; i < blogs.length; i += 1) {
-    if (TRENDS_AND_RESEARCH === toClassName(blogs[i].trend)) {
-      result.push(blogs[i]);
-    }
-
-    if (result.length === 3) {
-      break;
-    }
-  }
-
-  cardInfos[idx] = result;
+async function sidebarTrendsAndResearchRule(blogs, cardInfos, idx) {
+  cardInfos[idx] = await blogs.filter(BLOG_FILTERS.locale)
+    .filter((blog) => BLOG_FILTERS.trend(TRENDS_AND_RESEARCH, blog))
+    .limit(3)
+    .all();
 }
 
 const RULES = {
@@ -143,12 +136,17 @@ const RULES = {
   'sidebar-trends-and-research': sidebarTrendsAndResearchRule,
 };
 
-async function fetchRuleBasedCards(config, cardInfos, idx) {
-  const blogs = await getLocaleBlogs();
-  const ruleHandler = RULES[toClassName(config.rule)];
-  if (!ruleHandler) return; // unknown rule
+async function fetchRuleBasedCards(config, cardInfos, idx, block) {
+  const blogs = ffetch(BLOG_QUERY_INDEX)
+    .chunks(250)
+    .sheet('blogs');
 
-  ruleHandler(blogs, cardInfos, idx, config);
+  const ruleName = toClassName(config.rule);
+  const ruleHandler = RULES[ruleName];
+  if (!ruleHandler) return; // unknown rule
+  block.classList.add(ruleName);
+
+  await ruleHandler(blogs, cardInfos, idx, config);
 }
 
 let waitedForLCP = false;
@@ -171,7 +169,7 @@ export default async function decorate(block) {
 
   // cards based on rules
   if (config.rule) {
-    await fetchRuleBasedCards(config, cardInfos, 0);
+    await fetchRuleBasedCards(config, cardInfos, 0, block);
   } else {
     [...block.children].forEach((row, idx) => {
       // card with content directly in the word document
