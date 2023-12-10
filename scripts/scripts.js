@@ -308,12 +308,11 @@ function decorateArticleImages(main) {
 function articleLinksClickTrack(main) {
   main.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', (e) => {
-      let ctaText = link.textContent || '';
+      let ctaText = analyticsCanonicStr(link.textContent || '');
       const image = link.querySelector('img');
       if (!ctaText && image) {
-        ctaText = image.alt;
+        ctaText = analyticsCanonicStr(image.alt);
       }
-      ctaText = analyticsCanonicStr(ctaText);
 
       const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
       const eVar22 = `${h1}:${ctaText}`;
