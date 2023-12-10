@@ -1,4 +1,9 @@
 import { loadScript, getMetadata } from '../../scripts/aem.js';
+import {
+  analyticsCanonicStr,
+  analyticsGlobalClickTrack,
+  getAnalyticsSiteName,
+} from '../../scripts/scripts.js';
 
 // FIXME: update date before launch
 const esdCutOff = new Date('2024-01-08'); // 8 January 2024
@@ -8,20 +13,21 @@ function socialShareTracking(block) {
     const button = e.target.parentElement;
 
     if (button.classList.contains('st-btn')) {
+      const section = analyticsCanonicStr(document.querySelector('h1')?.textContent);
       const networkLabel = button.getAttribute('data-network');
 
-      window.appEventData = window.appEventData || [];
-      const data = {
-        name: 'global_click',
-        digitalData: {
-          event: {
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'social-sharing',
+          eVar22: `sharethis-link:${networkLabel}`,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: block.classList[0],
             pageArea: 'social-sharing',
-            eVar22: `sharethis-link:${networkLabel}`,
+            section,
           },
         },
-        event: e,
-      };
-      window.appEventData.push(data);
+      }, e);
     }
   });
 }
