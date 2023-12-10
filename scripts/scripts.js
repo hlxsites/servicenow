@@ -308,10 +308,9 @@ function decorateArticleImages(main) {
 function articleLinksClickTrack(main) {
   main.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', (e) => {
-      let ctaText = analyticsCanonicStr(link.textContent || '');
-      const image = link.querySelector('img');
-      if (!ctaText && image) {
-        ctaText = analyticsCanonicStr(image.alt);
+      let ctaText = analyticsCanonicStr(link.textContent);
+      if (!ctaText) {
+        ctaText = analyticsCanonicStr(link.querySelector('img')?.alt);
       }
 
       const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
