@@ -1,11 +1,17 @@
 import ffetch from '../../scripts/ffetch.js';
-import { BLOG_QUERY_INDEX, BLOG_FILTERS, analyticsCanonicStr, analyticsGlobalClickTrack, getAnalyticsSiteName } from '../../scripts/scripts.js';
+import {
+  BLOG_QUERY_INDEX,
+  BLOG_FILTERS,
+  analyticsCanonicStr,
+  analyticsGlobalClickTrack,
+  getAnalyticsSiteName,
+} from '../../scripts/scripts.js';
 import { p, a } from '../../scripts/dom-helpers.js';
 
 function closestH3(block) {
   try {
     const h3s = [
-      ...block.parentElement //wrapper
+      ...block.parentElement // wrapper
         .previousElementSibling // default-content-wrapper
         .querySelectorAll('h3'), // get all h3s
     ];

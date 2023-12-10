@@ -73,7 +73,7 @@ function clickTrack(card) {
   card.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', (e) => {
       const section = analyticsCanonicStr(
-        closestH3(card) || document.querySelector('h1')?.textContent
+        closestH3(card) || document.querySelector('h1')?.textContent,
       );
       const cardTitle = analyticsCanonicStr(card.querySelector('h5')?.textContent);
       const eVar22 = `${section}:${cardTitle}`;
