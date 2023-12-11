@@ -264,7 +264,7 @@ export default {
             if (brightcoveVideo.dataset.player !== defaultBCPlayer) {
                 brightcoveRows.push(['Player', brightcoveVideo.dataset.player]);
             }
-            brightcoveVideo.replaceWith(WebImporter.DOMUtils.createTable(brightcoveRows, document));
+            brightcoveVideo.closest('.brightcove-video').replaceWith(WebImporter.DOMUtils.createTable(brightcoveRows, document));
         });
 
         // Youtube Videos
