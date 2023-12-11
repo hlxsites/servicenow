@@ -1,6 +1,7 @@
 import ffetch from '../../scripts/ffetch.js';
 import { BLOG_QUERY_INDEX, BLOG_FILTERS } from '../../scripts/scripts.js';
 import { p, a } from '../../scripts/dom-helpers.js';
+import { clickTrack } from '../blog-topics/blog-topics.js';
 
 async function getTopicYears() {
   return ffetch(`${BLOG_QUERY_INDEX}`)
@@ -18,4 +19,6 @@ export default async function decorate(block) {
       )
     )),
   );
+
+  clickTrack(block);
 }

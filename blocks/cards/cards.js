@@ -2,7 +2,15 @@ import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scri
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
 import {
-  BLOG_FILTERS, fetchAPI, getLocale, getTopicTags, getTemplate, BLOG_QUERY_INDEX,
+  BLOG_FILTERS,
+  fetchAPI,
+  getLocale,
+  getTopicTags,
+  getTemplate,
+  BLOG_QUERY_INDEX,
+  getAnalyticsSiteName,
+  analyticsGlobalClickTrack,
+  analyticsCanonicStr,
 } from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
@@ -43,6 +51,50 @@ async function localizedTopic(topic) {
   const topicResponse = (await getTopicTags()).find((t) => t.identifier === topic);
   if (!topicResponse) return topic;
   return topicResponse[getLocale()] || topicResponse['en-US'] || topicResponse.identifier || topic;
+}
+
+function closestH3(card) {
+  try {
+    const h3s = [
+      ...card.parentElement // cards
+        .parentElement // cards-wrapper
+        .previousElementSibling // default-content-wrapper
+        .querySelectorAll('h3'), // get all h3s
+    ];
+    return h3s.pop()?.textContent;
+  } catch (err) {
+    // don't fail
+  }
+
+  return '';
+}
+
+function clickTrack(card) {
+  card.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const section = analyticsCanonicStr(
+        closestH3(card) || document.querySelector('h1')?.textContent,
+      );
+      const cardTitle = analyticsCanonicStr(card.querySelector('h5')?.textContent);
+      const eVar22 = `${section}:${cardTitle}`;
+
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'body',
+          eVar22,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: 'cards',
+            destination: link.href,
+            pageArea: 'body',
+            section,
+          },
+        },
+      }, e);
+    });
+  });
+
+  return card;
 }
 
 export async function renderCard(post, renderTopic = true) {
@@ -215,9 +267,12 @@ export default async function decorate(block) {
   await Promise.all(cardInfos.map(async (cardInfo, idx) => {
     if (!cardInfo) return;
     if (Array.isArray(cardInfos[idx])) {
-      block.append(...await Promise.all(cardInfos[idx].map((card) => renderCard(card))));
+      const cards = await Promise.all(cardInfos[idx].map((card) => renderCard(card)));
+
+      block.append(...cards.map(clickTrack));
     } else {
-      block.append(await renderCard(cardInfos[idx]));
+      const card = await renderCard(cardInfos[idx]);
+      block.append(clickTrack(card));
     }
   }));
 

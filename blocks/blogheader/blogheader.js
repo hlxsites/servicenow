@@ -3,7 +3,12 @@ import {
   a, button, div, form, i, input, li, span,
 } from '../../scripts/dom-helpers.js';
 import {
-  BLOG_QUERY_INDEX, getLocale, getLocaleInfo,
+  BLOG_QUERY_INDEX,
+  analyticsCanonicStr,
+  analyticsGlobalClickTrack,
+  getAnalyticsSiteName,
+  getLocale,
+  getLocaleInfo,
 } from '../../scripts/scripts.js';
 import ffetch from '../../scripts/ffetch.js';
 
@@ -117,6 +122,28 @@ async function handleSearch(block) {
   unindicateSearch(block);
 }
 
+function addClickTracking(link, block) {
+  link.addEventListener('click', (e) => {
+    analyticsGlobalClickTrack(
+      {
+        event: {
+          pageArea: 'body',
+          eVar22: `blogs:heading:${analyticsCanonicStr(link.textContent)}`,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: block.classList[0],
+            destination: link.href,
+            ctaText: link.textContent,
+            pageArea: 'body',
+            section: 'heading',
+          },
+        },
+      },
+      e,
+    );
+  });
+}
+
 export default async function decorate(block) {
   const blogHeaderMeta = getMetadata('blogheader');
   const localeInfo = getLocaleInfo();
@@ -138,6 +165,10 @@ export default async function decorate(block) {
     blogHeader
       .querySelector(`li > a[href^='${window.location.pathname}'`)
       ?.parentNode?.classList.add('active');
+
+    blogHeader.querySelectorAll('li a').forEach((link) => {
+      addClickTracking(link, block);
+    });
 
     const numberOfSections = blogHeader.querySelectorAll('li').length;
     blogHeader.style.setProperty('--number-of-menu-items', numberOfSections);

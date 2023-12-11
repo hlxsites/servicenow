@@ -3,7 +3,13 @@ import {
 } from '../../scripts/aem.js';
 import {
   BLOG_QUERY_INDEX,
-  BLOG_FILTERS, formatDate, getLocaleInfo, serviceNowDefaultOrigin,
+  BLOG_FILTERS,
+  formatDate,
+  getLocaleInfo,
+  serviceNowDefaultOrigin,
+  getAnalyticsSiteName,
+  analyticsGlobalClickTrack,
+  analyticsCanonicStr,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
@@ -12,6 +18,34 @@ import { fetchHtml, renderCard } from '../cards/cards.js';
 import ffetch from '../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
+
+function clickTrack(card) {
+  card.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+      const cardTitle = analyticsCanonicStr(card.querySelector('h5')?.textContent);
+      const ctaText = analyticsCanonicStr(card.querySelector('.cta-readmore')?.textContent);
+      const eVar22 = `${h1}:${cardTitle}:${ctaText}`;
+
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'body',
+          eVar22,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: 'blog-list',
+            destination: link.href,
+            ctaText,
+            pageArea: 'body',
+            section: h1,
+          },
+        },
+      }, e);
+    });
+  });
+
+  return card;
+}
 
 export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
@@ -38,6 +72,7 @@ export async function renderFilterCard(post, showDescription) {
         ),
       ),
   );
+
   return card;
 }
 
@@ -54,11 +89,11 @@ async function renderChunk(cardList, blogs, showDescription) {
     chunk.push(generate.value);
   }
 
-  cardList.append(
-    ...await Promise.all(
-      chunk.map((blog) => renderFilterCard(blog, showDescription)),
-    ),
+  const cards = await Promise.all(
+    chunk.map((blog) => renderFilterCard(blog, showDescription)),
   );
+
+  cardList.append(...cards.map(clickTrack));
 
   if (done) return;
 
