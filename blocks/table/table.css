@@ -1,0 +1,22 @@
+.table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    font-size: 1.4rem;
+}
+
+.table table th {
+    font-weight: 700;
+}
+
+.table table th, .table table td {
+    vertical-align: middle;
+    padding-bottom: 12px;
+    color: var(--text-color);
+    -webkit-font-smoothing: antialiased;
+}
