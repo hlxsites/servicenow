@@ -17,7 +17,7 @@ export default async function decorate(block) {
     block.append(
       section({
         id: 'naas-footer',
-        class: 'naas-footer-section withPaddings', 
+        class: 'naas-footer-section withPaddings',
         'data-domain': dataDomain,
         'data-sourceId': 'blogs',
         'data-lslinkshard': 'on',
@@ -35,7 +35,7 @@ export default async function decorate(block) {
       document.addEventListener('nass-footer-rendered', () => {
         resolve();
       });
-      
+
       document.dispatchEvent(new CustomEvent('naas-load-footer'));
     });
   } catch (e) {

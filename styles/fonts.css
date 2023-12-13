@@ -38,11 +38,7 @@
 }
 
 /* ---- NAAS Dependencies - Start --- */
-:root,
-:host {
-  --fa-style-family-classic: "Font Awesome 6 Pro";
-  --fa-font-light: normal 300 1em/1 "Font Awesome 6 Pro";
-}
+
 @font-face {
   font-family: "Font Awesome 6 Pro";
   font-style: normal;
@@ -51,8 +47,10 @@
   src: url("../fonts/fa-light-300.woff2")
       format("woff2"),
     url("../fonts/fa-light-300.ttf")
-      format("truetype");
+  
+    format("truetype");
 }
+
 .fal,
 .fa-light {
   font-weight: 300;
@@ -62,6 +60,10 @@
 :host {
   --fa-style-family-brands: "Font Awesome 6 Brands";
   --fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands";
+  --fa-style-family-classic: "Font Awesome 6 Pro";
+  --fa-font-light: normal 300 1em/1 "Font Awesome 6 Pro";
+  --fa-style-family-solid: "Font Awesome 6 Pro";
+  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Pro";
 }
 
 @font-face {
@@ -70,12 +72,6 @@
   font-weight: 400;
   font-display: block;
   src: url("../fonts/fa-brands-400.woff2") format("woff2");
-}
-
-:root,
-:host {
-  --fa-style-family-classic: "Font Awesome 6 Pro";
-  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Pro";
 }
 
 @font-face {
@@ -96,45 +92,54 @@
 
 .fab,
 .fa-brands {
+  /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
   font-family: "Font Awesome 6 Brands";
   font-style: normal;
+  font-weight: 400;
 }
 
 .fa-check::before {
   content: "";
 }
-.fab,
-.fa-brands {
-  font-weight: 400;
-}
-.fa-facebook:before {
+
+.fa-facebook::before {
   content: "";
 }
-.fa-facebook-f:before {
+
+.fa-facebook-f::before {
   content: "";
 }
-.fa-instagram:before {
+
+.fa-instagram::before {
   content: "";
 }
-.fa-linkedin:before {
+
+.fa-linkedin::before {
   content: "";
 }
-.fa-linkedin-in:before {
+
+.fa-linkedin-in::before {
   content: "";
 }
-.fa-square-x-twitter:before {
+
+.fa-square-x-twitter::before {
   content: "";
 }
-.fa-tiktok:before {
+
+.fa-tiktok::before {
   content: "";
 }
-.fa-twitter:before {
+
+.fa-twitter::before {
   content: "";
 }
-.fa-x-twitter:before {
+
+.fa-x-twitter::before {
   content: "";
 }
-.fa-youtube:before {
+
+.fa-youtube::before {
   content: "";
 }
+
 /* ---- NAAS Dependencies - End --- */

@@ -48,14 +48,9 @@ export default async function decorate(block) {
     // trigger and wait for NaaS header rendering
     await new Promise((resolve) => {
       document.addEventListener('nass-header-rendered', () => {
-        // work-around.
-        // if (window.location.host !== 'www.servicenow.com') {
-        //   document.querySelectorAll('header img[src^="/content/dam"], footer img[src^="/content/dam"]')
-        //     .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
-        // }
         resolve();
       });
-      
+
       document.dispatchEvent(new CustomEvent('naas-load-header'));
     });
   } catch (e) {
