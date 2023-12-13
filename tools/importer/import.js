@@ -318,7 +318,7 @@ export default {
         });
 
         // Youtube Videos
-        main.querySelectorAll('.comp-youtube-video iframe').forEach((youtubeIframe) => {
+        main.querySelectorAll('.comp-youtube-video iframe, .embed-youtube iframe').forEach((youtubeIframe) => {
             const youtubeLink = document.createElement('a');
             youtubeLink.href = youtubeIframe.src;
             youtubeLink.textContent = youtubeIframe.src;
