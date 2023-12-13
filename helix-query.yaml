@@ -71,3 +71,6 @@ indices:
       content:
         select: main
         value: textContent(el)
+      excludeSidebar:
+        select: head > meta[name="exclude-sidebar"]
+        value: attribute(el, "content")
