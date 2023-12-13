@@ -40,11 +40,11 @@ const embedYoutube = (url, autoplay) => {
 };
 
 const embedTuneIn = (url) => {
-  return `<div style="padding: 20px 0px 25px 0px;">
+  const embedHTML = `<div style="padding: 20px 0px 25px 0px;">
     <iframe src="${url}" style="width:100%; height:100px;" scrolling="no" frameborder="no"></iframe>
   </div>`;
-}
-
+  return embedHTML;
+};
 
 const embedVimeo = (url, autoplay) => {
   const [, video] = url.pathname.split('/');
