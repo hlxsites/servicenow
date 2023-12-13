@@ -49,7 +49,7 @@ export function analyticsGlobalClickTrack(digitalData, event) {
   };
   window.appEventData.push(data);
   // eslint-disable-next-line no-console
-  console.log(JSON.stringify(window.appEventData, undefined, 4));
+  console.log(JSON.stringify(data, undefined, 4));
 }
 
 export async function fetchAPI(path) {
