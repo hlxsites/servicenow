@@ -82,6 +82,18 @@ function getPageUrl(link) {
     return new URL(new URL(link.href).pathname.replace('.html', ''), pageUrl);
 }
 
+
+function makeProxySrc(imgSrc) {
+    // imgSrc comes in format https://www.servicenow.com/content/dam/servicenow-blog-docs/servicematters/2017/ITSM-Dashboard-Final.png
+    // extract path from imgSrc
+    const u = new URL(imgSrc);
+    u.searchParams.append('host', u.origin);
+
+    console.log('makeProxySrc: ', u.pathname, u.search);
+
+    return `http://localhost:3001${u.pathname}${u.search}`;
+}
+
 const createMetadataBlock = (main, document, url) => {
     const jsonRendition = JSON.parse(fetchSync('GET', jsonRenditionURL(url)).body);
     const allTags = getAllTags();
@@ -116,10 +128,6 @@ const createMetadataBlock = (main, document, url) => {
     if (originalTags.includes('sn-blog-docs:trend/trends-research')) {
         meta['Trend'] = 'Trends and Research';
     }
-
-    // This comes from the bulk metadata for Blog articles
-    // meta.Template = 'Blog Article';
-
 
     // Title
     const title = document.querySelector('title');
@@ -158,13 +166,30 @@ const createMetadataBlock = (main, document, url) => {
     // Template set in the metadata.xls
     // meta.Template = 'Blog Article';
 
-    // Image - TODO if we find blogs for which the first image is not the same as the og:image
-    // const img = document.querySelector('[property="og:image"]');
-    // if (img && img.content) {
-    //     const el = document.createElement('img');
-    //     el.src = img.content;
-    //     meta.Image = el;
-    // }
+    // Image - if this is an older article with hero being removeed from content (due to actual logic in blogs)
+    // log the url and check if it should be removed
+    if (isOlderThan2020(url) && shouldHeroBeRemoved(main)) {
+        const img = document.querySelector('[property="og:image"]');
+
+        if (img && img.content) {
+
+            console.log('fould og:image ', img.content);
+            // console.log('proxySrc: ', makeProxySrc(img.content));
+
+            const el = document.createElement('img');
+            el.src = makeProxySrc(img.content);
+            meta.Image = el;
+        } else {
+            // find image in the div with class hero-image
+            const heroImage = document.querySelector('.hero-image img');
+            if (heroImage) {
+                const el = document.createElement('img');
+                el.src = makeProxySrc(heroImage.src);
+                meta.Image = el;
+            }
+        }
+
+    }
 
     const block = WebImporter.Blocks.getMetadataBlock(document, meta);
     main.prepend(block);
@@ -177,7 +202,27 @@ const h3ConvertExceptions = [
     'https://www.servicenow.com/blogs/2022/knowledge-2022-social-media-contest-rules.html',
     'https://www.servicenow.com/de/blogs/2020/servicenow-bei-boehringer-ingelheim-one-stop-shop-fuer-exzellenten-service-und-best-in-class-customer-experience.html',
     'https://www.servicenow.com/de/blogs/2020/loesungen-fuer-die-finanzbranche-quasi-make-up-mit-tiefenwirkung.html',
+    'https://www.servicenow.com/blogs/2017/4-years-row-servicenow-named-leader-gartner-magic-quadrant-service-management-tools.html',
+    'https://www.servicenow.com/blogs/2017/business-value-servicenow-look-hr-business-apps-customer-service.html',
+    'https://www.servicenow.com/blogs/2017/meet-servicenow-agent-intelligence-machine-learning-for-everyday-work.html',
+
 ];
+
+function shouldHeroBeRemoved(main) {
+    return main.querySelectorAll('.sn-blog-main-copy-wrapper').length > 0;
+}
+
+function cleanup2016to2019Blogs(main) {
+    // remove hero image if there is one div with class sn-blog-main-copy-wrapper
+    if (shouldHeroBeRemoved(main)) {
+        main.querySelectorAll('.hero-image').forEach(el => el.remove());
+    }
+}
+
+function isOlderThan2020(url) {
+    // return true if url contains /blogs/2016 or /blogs/2017 or /blogs/2018 or /blogs/2019
+    return url.includes('/blogs/2016') || url.includes('/blogs/2017') || url.includes('/blogs/2018') || url.includes('/blogs/2019');
+}
 
 export default {
     onLoad: async ({ document, url, params }) => {
@@ -208,6 +253,11 @@ export default {
 
         // CLEANUP
         main.querySelectorAll('.legacyHTML, .social-sharing, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
+
+        // if url has the following pattern https://www.servicenow.com/blogs/<year> where year is 2016, 2017, 2018 or 2019 then do the cleanup
+        if (isOlderThan2020(url)) {
+            cleanup2016to2019Blogs(main);
+        }
 
         main.querySelectorAll('img[src^="/akam/13/pixel"], noscript').forEach((el) => el.remove());
         // Remove copyright as we create a fragment with it.
