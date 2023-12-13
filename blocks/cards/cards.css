@@ -4,8 +4,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--gap);
-  margin-bottom: 1.5rem;
   align-items: stretch;
+  margin-bottom: 3rem;
 }
 
 .card {
@@ -42,10 +42,11 @@
   background: var(--link-background-color);
   padding: 0 1rem;
   margin-left: -0.8rem;
-  color: #fff;
+  color: var(--arc-color-black);
   font-family: var(--ff-gilroy-semibold);
   font-size: 1.4rem;
   line-height: 2rem;
+  -webkit-font-smoothing: antialiased;
 }
 
 .card .card-thumbnail .topic-tag::after {
@@ -102,8 +103,6 @@
 /* SIDEBAR */
 .cards.sidebar {
   --gap: 1.5rem;
-
-  margin-bottom: 3rem;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
@@ -117,6 +116,10 @@
 }
 
 @media (max-width: 768px) {
+  .cards .card .card-thumbnail img {
+    aspect-ratio: 375 / 211;
+  }
+
   .cards.sidebar .card {
     flex-direction: row;
     display: flex;

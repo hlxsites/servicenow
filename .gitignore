@@ -1,9 +1,14 @@
 .hlx/*
 coverage/*
 logs/*
-node_modules/*
+node_modules
+.parcel-cache
 
 helix-importer-ui
 .DS_Store
 *.bak
 .idea
+
+.vscode/
+.htmlvalidate.json
+.htmlvalidateignore

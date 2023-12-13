@@ -13,12 +13,60 @@ import {
   sampleRUM,
   toClassName,
   waitForLCP,
+  loadBlock,
+  readBlockConfig,
 } from './aem.js';
 import {
   a, div, p, span,
 } from './dom-helpers.js';
+import ffetch from './ffetch.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
+const LCP_WAIT_SKIP_TEMPLATE = [
+  'blog-home-page',
+];
+export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
+export const TAGS_QUERY_INDEX = '/blogs/tags.json';
+
+export function getTemplate() {
+  return toClassName(getMetadata('template'));
+}
+
+export function getAnalyticsSiteName() {
+  return 'SN Blogs';
+}
+
+export function analyticsCanonicStr(str) {
+  return (str || '').trim().replaceAll(':', '').toLowerCase();
+}
+
+export function analyticsGlobalClickTrack(digitalData, event) {
+  window.appEventData = window.appEventData || [];
+  const data = {
+    name: 'global_click',
+    digitalData,
+    event,
+  };
+  window.appEventData.push(data);
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(data, undefined, 4));
+}
+
+export async function fetchAPI(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    // eslint-disable-next-line no-console
+    console.error('error loading API response', response);
+    return null;
+  }
+  const json = await response.json();
+  if (!json) {
+    // eslint-disable-next-line no-console
+    console.error('empty API response', path);
+    return null;
+  }
+  return json;
+}
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -48,31 +96,28 @@ async function loadFonts() {
   }
 }
 
+export const BLOG_QUERY_INDEX = '/blogs/query-index.json';
+// when adding new locales, the 404.html needs to be updated as well
 const LOCALE_INFO = {
   'en-US': {
     urlPrefix: '',
     placeholdersPrefix: '/blogs',
-    metadataIndex: '/blogs/query-index.json',
   },
   'en-UK': {
-    urlPrefix: 'uk',
+    urlPrefix: '/uk',
     placeholdersPrefix: '/uk/blogs',
-    metadataIndex: '', // TODO issue #30
   },
   'de-DE': {
-    urlPrefix: 'de',
+    urlPrefix: '/de',
     placeholdersPrefix: '/de/blogs',
-    metadataIndex: '', // TODO issue #30
   },
   'fr-FR': {
-    urlPrefix: 'fr',
+    urlPrefix: '/fr',
     placeholdersPrefix: '/fr/blogs',
-    metadataIndex: '', // TODO issue #30
   },
   'nl-NL': {
-    urlPrefix: 'nl',
+    urlPrefix: '/nl',
     placeholdersPrefix: '/nl/blogs',
-    metadataIndex: '', // TODO issue #30
   },
 };
 
@@ -84,11 +129,17 @@ export function getLocale() {
   if (document.documentElement.lang) return document.documentElement.lang;
 
   document.documentElement.lang = 'en-US';
+  const localeMeta = getMetadata('locale');
+  if (localeMeta) {
+    document.documentElement.lang = localeMeta;
+    return document.documentElement.lang;
+  }
+
   const segs = window.location.pathname.split('/');
   if (segs && segs.length > 0) {
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(LOCALE_INFO)) {
-      if (value.urlPrefix === segs[1]) {
+      if (value.urlPrefix.replace('/', '') === segs[1]) {
         document.documentElement.lang = key;
         break;
       }
@@ -97,12 +148,41 @@ export function getLocale() {
   return document.documentElement.lang;
 }
 
+export const BLOG_FILTERS = {
+  locale: (blog) => getLocale() === blog.locale,
+  trend: (trend, blog) => trend === toClassName(blog.trend),
+  newTrend: (newTrend, blog) => newTrend === toClassName(blog.newTrend),
+  category: (category, blog) => category === toClassName(blog.category),
+  topic: (topic, blog) => topic === toClassName(blog.topic),
+  year: (year, blog) => year === blog.year,
+  author: (authorUrl, blog) => (
+    authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0]
+  ),
+};
+
 /**
  * Returns the locale information
  * @returns {Object}
  */
 export function getLocaleInfo() {
   return LOCALE_INFO[getLocale()] || LOCALE_INFO['en-US'];
+}
+
+export async function getTopicTags() {
+  if (window.blogTags) return window.blogTags;
+
+  const response = ffetch(`${TAGS_QUERY_INDEX}`)
+    .sheet('topic')
+    .all();
+
+  if (!response) {
+    // eslint-disable-next-line no-console
+    console.warn('failed to retrieve topics.');
+    return [];
+  }
+
+  window.blogTags = response;
+  return window.blogTags;
 }
 
 /**
@@ -120,6 +200,12 @@ export function formatDate(date) {
   });
 }
 
+function buildBlogHeader(main) {
+  const section = document.createElement('div');
+  section.append(buildBlock('blogheader', { elems: [] }));
+  main.prepend(section);
+}
+
 /**
  * Builds an article header and prepends to main in a new section.
  * @param main
@@ -132,16 +218,67 @@ function buildArticleHeader(main) {
 
   //
   const author = getMetadata('author');
-  const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
+  let authorHref = getMetadata('author-link');
+  if (authorHref) {
+    authorHref = new URL(authorHref, window.location.origin).pathname;
+  } else {
+    // best effort
+    authorHref = `/author/${toClassName(author)}`;
+  }
+
   const publicationDate = formatDate(getMetadata('publication-date'));
   //
   main.prepend(div(buildBlock('article-header', [
     [main.querySelector('h1')],
     [
-      p(a({ href: authorURL }, author)),
+      p(a({ href: authorHref }, author)),
       p(publicationDate),
     ],
   ])));
+}
+
+function buildArticleCopyright(main) {
+  if (main.querySelector('.article-copyright')) {
+    return;
+  }
+
+  main.append(div(buildBlock('article-copyright', { elems: [] })));
+}
+
+function buildArticleSocialShare(main) {
+  main.append(div(buildBlock('social-share', { elems: [] })));
+}
+
+function hasInlinedSidebar(main) {
+  const sectionMetas = [...main.querySelectorAll('div.section-metadata')];
+  for (let i = sectionMetas.length - 1; i >= 0; i -= 1) {
+    const meta = readBlockConfig(sectionMetas[i]);
+    if (meta.style) {
+      const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
+      if (styles.includes('sidebar')) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Builds an article sidebar and appends it to main in a new section.
+ * @param main
+ */
+function buildSidebar(main, sidebarPath) {
+  if (!hasInlinedSidebar(main)) {
+    // the article did not come with an inline sidebar
+    const sidebarBlock = buildBlock('fragment', [
+      [a({ href: sidebarPath }, 'Sidebar')],
+    ]);
+    sidebarBlock.classList.add('defer-sub-blocks');
+    sidebarBlock.dataset.eagerBlock = true;
+    const sidebar = div(sidebarBlock); // wrap sidebarBlock in div to create a new section
+    main.append(sidebar);
+  }
 }
 
 /**
@@ -149,12 +286,52 @@ function buildArticleHeader(main) {
  * @returns {boolean}
  */
 function isArticlePage() {
-  let blogPage = false;
-  const template = getMetadata('template');
-  if (template && template === 'Blog Article') {
-    blogPage = true;
+  return getMetadata('template') === 'Blog Article';
+}
+
+function decorateArticleImages(main) {
+  // Get all img elements within the main container
+  const images = main.querySelectorAll('img');
+
+  // Get the first image and set class to hero-image
+  const firstImage = images[0];
+  if (firstImage) {
+    firstImage.classList.add('hero-image');
   }
-  return blogPage;
+
+  // Loop through the rest of the images and set class to article-image
+  for (let i = 0; i < images.length; i += 1) {
+    images[i].classList.add('article-image');
+  }
+}
+
+function articleLinksClickTrack(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      let ctaText = analyticsCanonicStr(link.textContent);
+      if (!ctaText) {
+        ctaText = analyticsCanonicStr(link.querySelector('img')?.alt);
+      }
+
+      const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+      const eVar22 = `${h1}:${ctaText}`;
+
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'body',
+          eVar22,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: link.closest('.block')?.classList[0] || 'default-content-wrapper',
+            destination: link.href,
+            ctaText,
+            pageArea: 'body',
+            section: h1,
+          },
+        },
+      }, e);
+    });
+  });
 }
 
 /**
@@ -163,25 +340,47 @@ function isArticlePage() {
  */
 // eslint-disable-next-line no-unused-vars
 function buildAutoBlocks(main) {
+  if (main.parentNode !== document.body) { // don't build auto blocks in fragments
+    return;
+  }
   try {
-    // buildHeroBlock(main);
+    const locInfo = getLocaleInfo();
+
     if (isArticlePage()) {
       buildArticleHeader(main);
+      buildArticleCopyright(main);
+      buildArticleSocialShare(main);
+      articleLinksClickTrack(main);
+      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
+      decorateArticleImages(main);
     }
+
+    const template = toClassName(getMetadata('template'));
+    if (['blog-topic', 'blog-category', 'blog-year', 'blog-author'].includes(template)) {
+      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-common-fragment`);
+    }
+
+    buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
 }
 
-function detectSidebar(main) {
+async function loadEagerBlocks(main) {
+  const eagerBlocks = main.querySelectorAll('div[data-eager-block]');
+  await Promise.all([...eagerBlocks].map((eagerBlock) => loadBlock(eagerBlock)));
+}
+
+async function detectSidebar(main) {
   const sidebar = main.querySelector('.section.sidebar');
+
   if (sidebar) {
     main.classList.add('has-sidebar');
     const sidebarOffset = Number.parseInt(
       sidebar.getAttribute('data-start-sidebar-at-section') || '2',
       10,
-    );
+    ) + 1;
 
     const numSections = main.children.length - 1;
     main.style = `grid-template-rows: repeat(${numSections}, auto);`;
@@ -190,29 +389,85 @@ function detectSidebar(main) {
     for (let i = 0; i < sidebarOffset - 1; i += 1) {
       main.children[i].classList.add('no-sidebar');
     }
+  }
+}
 
-    sidebar.querySelectorAll('h3').forEach((header) => {
+function decorateH3(main) {
+  const sidebar = main.querySelector('.section.sidebar');
+  const isHomepage = document.body.classList.contains('blog-home-page');
+  let allH3;
+  if (isHomepage) {
+    allH3 = main.querySelectorAll('h3');
+  } else if (sidebar) {
+    allH3 = sidebar.querySelectorAll('h3');
+  }
+  if (allH3) {
+    allH3.forEach((header) => {
       const headerContent = header.textContent;
       header.textContent = '';
       header.append(span(headerContent));
+      header.classList.add('strike-line');
     });
   }
 }
 
-export async function fetchAPI(path) {
-  const response = await fetch(path);
-  if (!response.ok) {
-    // eslint-disable-next-line no-console
-    console.error('error loading API response', response);
-    return null;
-  }
-  const json = await response.json();
-  if (!json) {
-    // eslint-disable-next-line no-console
-    console.error('empty API response', path);
-    return null;
-  }
-  return json;
+/**
+ * Wraps images followed by links within a matching <a> tag.
+ * @param {Element} container The container element
+ */
+function decorateLinkedPictures(container) {
+  [...container.querySelectorAll('picture')]
+    .filter((picture) => {
+      const parent = picture.parentElement;
+      const link = parent.nextElementSibling?.querySelector('a[href]');
+      try {
+        return parent.childElementCount === 1 && link
+          && new URL(link.href).pathname === new URL(link.textContent).pathname
+          && link.parentElement.childElementCount === 1;
+      } catch (err) {
+        return false;
+      }
+    })
+    .forEach((picture) => {
+      const parent = picture.parentElement;
+      const link = parent.nextElementSibling.querySelector('a[href]');
+      link.className = '';
+      link.innerHTML = '';
+      link.append(picture);
+      link.parentElement.classList.toggle('button-container', false);
+      parent.remove();
+    });
+}
+
+/**
+ * Checks for the same domain or not and if ends with pdf
+ */
+function isSameDomainOrPdf(url) {
+  const isPdf = url.toLowerCase().endsWith('.pdf');
+  const ancUrl = new URL(url);
+  return (
+    !isPdf
+    && (window.location.hostname === ancUrl.hostname
+      || ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.page'))
+  );
+}
+
+function decorateLinks(main) {
+  // Get all anchor elements within the main container
+  const links = main.querySelectorAll('a');
+  // Loop through each anchor element and add a target based on the business condition
+  links.forEach((link) => {
+    const { href } = link;
+    // Check if the link is from the same domain or ends with ".pdf"
+    if (!isSameDomainOrPdf(href)) {
+      // Add a target attribute to open in a new tab for external links
+      link.setAttribute('target', '_blank');
+    } else {
+      link.setAttribute('target', '_self');
+    }
+  });
 }
 
 /**
@@ -227,7 +482,9 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
-  detectSidebar(main);
+  decorateH3(main);
+  decorateLinkedPictures(main);
+  decorateLinks(main);
 }
 
 /**
@@ -236,12 +493,17 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   getLocale(); // set document.documentElement.lang for SEO
+  document.title += ' - ServiceNow Blog';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    await loadEagerBlocks(main);
+    await detectSidebar(main);
     document.body.classList.add('appear');
-    await waitForLCP(LCP_BLOCKS);
+    if (!LCP_WAIT_SKIP_TEMPLATE.includes(getTemplate())) {
+      await waitForLCP(LCP_BLOCKS);
+    }
   }
 
   try {
@@ -287,7 +549,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-async function loadPage() {
+export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
