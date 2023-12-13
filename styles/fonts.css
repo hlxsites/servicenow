@@ -142,4 +142,20 @@
   content: "";
 }
 
+.fa-globe::before {
+  content: "";
+}
+
+.fa-angle-down::before {
+  content: "";
+}
+.fa-angle-left::before {
+  content: "";
+}
+.fa-angle-right::before {
+  content: "";
+}
+.fa-angle-up::before {
+  content: "";
+}
 /* ---- NAAS Dependencies - End --- */
