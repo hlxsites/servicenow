@@ -1,4 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
+
 /*
  * Embed Block
  * Show videos and social posts directly on your page
@@ -35,6 +36,13 @@ const embedYoutube = (url, autoplay) => {
       <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"
       allow="autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope; picture-in-picture" allowfullscreen="" scrolling="no" title="Content from Youtube" loading="lazy"></iframe>
     </div>`;
+  return embedHTML;
+};
+
+const embedTuneIn = (url) => {
+  const embedHTML = `<div style="padding: 20px 0px 25px 0px;">
+    <iframe src="${url}" style="width:100%; height:100px;" scrolling="no" frameborder="no"></iframe>
+  </div>`;
   return embedHTML;
 };
 
@@ -155,6 +163,10 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
     {
       match: ['twitter'],
       embed: embedTwitter,
+    },
+    {
+      match: ['tunein'],
+      embed: embedTuneIn,
     },
   ];
 
