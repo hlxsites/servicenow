@@ -54,6 +54,7 @@ async function getBlogTopics() {
   return ffetch(BLOG_QUERY_INDEX)
     .sheet('topics')
     .filter(BLOG_FILTERS.locale)
+    .filter((topic) => topic.excludeFromSidebar.trim().toLowerCase() !== 'yes')
     .all();
 }
 
