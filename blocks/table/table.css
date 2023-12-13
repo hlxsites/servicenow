@@ -1,6 +1,7 @@
 .table {
     width: 100%;
     overflow-x: auto;
+    margin: 2.4rem 0;
 }
 
 .table table {
