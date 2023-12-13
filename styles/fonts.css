@@ -37,6 +37,27 @@
     font-style: normal
 }
 
+/* ---- NAAS Dependencies - Start --- */
+:root,
+:host {
+  --fa-style-family-classic: "Font Awesome 6 Pro";
+  --fa-font-light: normal 300 1em/1 "Font Awesome 6 Pro";
+}
+@font-face {
+  font-family: "Font Awesome 6 Pro";
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url("../fonts/fa-light-300.woff2")
+      format("woff2"),
+    url("../fonts/fa-light-300.ttf")
+      format("truetype");
+}
+.fal,
+.fa-light {
+  font-weight: 300;
+}
+
 :root,
 :host {
   --fa-style-family-brands: "Font Awesome 6 Brands";
@@ -51,12 +72,37 @@
   src: url("../fonts/fa-brands-400.woff2") format("woff2");
 }
 
+:root,
+:host {
+  --fa-style-family-classic: "Font Awesome 6 Pro";
+  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Pro";
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Pro";
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("../fonts/fa-solid-900.woff2")
+      format("woff2"),
+    url("../fonts/fa-solid-900.ttf")
+      format("truetype");
+}
+
+.fas,
+.fa-solid {
+  font-weight: 900;
+}
+
 .fab,
 .fa-brands {
   font-family: "Font Awesome 6 Brands";
   font-style: normal;
 }
 
+.fa-check::before {
+  content: "";
+}
 .fab,
 .fa-brands {
   font-weight: 400;
@@ -91,3 +137,4 @@
 .fa-youtube:before {
   content: "";
 }
+/* ---- NAAS Dependencies - End --- */
