@@ -1,5 +1,16 @@
 /* CSS is dynamically downloaded from NaaS */
 
+section#naas-footer {
+  margin-bottom: 0;
+  padding-top: 1px !important;
+  padding-bottom: 24px !important;
+}
+
+#naas-footer ul,
+#naas-footer ol {
+  list-style: none;
+}
+
 #naas-footer a {
   text-decoration: none;
 }

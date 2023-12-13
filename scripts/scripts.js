@@ -14,13 +14,43 @@ import {
   toClassName,
   waitForLCP,
   loadBlock,
+  readBlockConfig,
 } from './aem.js';
 import {
   a, div, p, span,
 } from './dom-helpers.js';
+import ffetch from './ffetch.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
+const LCP_WAIT_SKIP_TEMPLATE = [
+  'blog-home-page',
+];
 export const serviceNowDefaultOrigin = 'https://www.servicenow.com';
+export const TAGS_QUERY_INDEX = '/blogs/tags.json';
+
+export function getTemplate() {
+  return toClassName(getMetadata('template'));
+}
+
+export function getAnalyticsSiteName() {
+  return 'SN Blogs';
+}
+
+export function analyticsCanonicStr(str) {
+  return (str || '').trim().replaceAll(':', '').toLowerCase();
+}
+
+export function analyticsGlobalClickTrack(digitalData, event) {
+  window.appEventData = window.appEventData || [];
+  const data = {
+    name: 'global_click',
+    digitalData,
+    event,
+  };
+  window.appEventData.push(data);
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(window.appEventData, undefined, 4));
+}
 
 export async function fetchAPI(path) {
   const response = await fetch(path);
@@ -54,15 +84,6 @@ function buildHeroBlock(main) {
   }
 }
 
-export const FILTERS = {
-  category: (blogs, category) => blogs.filter((blog) => category === toClassName(blog.category)),
-  topic: (blogs, topic) => blogs.filter((blog) => topic === toClassName(blog.topic)),
-  year: (blogs, year) => blogs.filter((blog) => year === blog.year),
-  author: (blogs, authorUrl) => blogs.filter(
-    (blog) => authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0],
-  ),
-};
-
 /**
  * load fonts.css and set a session storage flag
  */
@@ -83,19 +104,19 @@ const LOCALE_INFO = {
     placeholdersPrefix: '/blogs',
   },
   'en-UK': {
-    urlPrefix: 'uk',
+    urlPrefix: '/uk',
     placeholdersPrefix: '/uk/blogs',
   },
   'de-DE': {
-    urlPrefix: 'de',
+    urlPrefix: '/de',
     placeholdersPrefix: '/de/blogs',
   },
   'fr-FR': {
-    urlPrefix: 'fr',
+    urlPrefix: '/fr',
     placeholdersPrefix: '/fr/blogs',
   },
   'nl-NL': {
-    urlPrefix: 'nl',
+    urlPrefix: '/nl',
     placeholdersPrefix: '/nl/blogs',
   },
 };
@@ -108,11 +129,17 @@ export function getLocale() {
   if (document.documentElement.lang) return document.documentElement.lang;
 
   document.documentElement.lang = 'en-US';
+  const localeMeta = getMetadata('locale');
+  if (localeMeta) {
+    document.documentElement.lang = localeMeta;
+    return document.documentElement.lang;
+  }
+
   const segs = window.location.pathname.split('/');
   if (segs && segs.length > 0) {
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, value] of Object.entries(LOCALE_INFO)) {
-      if (value.urlPrefix === segs[1]) {
+      if (value.urlPrefix.replace('/', '') === segs[1]) {
         document.documentElement.lang = key;
         break;
       }
@@ -120,6 +147,18 @@ export function getLocale() {
   }
   return document.documentElement.lang;
 }
+
+export const BLOG_FILTERS = {
+  locale: (blog) => getLocale() === blog.locale,
+  trend: (trend, blog) => trend === toClassName(blog.trend),
+  newTrend: (newTrend, blog) => newTrend === toClassName(blog.newTrend),
+  category: (category, blog) => category === toClassName(blog.category),
+  topic: (topic, blog) => topic === toClassName(blog.topic),
+  year: (year, blog) => year === blog.year,
+  author: (authorUrl, blog) => (
+    authorUrl === new URL(blog.authorUrl, serviceNowDefaultOrigin).pathname.split('.')[0]
+  ),
+};
 
 /**
  * Returns the locale information
@@ -129,31 +168,21 @@ export function getLocaleInfo() {
   return LOCALE_INFO[getLocale()] || LOCALE_INFO['en-US'];
 }
 
-/**
- * Retrievs and retuns the list of blogs for the current locale based on the index
- * Read Only: Consumers of this API should not modify the list, as it is cached
- * @returns {Array} array of blog objects
- */
-export async function getLocaleBlogs() {
-  if (window.blogs) return window.blogs;
+export async function getTopicTags() {
+  if (window.blogTags) return window.blogTags;
 
-  const response = await fetchAPI(`${BLOG_QUERY_INDEX}?sheet=blogs&limit=10000`);
+  const response = ffetch(`${TAGS_QUERY_INDEX}`)
+    .sheet('topic')
+    .all();
+
   if (!response) {
     // eslint-disable-next-line no-console
-    console.warn('failed to retrieve blogs.');
+    console.warn('failed to retrieve topics.');
     return [];
   }
 
-  const blogs = response.data;
-  if (!blogs) {
-    // eslint-disable-next-line no-console
-    console.warn('failed to retrieve blogs.');
-    return [];
-  }
-
-  const locale = getLocale();
-  window.blogs = blogs.filter((blog) => blog.locale === locale);
-  return window.blogs;
+  window.blogTags = response;
+  return window.blogTags;
 }
 
 /**
@@ -189,13 +218,20 @@ function buildArticleHeader(main) {
 
   //
   const author = getMetadata('author');
-  const authorURL = getMetadata('author-url') || `/authors/${toClassName(author)}`;
+  let authorHref = getMetadata('author-link');
+  if (authorHref) {
+    authorHref = new URL(authorHref, window.location.origin).pathname;
+  } else {
+    // best effort
+    authorHref = `/author/${toClassName(author)}`;
+  }
+
   const publicationDate = formatDate(getMetadata('publication-date'));
   //
   main.prepend(div(buildBlock('article-header', [
     [main.querySelector('h1')],
     [
-      p(a({ href: authorURL }, author)),
+      p(a({ href: authorHref }, author)),
       p(publicationDate),
     ],
   ])));
@@ -213,21 +249,32 @@ function buildArticleSocialShare(main) {
   main.append(div(buildBlock('social-share', { elems: [] })));
 }
 
+function hasInlinedSidebar(main) {
+  const sectionMetas = [...main.querySelectorAll('div.section-metadata')];
+  for (let i = sectionMetas.length - 1; i >= 0; i -= 1) {
+    const meta = readBlockConfig(sectionMetas[i]);
+    if (meta.style) {
+      const styles = meta.style.split(',').map((style) => toClassName(style.trim()));
+      if (styles.includes('sidebar')) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 /**
  * Builds an article sidebar and appends it to main in a new section.
  * @param main
  */
-function buildArticleSidebar(main) {
-  const divs = Array.from(document.querySelectorAll('.section-metadata div div'));
-  const targetDivs = divs.filter(
-    (d) => d.textContent.trim().toLowerCase() === 'style' || d.textContent.trim().toLowerCase() === 'sidebar',
-  );
-  if (targetDivs.length !== 2) {
+function buildSidebar(main, sidebarPath) {
+  if (!hasInlinedSidebar(main)) {
     // the article did not come with an inline sidebar
-    const locInfo = getLocaleInfo();
     const sidebarBlock = buildBlock('fragment', [
-      [a({ href: `${locInfo.placeholdersPrefix}/fragments/sidebar-fragment` }, 'Sidebar')],
+      [a({ href: sidebarPath }, 'Sidebar')],
     ]);
+    sidebarBlock.classList.add('defer-sub-blocks');
     sidebarBlock.dataset.eagerBlock = true;
     const sidebar = div(sidebarBlock); // wrap sidebarBlock in div to create a new section
     main.append(sidebar);
@@ -239,12 +286,52 @@ function buildArticleSidebar(main) {
  * @returns {boolean}
  */
 function isArticlePage() {
-  let blogPage = false;
-  const template = getMetadata('template');
-  if (template && template === 'Blog Article') {
-    blogPage = true;
+  return getMetadata('template') === 'Blog Article';
+}
+
+function decorateArticleImages(main) {
+  // Get all img elements within the main container
+  const images = main.querySelectorAll('img');
+
+  // Get the first image and set class to hero-image
+  const firstImage = images[0];
+  if (firstImage) {
+    firstImage.classList.add('hero-image');
   }
-  return blogPage;
+
+  // Loop through the rest of the images and set class to article-image
+  for (let i = 0; i < images.length; i += 1) {
+    images[i].classList.add('article-image');
+  }
+}
+
+function articleLinksClickTrack(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      let ctaText = analyticsCanonicStr(link.textContent);
+      if (!ctaText) {
+        ctaText = analyticsCanonicStr(link.querySelector('img')?.alt);
+      }
+
+      const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+      const eVar22 = `${h1}:${ctaText}`;
+
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'body',
+          eVar22,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: link.closest('.block')?.classList[0] || 'default-content-wrapper',
+            destination: link.href,
+            ctaText,
+            pageArea: 'body',
+            section: h1,
+          },
+        },
+      }, e);
+    });
+  });
 }
 
 /**
@@ -257,12 +344,22 @@ function buildAutoBlocks(main) {
     return;
   }
   try {
+    const locInfo = getLocaleInfo();
+
     if (isArticlePage()) {
       buildArticleHeader(main);
-      buildArticleSidebar(main);
       buildArticleCopyright(main);
       buildArticleSocialShare(main);
+      articleLinksClickTrack(main);
+      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
+      decorateArticleImages(main);
     }
+
+    const template = toClassName(getMetadata('template'));
+    if (['blog-topic', 'blog-category', 'blog-year', 'blog-author'].includes(template)) {
+      buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-common-fragment`);
+    }
+
     buildBlogHeader(main);
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -292,23 +389,85 @@ async function detectSidebar(main) {
     for (let i = 0; i < sidebarOffset - 1; i += 1) {
       main.children[i].classList.add('no-sidebar');
     }
+  }
+}
 
-    sidebar.querySelectorAll('h3').forEach((header) => {
+function decorateH3(main) {
+  const sidebar = main.querySelector('.section.sidebar');
+  const isHomepage = document.body.classList.contains('blog-home-page');
+  let allH3;
+  if (isHomepage) {
+    allH3 = main.querySelectorAll('h3');
+  } else if (sidebar) {
+    allH3 = sidebar.querySelectorAll('h3');
+  }
+  if (allH3) {
+    allH3.forEach((header) => {
       const headerContent = header.textContent;
       header.textContent = '';
       header.append(span(headerContent));
+      header.classList.add('strike-line');
     });
   }
 }
 
-export function debounce(func, delay) {
-  let debounceTimer;
-  return function (...args) {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-  };
+/**
+ * Wraps images followed by links within a matching <a> tag.
+ * @param {Element} container The container element
+ */
+function decorateLinkedPictures(container) {
+  [...container.querySelectorAll('picture')]
+    .filter((picture) => {
+      const parent = picture.parentElement;
+      const link = parent.nextElementSibling?.querySelector('a[href]');
+      try {
+        return parent.childElementCount === 1 && link
+          && new URL(link.href).pathname === new URL(link.textContent).pathname
+          && link.parentElement.childElementCount === 1;
+      } catch (err) {
+        return false;
+      }
+    })
+    .forEach((picture) => {
+      const parent = picture.parentElement;
+      const link = parent.nextElementSibling.querySelector('a[href]');
+      link.className = '';
+      link.innerHTML = '';
+      link.append(picture);
+      link.parentElement.classList.toggle('button-container', false);
+      parent.remove();
+    });
+}
+
+/**
+ * Checks for the same domain or not and if ends with pdf
+ */
+function isSameDomainOrPdf(url) {
+  const isPdf = url.toLowerCase().endsWith('.pdf');
+  const ancUrl = new URL(url);
+  return (
+    !isPdf
+    && (window.location.hostname === ancUrl.hostname
+      || ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
+      || ancUrl.hostname.toLowerCase().endsWith('.hlx.page'))
+  );
+}
+
+function decorateLinks(main) {
+  // Get all anchor elements within the main container
+  const links = main.querySelectorAll('a');
+  // Loop through each anchor element and add a target based on the business condition
+  links.forEach((link) => {
+    const { href } = link;
+    // Check if the link is from the same domain or ends with ".pdf"
+    if (!isSameDomainOrPdf(href)) {
+      // Add a target attribute to open in a new tab for external links
+      link.setAttribute('target', '_blank');
+    } else {
+      link.setAttribute('target', '_self');
+    }
+  });
 }
 
 /**
@@ -323,6 +482,9 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateH3(main);
+  decorateLinkedPictures(main);
+  decorateLinks(main);
 }
 
 /**
@@ -331,6 +493,7 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   getLocale(); // set document.documentElement.lang for SEO
+  document.title += ' - ServiceNow Blog';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -338,7 +501,9 @@ async function loadEager(doc) {
     await loadEagerBlocks(main);
     await detectSidebar(main);
     document.body.classList.add('appear');
-    await waitForLCP(LCP_BLOCKS);
+    if (!LCP_WAIT_SKIP_TEMPLATE.includes(getTemplate())) {
+      await waitForLCP(LCP_BLOCKS);
+    }
   }
 
   try {

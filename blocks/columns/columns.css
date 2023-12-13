@@ -19,6 +19,14 @@
   display: block;
 }
 
+.columns.blog-authors > div > div.columns-img-col {
+  padding-bottom: 20px;
+}
+
+.columns.blog-authors > div {
+  font-size: 1.4rem;
+}
+
 @media (min-width: 900px) {
   .columns > div {
     align-items: center;
@@ -29,5 +37,24 @@
   .columns > div > div {
     flex: 1;
     order: unset;
+  }
+
+  .columns.blog-authors {
+    display: flex;
+  }
+
+  .columns.blog-authors > div {
+    align-items:normal;
+    gap: 24px;
+    width: 100%;
+  }
+
+  .columns.blog-authors > div > div.columns-img-col {
+    max-width: 25%;
+    padding-bottom: 0;
+  }
+
+  .columns.blog-authors > div > div {
+    flex: 1 1;
   }
 }

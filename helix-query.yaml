@@ -3,8 +3,21 @@ indices:
   default:
     include:
       - /blogs/**
+      - /de/blogs/**
+      - /fr/blogs/**
+      - /nl/blogs/**
+      - /uk/blogs/**
     exclude:
       - '/blogs/fragments/**'
+      - '/de/blogs/fragments/**'
+      - '/fr/blogs/fragments/**'
+      - '/nl/blogs/fragments/**'
+      - '/uk/blogs/fragments/**'
+      - '/blogs/drafts/**'
+      - '/de/blogs/drafts/**'
+      - '/fr/blogs/drafts/**'
+      - '/nl/blogs/drafts/**'
+      - '/uk/blogs/drafts/**'
     target: /blogs/query-index.json
     properties:
       type:
@@ -30,6 +43,12 @@ indices:
         value: attribute(el, "content")
       topic:
         select: head > meta[name="topic"]
+        value: attribute(el, "content")
+      newTrend:
+        select: head > meta[name="new-trend"]
+        value: attribute(el, "content")
+      trend:
+        select: head > meta[name="trend"]
         value: attribute(el, "content")
       description:
         select: head > meta[name="description"]

@@ -1,0 +1,24 @@
+{
+  "project": "ServiceNow Blogs",
+  "plugins": [
+    {
+      "id": "palette",
+      "title": "Palette",
+      "environments": [
+        "edit"
+      ],
+      "url": "https://main--servicenow--hlxsites.hlx.live/tools/picker/dist/index.html",
+      "isPalette": true,
+      "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
+    },
+    {
+      "id": "library",
+      "title": "Library",
+      "environments": [
+        "edit"
+      ],
+      "url": "/tools/sidekick/library.html",
+      "includePaths": ["**.docx**"]
+    }
+  ]
+}

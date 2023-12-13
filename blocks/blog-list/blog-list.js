@@ -1,15 +1,53 @@
-import { fetchPlaceholders, loadCSS, toClassName } from '../../scripts/aem.js';
 import {
-  FILTERS, formatDate, getLocaleBlogs, getLocaleInfo, serviceNowDefaultOrigin,
+  fetchPlaceholders, loadCSS, toCamelCase, toClassName,
+} from '../../scripts/aem.js';
+import {
+  BLOG_QUERY_INDEX,
+  BLOG_FILTERS,
+  formatDate,
+  getLocaleInfo,
+  serviceNowDefaultOrigin,
+  getAnalyticsSiteName,
+  analyticsGlobalClickTrack,
+  analyticsCanonicStr,
 } from '../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
+import ffetch from '../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
-export async function renderFilterCard(post) {
+function clickTrack(card) {
+  card.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+      const cardTitle = analyticsCanonicStr(card.querySelector('h5')?.textContent);
+      const ctaText = analyticsCanonicStr(card.querySelector('.cta-readmore')?.textContent);
+      const eVar22 = `${h1}:${cardTitle}:${ctaText}`;
+
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'body',
+          eVar22,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: 'blog-list',
+            destination: link.href,
+            ctaText,
+            pageArea: 'body',
+            section: h1,
+          },
+        },
+      }, e);
+    });
+  });
+
+  return card;
+}
+
+export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
   let publicationDate = '';
   if (post.publicationDate) {
@@ -18,22 +56,54 @@ export async function renderFilterCard(post) {
     publicationDate = formatDate(date);
   }
 
-  const card = li(renderCard(post));
+  const card = li(await renderCard(post, false));
   const cardText = card.querySelector('.card-text');
   const cardArrow = span({ class: 'card-arrow' });
   cardArrow.innerHTML = await arrowSvg;
 
   cardText.append(
     span({ class: 'card-date' }, publicationDate),
-    div({ class: 'card-cta' },
-      a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
-        placeholders.readMore,
-        cardArrow,
+    showDescription
+      ? span({ class: 'card-description' }, post.description)
+      : div({ class: 'card-cta' },
+        a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
+          placeholders.readMore,
+          cardArrow,
+        ),
       ),
-    ),
   );
 
   return card;
+}
+
+async function renderChunk(cardList, blogs, showDescription) {
+  let done = false;
+  const chunk = [];
+  for (let i = 0; i < 20; i += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const generate = await blogs.next();
+    done = generate.done;
+    if (done) {
+      break;
+    }
+    chunk.push(generate.value);
+  }
+
+  const cards = await Promise.all(
+    chunk.map((blog) => renderFilterCard(blog, showDescription)),
+  );
+
+  cardList.append(...cards.map(clickTrack));
+
+  if (done) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      observer.disconnect();
+      renderChunk(cardList, blogs, showDescription);
+    }
+  });
+  observer.observe(cardList.children[cardList.children.length - 1]);
 }
 
 export default async function decorate(block) {
@@ -44,10 +114,10 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   // sanitise
-  filterKey = toClassName(filterKey.textContent);
-  filterValue = filterValue.textContent;
+  filterKey = toCamelCase(filterKey.textContent);
+  filterValue = filterValue.textContent.trim();
 
-  if (filterKey === 'category' || filterKey === 'topic') {
+  if (['category', 'topic', 'newTrend', 'trend'].includes(filterKey)) {
     filterValue = toClassName(filterValue);
   } else if (filterKey === 'author') {
     // eslint-disable-next-line prefer-destructuring
@@ -55,20 +125,26 @@ export default async function decorate(block) {
   }
 
   // get filter function
-  const filter = FILTERS[toClassName(filterKey)];
-  if (!filter) return;
+  const filter = BLOG_FILTERS[filterKey];
+  if (!filter) {
+    // eslint-disable-next-line no-console
+    console.warn(`no filter function found for '${filterKey}'`);
+    return;
+  }
 
   // retrieve and filter blog entries
-  let blogs = await getLocaleBlogs();
-  if (!blogs) return;
-  blogs = filter(blogs, filterValue);
+  const blogs = ffetch(BLOG_QUERY_INDEX)
+    .chunks(250)
+    .sheet('blogs')
+    .filter(BLOG_FILTERS.locale)
+    .filter((blog) => filter(filterValue, blog));
 
   // render
   block.classList.add(filterKey);
-  block.append(
-    ul(
-      ...await Promise.all(blogs.map(renderFilterCard)),
-    ),
-  );
+  const showDescription = block.classList.contains('show-description');
+  const cardList = ul();
+  block.append(cardList);
+
+  await renderChunk(cardList, blogs, showDescription);
   await cssPromise;
 }
