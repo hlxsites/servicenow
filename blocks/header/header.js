@@ -76,7 +76,6 @@ export default async function decorate(block) {
     await new Promise((resolve) => {
       document.addEventListener('nass-header-rendered', () => {
         fixRelativeDAMImages(block, dataDomain);
-        // eslint-disable-next-line no-unused-expressions
         (async () => {
           await waitImagesLoad(block);
           resolve();
