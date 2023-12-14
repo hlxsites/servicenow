@@ -1,6 +1,6 @@
-import { createOptimizedPicture, readBlockConfig, toClassName } from '../../../scripts/aem.js';
-import { a, div, h5 } from '../../../scripts/dom-helpers.js';
-import ffetch from '../../../scripts/ffetch.js';
+import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
+import { a, div, h5 } from '../../scripts/dom-helpers.js';
+import ffetch from '../../scripts/ffetch.js';
 import {
   BLOG_FILTERS,
   fetchAPI,
@@ -11,7 +11,7 @@ import {
   getAnalyticsSiteName,
   analyticsGlobalClickTrack,
   analyticsCanonicStr,
-} from '../../../scripts/scripts.js';
+} from '../../scripts/scripts.js';
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
 const RESEARCH_CATEGORY = toClassName('ServiceNow Research');
