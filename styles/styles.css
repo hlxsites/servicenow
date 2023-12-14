@@ -46,7 +46,7 @@
   --heading-font-size-xs: 18px;
 
   /* nav height */
-  --nav-height: 64px;
+  --nav-height: 80px;
 }
 
 @font-face {
@@ -102,6 +102,7 @@ body {
   color: var(--text-color);
   background-color: var(--background-color);
   display: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 body.appear {
@@ -114,7 +115,6 @@ header {
 
 p, span {
   font-size: 1.4rem;
-  -webkit-font-smoothing: antialiased;
 }
 
 p {
@@ -234,9 +234,12 @@ main pre {
   white-space: pre;
 }
 
-a:any-link {
-  color: var(--link-color);
+a {
   text-decoration: none;
+}
+
+main a:any-link {
+  color: var(--link-color);
   background: linear-gradient(var(--link-background-color),var(--link-background-color)) bottom repeat-x;
   background-size: 0.2rem 0.2rem;
   font-size: inherit;
@@ -245,7 +248,7 @@ a:any-link {
   transition: all .25s ease-out;
 }
 
-a:hover {
+main a:hover {
   background-size: 100% 100%;
 }
 

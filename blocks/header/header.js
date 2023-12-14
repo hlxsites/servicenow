@@ -1,87 +1,45 @@
-import { getMetadata, decorateIcons } from '../../scripts/aem.js';
+import { loadCSS, loadScript } from '../../scripts/aem.js';
+import { section } from '../../scripts/dom-helpers.js';
+import { getLocale } from '../../scripts/scripts.js';
 
-// media query match that indicates mobile/tablet width
-const isDesktop = window.matchMedia('(min-width: 900px)');
+// map containing environment configurations
+const naasDomains = {
+  dev: 'https://www.webdev.servicenow.com',
+  qa: 'https://www.webqa.servicenow.com',
+  stage: 'https://www.webstg.servicenow.com',
+  prod: 'https://www.servicenow.com',
+};
 
-function closeOnEscape(e) {
-  if (e.code === 'Escape') {
-    const nav = document.getElementById('nav');
-    const navSections = nav.querySelector('.nav-sections');
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
-    if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleAllNavSections(navSections);
-      navSectionExpanded.focus();
-    } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections);
-      nav.querySelector('button').focus();
-    }
+export function getDataDomain() {
+  const env = new URLSearchParams(window.location.search).get('naas');
+
+  return env ? naasDomains[env.toLowerCase()] || naasDomains.prod : naasDomains.prod;
+}
+
+export function fixRelativeDAMImages(block, dataDomain) {
+  if (window.location.host.endsWith('servicenow.com')) {
+    return;
   }
+
+  block.querySelectorAll('img[src^="/content/dam"]')
+    .forEach((image) => { image.src = new URL(new URL(image.src).pathname, dataDomain); });
 }
 
-function openOnKeydown(e) {
-  const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
-  if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
-    const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
-    // eslint-disable-next-line no-use-before-define
-    toggleAllNavSections(focused.closest('.nav-sections'));
-    focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
-  }
-}
+export async function waitImagesLoad(block) {
+  const images = block.querySelectorAll('img');
 
-function focusNavSection() {
-  document.activeElement.addEventListener('keydown', openOnKeydown);
-}
+  for (let i = 0; i < images.length; i += 1) {
+    const img = images[i];
 
-/**
- * Toggles all nav sections
- * @param {Element} sections The container element
- * @param {Boolean} expanded Whether the element should be expanded or collapsed
- */
-function toggleAllNavSections(sections, expanded = false) {
-  sections.querySelectorAll('.nav-sections > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-  });
-}
-
-/**
- * Toggles the entire nav
- * @param {Element} nav The container element
- * @param {Element} navSections The nav sections within the container element
- * @param {*} forceExpanded Optional param to force nav expand behavior when not null
- */
-function toggleMenu(nav, navSections, forceExpanded = null) {
-  const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
-  const button = nav.querySelector('.nav-hamburger button');
-  document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
-  nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
-  // enable nav dropdown keyboard accessibility
-  const navDrops = navSections.querySelectorAll('.nav-drop');
-  if (isDesktop.matches) {
-    navDrops.forEach((drop) => {
-      if (!drop.hasAttribute('tabindex')) {
-        drop.setAttribute('role', 'button');
-        drop.setAttribute('tabindex', 0);
-        drop.addEventListener('focus', focusNavSection);
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => {
+      if (img && !img.complete) {
+        img.addEventListener('load', resolve);
+        img.addEventListener('error', resolve);
+      } else {
+        resolve();
       }
     });
-  } else {
-    navDrops.forEach((drop) => {
-      drop.removeAttribute('role');
-      drop.removeAttribute('tabindex');
-      drop.removeEventListener('focus', focusNavSection);
-    });
-  }
-  // enable menu collapse on escape keypress
-  if (!expanded || isDesktop.matches) {
-    // collapse menu on escape press
-    window.addEventListener('keydown', closeOnEscape);
-  } else {
-    window.removeEventListener('keydown', closeOnEscape);
   }
 }
 
@@ -90,56 +48,44 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // fetch nav content
-  const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta).pathname : '/nav';
-  const resp = await fetch(`${navPath}.plain.html`);
+  block.innerHTML = '';
 
-  if (resp.ok) {
-    const html = await resp.text();
+  document.documentElement.setAttribute('data-path-hreflang', getLocale().toLowerCase());
+  const dataDomain = getDataDomain();
 
-    // decorate nav DOM
-    const nav = document.createElement('nav');
-    nav.id = 'nav';
-    nav.innerHTML = html;
+  try {
+    block.append(
+      section({
+        id: 'naas-header-old',
+        class: 'naas-header-old-section',
+        'data-domain': dataDomain,
+        'data-myaccount': 'hide',
+        'data-search': 'hide',
+        'data-sourceId': 'blogs',
+        'data-lslinkshard': 'on',
+      }),
+    );
 
-    const classes = ['brand', 'sections', 'tools'];
-    classes.forEach((c, i) => {
-      const section = nav.children[i];
-      if (section) section.classList.add(`nav-${c}`);
-    });
+    // load NaaS header code
+    await Promise.all([
+      loadCSS(`${dataDomain}/nas/csi/header/v1/headerOldCSR.bundle.css`),
+      loadScript(`${dataDomain}/nas/csi/header/v1/headerOldCSR.bundle.js`),
+    ]);
 
-    const navSections = nav.querySelector('.nav-sections');
-    if (navSections) {
-      navSections.querySelectorAll(':scope > ul > li').forEach((navSection) => {
-        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-        navSection.addEventListener('click', () => {
-          if (isDesktop.matches) {
-            const expanded = navSection.getAttribute('aria-expanded') === 'true';
-            toggleAllNavSections(navSections);
-            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-          }
-        });
+    // trigger and wait for NaaS header rendering
+    await new Promise((resolve) => {
+      document.addEventListener('nass-header-rendered', () => {
+        fixRelativeDAMImages(block, dataDomain);
+        (async () => {
+          await waitImagesLoad(block);
+          resolve();
+        })();
       });
-    }
 
-    // hamburger for mobile
-    const hamburger = document.createElement('div');
-    hamburger.classList.add('nav-hamburger');
-    hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
-        <span class="nav-hamburger-icon"></span>
-      </button>`;
-    hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
-    nav.prepend(hamburger);
-    nav.setAttribute('aria-expanded', 'false');
-    // prevent mobile nav behavior on window resize
-    toggleMenu(nav, navSections, isDesktop.matches);
-    isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
-
-    decorateIcons(nav);
-    const navWrapper = document.createElement('div');
-    navWrapper.className = 'nav-wrapper';
-    navWrapper.append(nav);
-    block.append(navWrapper);
+      document.dispatchEvent(new CustomEvent('naas-load-header'));
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
   }
 }

@@ -211,7 +211,7 @@ export default async function decorate(block) {
       },
       button({
         type: 'button',
-        'aria-controls': 'nav',
+        'aria-controls': 'blogheader',
         'aria-label': menuText,
         onclick: () => toggleMenu(navSections, isDesktop),
       }, menuText),
