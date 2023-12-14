@@ -32,7 +32,6 @@ export async function waitImagesLoad(block) {
     const img = images[i];
 
     // eslint-disable-next-line no-await-in-loop
-    console.log('awaiting ', img);
     await new Promise((resolve) => {
       if (img && !img.complete) {
         img.addEventListener('load', resolve);
