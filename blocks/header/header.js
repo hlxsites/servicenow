@@ -3,7 +3,7 @@ import { section } from '../../scripts/dom-helpers.js';
 import { getLocale } from '../../scripts/scripts.js';
 
 // map containing environment configurations
-const naavDataDomains = {
+const naasDomains = {
   dev: 'https://www.webdev.servicenow.com',
   qa: 'https://www.webqa.servicenow.com',
   stage: 'https://www.webstg.servicenow.com',
@@ -13,7 +13,16 @@ const naavDataDomains = {
 export function getDataDomain() {
   const env = new URLSearchParams(window.location.search).get('naas');
 
-  return env ? naavDataDomains[env.toLowerCase()] || naavDataDomains.prod : naavDataDomains.prod;
+  return env ? naasDomains[env.toLowerCase()] || naasDomains.prod : naasDomains.prod;
+}
+
+export function fixRelativeDAMImages(block, dataDomain) {
+  if (window.location.host.endsWith('servicenow.com')) {
+    return;
+  }
+
+  block.querySelectorAll('img[src^="/content/dam"]')
+    .forEach((image) => { image.src = new URL(new URL(image.src).pathname, dataDomain); });
 }
 
 /**
@@ -48,10 +57,7 @@ export default async function decorate(block) {
     // trigger and wait for NaaS header rendering
     await new Promise((resolve) => {
       document.addEventListener('nass-header-rendered', () => {
-        if (!window.location.host.endsWith('servicenow.com')) {
-          document.querySelectorAll('header img[src^="/content/dam"]')
-            .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
-        }
+        fixRelativeDAMImages(block, dataDomain);
         resolve();
       });
 

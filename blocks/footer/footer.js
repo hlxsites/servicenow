@@ -1,7 +1,7 @@
 import { loadCSS, loadScript } from '../../scripts/aem.js';
 import { section } from '../../scripts/dom-helpers.js';
 import { getLocale } from '../../scripts/scripts.js';
-import { getDataDomain } from '../header/header.js';
+import { fixRelativeDAMImages, getDataDomain } from '../header/header.js';
 
 /**
  * loads and decorates the footer
@@ -33,11 +33,7 @@ export default async function decorate(block) {
     // trigger and wait for NaaS footer rendering
     await new Promise((resolve) => {
       document.addEventListener('nass-footer-rendered', () => {
-        // work-around.
-        if (!window.location.host.endsWith('servicenow.com')) {
-          document.querySelectorAll('footer img[src^="/content/dam"]')
-            .forEach((image) => { image.src = `https://www.servicenow.com${new URL(image.src).pathname}`; });
-        }
+        fixRelativeDAMImages(block, dataDomain);
         resolve();
       });
 
