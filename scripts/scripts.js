@@ -32,6 +32,26 @@ export function getTemplate() {
   return toClassName(getMetadata('template'));
 }
 
+export function getAnalyticsSiteName() {
+  return 'SN Blogs';
+}
+
+export function analyticsCanonicStr(str) {
+  return (str || '').trim().replaceAll(':', '').toLowerCase();
+}
+
+export function analyticsGlobalClickTrack(digitalData, event) {
+  window.appEventData = window.appEventData || [];
+  const data = {
+    name: 'global_click',
+    digitalData,
+    event,
+  };
+  window.appEventData.push(data);
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(data, undefined, 4));
+}
+
 export async function fetchAPI(path) {
   const response = await fetch(path);
   if (!response.ok) {
@@ -266,15 +286,10 @@ function buildSidebar(main, sidebarPath) {
  * @returns {boolean}
  */
 function isArticlePage() {
-  let blogPage = false;
-  const template = getMetadata('template');
-  if (template && template === 'Blog Article') {
-    blogPage = true;
-  }
-  return blogPage;
+  return getMetadata('template') === 'Blog Article';
 }
 
-function decorateImages(main) {
+function decorateArticleImages(main) {
   // Get all img elements within the main container
   const images = main.querySelectorAll('img');
 
@@ -288,6 +303,35 @@ function decorateImages(main) {
   for (let i = 0; i < images.length; i += 1) {
     images[i].classList.add('article-image');
   }
+}
+
+function articleLinksClickTrack(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      let ctaText = analyticsCanonicStr(link.textContent);
+      if (!ctaText) {
+        ctaText = analyticsCanonicStr(link.querySelector('img')?.alt);
+      }
+
+      const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+      const eVar22 = `${h1}:${ctaText}`;
+
+      analyticsGlobalClickTrack({
+        event: {
+          pageArea: 'body',
+          eVar22,
+          eVar30: getAnalyticsSiteName(),
+          click: {
+            componentName: link.closest('.block')?.classList[0] || 'default-content-wrapper',
+            destination: link.href,
+            ctaText,
+            pageArea: 'body',
+            section: h1,
+          },
+        },
+      }, e);
+    });
+  });
 }
 
 /**
@@ -306,8 +350,9 @@ function buildAutoBlocks(main) {
       buildArticleHeader(main);
       buildArticleCopyright(main);
       buildArticleSocialShare(main);
+      articleLinksClickTrack(main);
       buildSidebar(main, `${locInfo.placeholdersPrefix}/fragments/sidebar-article-fragment`);
-      decorateImages(main);
+      decorateArticleImages(main);
     }
 
     const template = toClassName(getMetadata('template'));
@@ -477,14 +522,17 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-  await loadBlocks(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
-  loadFooter(doc.querySelector('footer'));
+  await loadBlocks(main);
+
+  if (new URLSearchParams(window.location.search).get('naas') !== 'disabled') {
+    await loadHeader(doc.querySelector('header'));
+    await loadFooter(doc.querySelector('footer'));
+  }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -500,7 +548,7 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => import('./delayed.js'), 4000);
   // load anything that can be postponed to the latest here
 }
 

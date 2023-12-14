@@ -1,25 +1,49 @@
-import { readBlockConfig, decorateIcons } from '../../scripts/aem.js';
+import { loadCSS, loadScript } from '../../scripts/aem.js';
+import { section } from '../../scripts/dom-helpers.js';
+import { getLocale } from '../../scripts/scripts.js';
+import { fixRelativeDAMImages, getDataDomain, waitImagesLoad } from '../header/header.js';
 
 /**
  * loads and decorates the footer
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
-  const cfg = readBlockConfig(block);
-  block.textContent = '';
+  block.innerHTML = '';
 
-  // fetch footer content
-  const footerPath = cfg.footer || '/footer';
-  const resp = await fetch(`${footerPath}.plain.html`, window.location.pathname.endsWith('/footer') ? { cache: 'reload' } : {});
+  document.documentElement.setAttribute('data-path-hreflang', getLocale().toLowerCase());
+  const dataDomain = getDataDomain();
 
-  if (resp.ok) {
-    const html = await resp.text();
+  try {
+    block.append(
+      section({
+        id: 'naas-footer',
+        class: 'naas-footer-section withPaddings',
+        'data-domain': dataDomain,
+        'data-sourceId': 'blogs',
+        'data-lslinkshard': 'on',
+      }),
+    );
 
-    // decorate footer DOM
-    const footer = document.createElement('div');
-    footer.innerHTML = html;
+    // load NaaS footer code
+    await Promise.all([
+      loadCSS(`${dataDomain}/nas/csi/footer/v1/footerCSR.bundle.css`),
+      loadScript(`${dataDomain}/nas/csi/footer/v1/footerCSR.bundle.js`),
+    ]);
 
-    decorateIcons(footer);
-    block.append(footer);
+    // trigger and wait for NaaS footer rendering
+    await new Promise((resolve) => {
+      document.addEventListener('nass-footer-rendered', () => {
+        fixRelativeDAMImages(block, dataDomain);
+        (async () => {
+          await waitImagesLoad(block);
+          resolve();
+        })();
+      });
+
+      document.dispatchEvent(new CustomEvent('naas-load-footer'));
+    });
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
   }
 }
