@@ -9,6 +9,7 @@ nav#blogheader > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 3rem;
 }
 
 nav#blogheader ul {
@@ -17,7 +18,6 @@ nav#blogheader ul {
   list-style-type: none;
   padding: 0;
   margin: 0;
-  margin-bottom: 3rem;
   width: 100%;
   background-color: var(--arc-color-brandblue-900);
 }
