@@ -1,6 +1,6 @@
 import {
   fetchPlaceholders, loadCSS, toCamelCase, toClassName,
-} from '../../scripts/aem.js';
+} from '../../../scripts/aem.js';
 import {
   BLOG_QUERY_INDEX,
   BLOG_FILTERS,
@@ -10,12 +10,12 @@ import {
   getAnalyticsSiteName,
   analyticsGlobalClickTrack,
   analyticsCanonicStr,
-} from '../../scripts/scripts.js';
+} from '../../../scripts/scripts.js';
 import {
   a, div, li, span, ul,
-} from '../../scripts/dom-helpers.js';
+} from '../../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
-import ffetch from '../../scripts/ffetch.js';
+import ffetch from '../../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 

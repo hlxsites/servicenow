@@ -1,6 +1,6 @@
-import { loadCSS, loadScript } from '../../scripts/aem.js';
-import { section } from '../../scripts/dom-helpers.js';
-import { getLocale } from '../../scripts/scripts.js';
+import { loadCSS, loadScript } from '../../../scripts/aem.js';
+import { section } from '../../../scripts/dom-helpers.js';
+import { getLocale } from '../../../scripts/scripts.js';
 
 // map containing environment configurations
 const naasDomains = {

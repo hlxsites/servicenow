@@ -1,7 +1,7 @@
-import { decorateIcons, fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
+import { decorateIcons, fetchPlaceholders, getMetadata } from '../../../scripts/aem.js';
 import {
   a, button, div, form, i, input, li, span,
-} from '../../scripts/dom-helpers.js';
+} from '../../../scripts/dom-helpers.js';
 import {
   BLOG_QUERY_INDEX,
   analyticsCanonicStr,
@@ -9,8 +9,8 @@ import {
   getAnalyticsSiteName,
   getLocale,
   getLocaleInfo,
-} from '../../scripts/scripts.js';
-import ffetch from '../../scripts/ffetch.js';
+} from '../../../scripts/scripts.js';
+import ffetch from '../../../scripts/ffetch.js';
 
 function debounce(func, delay) {
   let debounceTimer;

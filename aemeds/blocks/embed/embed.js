@@ -1,4 +1,4 @@
-import { readBlockConfig } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../../scripts/aem.js';
 
 /*
  * Embed Block
