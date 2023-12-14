@@ -73,7 +73,7 @@ nav#blogheader li.blogsearch-menu-container {
 
 .blogsearch form > div.search-container {
   position: relative;
-  transform: translateY(-50%);
+  height: 100%;
 }
 
 .blogsearch form div.search-container i.search-icon {
