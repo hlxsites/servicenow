@@ -1,6 +1,6 @@
-import { loadCSS, loadScript } from '../../../scripts/aem.js';
-import { section } from '../../../scripts/dom-helpers.js';
-import { getLocale } from '../../../scripts/scripts.js';
+import { loadCSS, loadScript } from '../../scripts/aem.js';
+import { section } from '../../scripts/dom-helpers.js';
+import { getLocale } from '../../scripts/scripts.js';
 import { fixRelativeDAMImages, getDataDomain, waitImagesLoad } from '../header/header.js';
 
 /**

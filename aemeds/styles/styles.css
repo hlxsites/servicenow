@@ -165,7 +165,7 @@ h3 span {
 }
 
 h3.strike-line {
-  background-image: url('/images/header-bar-h3.gif');
+  background-image: url('../images/header-bar-h3.gif');
   background-repeat: repeat-x;
   background-position: 0 50%;
 }
@@ -385,7 +385,7 @@ body:not(.blog-home-page) main .section:nth-child(2)::after {
   content: "";
   display: block;
   height: 9px;
-  background: url('/images/blog-diagonal-lines.webp') repeat 0 0;
+  background: url('../images/blog-diagonal-lines.webp') repeat 0 0;
   margin: 2.4rem auto 3rem;
   max-width: calc(1200px - 2.4rem);
 }

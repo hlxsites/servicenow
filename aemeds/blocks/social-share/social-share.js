@@ -1,9 +1,9 @@
-import { loadScript, getMetadata } from '../../../scripts/aem.js';
+import { loadScript, getMetadata } from '../../scripts/aem.js';
 import {
   analyticsCanonicStr,
   analyticsGlobalClickTrack,
   getAnalyticsSiteName,
-} from '../../../scripts/scripts.js';
+} from '../../scripts/scripts.js';
 
 // FIXME: update date before launch
 const esdCutOff = new Date('2024-01-08'); // 8 January 2024
