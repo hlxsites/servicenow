@@ -1,7 +1,7 @@
 import { loadCSS, loadScript } from '../../scripts/aem.js';
 import { section } from '../../scripts/dom-helpers.js';
 import { getLocale } from '../../scripts/scripts.js';
-import { fixRelativeDAMImages, getDataDomain } from '../header/header.js';
+import { fixRelativeDAMImages, getDataDomain, waitImagesLoad } from '../header/header.js';
 
 /**
  * loads and decorates the footer
@@ -34,7 +34,11 @@ export default async function decorate(block) {
     await new Promise((resolve) => {
       document.addEventListener('nass-footer-rendered', () => {
         fixRelativeDAMImages(block, dataDomain);
-        resolve();
+        // eslint-disable-next-line no-unused-expressions
+        (async () => {
+          await waitImagesLoad(block);
+          resolve();
+        })();
       });
 
       document.dispatchEvent(new CustomEvent('naas-load-footer'));

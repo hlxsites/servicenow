@@ -25,6 +25,25 @@ export function fixRelativeDAMImages(block, dataDomain) {
     .forEach((image) => { image.src = new URL(new URL(image.src).pathname, dataDomain); });
 }
 
+export async function waitImagesLoad(block) {
+  const images = block.querySelectorAll('img');
+
+  for (let i = 0; i < images.length; i += 1) {
+    const img = images[i];
+
+    // eslint-disable-next-line no-await-in-loop
+    console.log('awaiting ', img);
+    await new Promise((resolve) => {
+      if (img && !img.complete) {
+        img.addEventListener('load', resolve);
+        img.addEventListener('error', resolve);
+      } else {
+        resolve();
+      }
+    });
+  }
+}
+
 /**
  * decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -58,7 +77,11 @@ export default async function decorate(block) {
     await new Promise((resolve) => {
       document.addEventListener('nass-header-rendered', () => {
         fixRelativeDAMImages(block, dataDomain);
-        resolve();
+        // eslint-disable-next-line no-unused-expressions
+        (async () => {
+          await waitImagesLoad(block);
+          resolve();
+        })();
       });
 
       document.dispatchEvent(new CustomEvent('naas-load-header'));
