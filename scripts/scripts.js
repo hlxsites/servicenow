@@ -529,8 +529,10 @@ async function loadLazy(doc) {
 
   await loadBlocks(main);
 
-  await loadHeader(doc.querySelector('header'));
-  await loadFooter(doc.querySelector('footer'));
+  if (new URLSearchParams(window.location.search).get('naas') !== 'disabled') {
+    await loadHeader(doc.querySelector('header'));
+    await loadFooter(doc.querySelector('footer'));
+  }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
