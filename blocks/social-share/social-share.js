@@ -63,7 +63,7 @@ export default async function decorate(block) {
   setTimeout(() => {
     observer.disconnect();
     loadSocialShare();
-  }, 4500);
+  }, 5000);
 
   socialShareTracking(block);
 }
