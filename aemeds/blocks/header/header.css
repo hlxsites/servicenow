@@ -1,1 +1,5 @@
 /* CSS is dynamically downloaded from NaaS */
+#naas-header-old ul,
+#naas-header-old ol {
+  list-style: none;
+}
