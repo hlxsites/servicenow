@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 import { decorateIcons, fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 import {
   a, button, div, form, i, input, li, span,
@@ -24,6 +25,7 @@ function debounce(func, delay) {
 }
 
 const isDesktop = window.matchMedia('(min-width: 768px)');
+const CHUNK_SIZE = 250;
 
 function toggleMenu(nav, desktop) {
   const expanded = nav.getAttribute('aria-expanded') === 'true';
@@ -32,19 +34,6 @@ function toggleMenu(nav, desktop) {
   nav.setAttribute('aria-expanded', !!expand);
   nav.style.visibility = expand ? 'visible' : 'hidden';
   nav.style.display = expand ? 'table' : 'none';
-}
-
-async function getLocaleBlogContents() {
-  if (window.serviceNowBlogContents) {
-    return window.serviceNowBlogContents;
-  }
-
-  const locale = getLocale();
-  window.serviceNowBlogContents = ffetch(`${BLOG_QUERY_INDEX}`)
-    .sheet('blogs-content')
-    .filter((entry) => entry.locale === locale)
-    .all();
-  return window.serviceNowBlogContents;
 }
 
 function markSearchTerms(link, searchTerms) {
@@ -75,6 +64,53 @@ function blurSearch(block) {
   unindicateSearch(block);
 }
 
+async function processChunk(block, blogs, searchTerms, container) {
+  let done = false;
+  const locale = getLocale();
+  const prefixLength = getLocaleInfo().placeholdersPrefix.length;
+  const foundInHeader = [];
+  const foundInMeta = [];
+  const foundInContent = [];
+
+  for (let idx = 0; idx < CHUNK_SIZE; idx += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    const generate = await blogs.next();
+    done = generate.done;
+    if (done) {
+      break;
+    }
+
+    const result = generate.value;
+    if (result.locale !== locale) {
+      continue;
+    }
+
+    if (searchTerms.some((term) => result.header.toLowerCase().includes(term))) {
+      const link = a({ href: result.path }, result.header);
+      markSearchTerms(link, searchTerms);
+      foundInHeader.push(link);
+      continue;
+    }
+
+    const metaContents = `${result.title} ${result.description} ${result.path.substring(prefixLength)}`.toLowerCase();
+    if (searchTerms.some((term) => metaContents.includes(term))) {
+      foundInMeta.push(a({ href: result.path }, result.header));
+      continue;
+    }
+
+    if (searchTerms.some((term) => result.content.toLowerCase().includes(term))) {
+      foundInContent.push(a({ href: result.path }, result.header));
+    }
+  }
+
+  container.append(...[...foundInHeader, ...foundInMeta, ...foundInContent]);
+  if (done) {
+    unindicateSearch(block);
+  } else {
+    processChunk(block, blogs, searchTerms, container);
+  }
+}
+
 async function handleSearch(block) {
   const searchValue = block.querySelector('input').value;
   const searchResults = block.querySelector('.search-results');
@@ -91,35 +127,12 @@ async function handleSearch(block) {
   searchResults.style.display = 'block';
   searchResults.innerHTML = '';
 
-  const results = await getLocaleBlogContents();
-  const prefixLength = getLocaleInfo().placeholdersPrefix.length;
   const searchTerms = searchValue.toLowerCase().split(/\s+/);
-  const includedPaths = [];
+  const blogs = ffetch(BLOG_QUERY_INDEX)
+    .chunks(CHUNK_SIZE)
+    .sheet('blogs-content');
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const result of results) {
-    const metaContents = `${result.title.toLowerCase()} ${result.description.toLowerCase()} ${result.header.toLowerCase()} ${result.path.substring(prefixLength).toLowerCase()}`;
-    if (searchTerms.some((term) => metaContents.includes(term))) {
-      const link = a({ href: result.path }, result.header);
-      markSearchTerms(link, searchTerms);
-      searchResults.append(link);
-      includedPaths.push(result.path);
-    }
-  }
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const result of results) {
-    if (!includedPaths.includes(result.path)) {
-      if (searchTerms.some((term) => result.content.toLowerCase()
-        .includes(term))) {
-        searchResults.append(
-          a({ href: result.path }, result.header),
-        );
-      }
-    }
-  }
-
-  unindicateSearch(block);
+  processChunk(block, blogs, searchTerms, searchResults);
 }
 
 function addClickTracking(link, block) {
