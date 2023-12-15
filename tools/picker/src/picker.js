@@ -28,7 +28,6 @@ const Picker = props => {
     });
 
     const clickListItem = (key) => {
-        console.log(key);
         if (key.includes(':')) {
             copyToClipboard(key);
             return;

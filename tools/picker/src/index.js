@@ -22,7 +22,6 @@ const LOCALES = [
 ];
 
 const getItems = async (folderKey, page = 1) => {
-    console.log(folderKey);
     if (folderKey === 'Topics') {
         return getTopics();
     }
