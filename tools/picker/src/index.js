@@ -10,7 +10,7 @@ const pageURL = (path) => {
 }
 
 const liveURL = (path) => {
-    return `https://main--aemeds--servicenow-martech.hlx.live${path}`;
+    return `https://main--aemeds--servicenow-martech.hlx.page${path}`;
 }
 
 const LOCALES = [

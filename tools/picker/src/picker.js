@@ -131,6 +131,11 @@ const Picker = props => {
 
     useEffect(() => {
         (async () => {
+            setState(state => ({
+                ...state,
+                loadingState: 'loading',
+            }));
+
             let items = await getItems(state.typeDisplayed);
 
             setState(state => {
