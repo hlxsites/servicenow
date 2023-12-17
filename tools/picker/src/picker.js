@@ -44,13 +44,33 @@ const Picker = props => {
     };
 
     const copyToClipboard = key => {
-        let item = key.slice(key.indexOf(':') + 1)
+        if (!key) return;
 
-        navigator.clipboard.write([
-            new ClipboardItem({
-                'text/plain': new Blob([ item ], { type: 'text/plain' }),
-            }),
-        ]);
+        if (key.startsWith('author:')) {
+            let author = key.slice(key.indexOf(':') + 1)
+            const [authorName, authorLink] = author.split('::');
+            navigator.clipboard.write([
+                new ClipboardItem({
+                    'text/html': new Blob([ 
+                        `<table>
+                            <tr>
+                                <td>${authorName}</td>
+                            </tr>
+                            <tr>
+                                <td>${authorLink}</td>
+                            </tr>
+                        </table>` 
+                    ], { type: 'text/html' }),
+                }),
+            ]);
+        } else { 
+            let item = key.slice(key.indexOf(':') + 1)
+            navigator.clipboard.write([
+                new ClipboardItem({
+                    'text/plain': new Blob([ item ], { type: 'text/plain' }),
+                }),
+            ]);
+        }
     };
 
     const onDateChange = (date) => {
@@ -111,6 +131,11 @@ const Picker = props => {
 
     useEffect(() => {
         (async () => {
+            setState(state => ({
+                ...state,
+                loadingState: 'loading',
+            }));
+
             let items = await getItems(state.typeDisplayed);
 
             setState(state => {
