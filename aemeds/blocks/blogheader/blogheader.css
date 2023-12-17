@@ -12,11 +12,11 @@ nav#blogheader > div {
 }
 
 nav#blogheader ul {
+  position: relative;
   display: table;
   table-layout: fixed;
   list-style-type: none;
   padding: 0;
-  margin: 0;
   margin-bottom: 3rem;
   width: 100%;
   background-color: var(--arc-color-brandblue-900);
@@ -52,6 +52,7 @@ nav#blogheader li.blogsearch-menu-container {
   text-align: right;
   width: auto;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -186,7 +187,6 @@ nav#blogheader li.blogsearch-menu-container {
   }
 
   nav#blogheader li.blogsearch-menu-container {
-    position: relative;
     flex-flow: row wrap;
     justify-content: flex-end;
     width: 100%;
@@ -204,10 +204,9 @@ nav#blogheader li.blogsearch-menu-container {
 
   nav#blogheader .blogsearch {
     width: 18rem;
-  }
-
-  .blogsearch > form > div {
-    top: 15px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .blogsearch form div.search-container input {
@@ -250,6 +249,7 @@ nav#blogheader li.blogsearch-menu-container {
   nav#blogheader ul {
     visibility: hidden;
     display: none;
+    position: relative;
   }
 
   #blogheader > div.blogheader-sections > ul > li.blogsearch-menu-container.blogsearch-wrapper {
