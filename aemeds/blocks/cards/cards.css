@@ -115,7 +115,7 @@
   aspect-ratio: 91 / 42;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .cards .card .card-thumbnail img {
     aspect-ratio: 375 / 211;
   }
