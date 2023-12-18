@@ -61,12 +61,67 @@ function getOriginalNewTrendTag(originalTags) {
   return originalTags.find((tag) => tag.startsWith('sn-blog-docs:new-trend'));
 }
 
+function getPublishedDate(jsonRendition) {
+  return jsonRendition['jcr:content'].date;
+}
+
+const timezoneMap = {
+  '+0530': 'Asia/Calcutta',
+};
+
+function getCorrectedDate(dateString) {
+  const tzMatch = dateString.match(/GMT[+-][0-9]{4}/);
+  let timeZone = '';
+  if (tzMatch) {
+    const offset = tzMatch[0].substring(3);
+    // if the offset ends in 00 remove it from offset
+    if (offset.endsWith('00')) {
+
+      // remove 00  suffix
+      const o = offset.substring(1, offset.length - 2);
+      const absolute = o.replace(/^0+/, '');
+
+      const sign = offset.startsWith('-') ? '+' : '-';
+      // remove any leading zeroes from o e.g. -0700 becomes -7
+      timeZone = absolute === '' ? 'Etc/GMT' : `Etc/GMT${sign}${absolute}`;
+
+      console.log('date:', dateString, ' timeZone: ', timeZone);
+    } else {
+      timeZone = timezoneMap[offset];
+      console.log('Odd offset found: ', offset);
+    }
+  } else {
+    console.log('date does not match time zone pattern: ', dateString, ' timeZone: ', timeZone);
+  }
+
+  const dateObj = new Date(dateString);
+
+  console.log('Converting date: ', dateString, ' timeZone: ', timeZone);
+
+  return dateObj.toLocaleDateString(
+    'en-US',
+    {
+      day: '2-digit', month: '2-digit', year: 'numeric', timeZone,
+    },
+  );
+}
+
+function getPreviousDate(dateString) {
+  const dateObj = new Date(dateString);
+  return dateObj.toLocaleDateString(
+    'en-US',
+    {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+    },
+  );
+}
+
 const sitemaps = [
   // { locale: 'en-US', sitemap: 'https://www.servicenow.com/sitemap.xml' },
   // { locale: 'fr-FR', sitemap: 'https://www.servicenow.com/fr/sitemap.xml' },
   // { locale: 'de-DE', sitemap: 'https://www.servicenow.com/de/sitemap.xml' },
-  // { locale: 'en-GB', sitemap: 'https://www.servicenow.com/uk/sitemap.xml' },
-  { locale: 'nl-NL', sitemap: 'https://www.servicenow.com/nl/sitemap.xml' },
+  { locale: 'en-GB', sitemap: 'https://www.servicenow.com/uk/sitemap.xml' },
+  // { locale: 'nl-NL', sitemap: 'https://www.servicenow.com/nl/sitemap.xml' },
 ];
 
 console.log('running');
@@ -123,12 +178,21 @@ for (let j = 0; j < sitemaps.length; j++) {
               newTrends.push(originalNewTrendTag);
             }
 
+            const publishedDate = getPublishedDate(jsonRendition);
+            const correctedDate = getCorrectedDate(publishedDate);
+            const previousDate = getPreviousDate(publishedDate);
+
+            const wrongDate = previousDate !== correctedDate;
+
             all.push({
               locale: sitemaps[j].locale,
               loc,
               topic: originalTopicTag,
               category: originalCategoryTag,
               newTrend: originalNewTrendTag,
+              previousDate,
+              correctedDate,
+              wrongDate,
             });
           } else {
             console.log('originalTags is undefined');
@@ -145,7 +209,7 @@ for (let j = 0; j < sitemaps.length; j++) {
     // itearte over all array and display properties loc and topic as csv line
     for (let k = 0; k < all.length; k++) {
       const element = all[k];
-      console.log(`${element.locale},${element.loc},${element.topic},${element.category},${element.newTrend}`);
+      console.log(`${element.locale},${element.loc},${element.topic},${element.category},${element.newTrend},${element.previousDate},${element.correctedDate},${element.wrongDate}`);
     }
   });
 }

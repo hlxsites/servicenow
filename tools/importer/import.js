@@ -83,6 +83,10 @@ function getPageUrl(link) {
 }
 
 
+const timezoneMap = {
+    '+0530': 'Asia/Calcutta',
+};
+
 function makeProxySrc(imgSrc) {
     // imgSrc comes in format https://www.servicenow.com/content/dam/servicenow-blog-docs/servicematters/2017/ITSM-Dashboard-Final.png
     // extract path from imgSrc
@@ -149,13 +153,38 @@ const createMetadataBlock = (main, document, url) => {
     // Publication Date
     const date = document.querySelector('.cmp-blog-author-info__date');
     if (date) {
-        const dateObj = new Date(jsonRendition['jcr:content'].date);
-        // format date to mm/dd/yyyy
-        meta['Publication Date'] = dateObj.toLocaleDateString(
-            'en-US',
-            { day: '2-digit', month: '2-digit', year: 'numeric' },
-        );
+      let dateString = jsonRendition['jcr:content'].date;
+
+      // find the tzMatch in the dateString which has the followin format Wed Mar 24 2021 16:11:00 GMT-0700
+    const tzMatch = dateString.match(/GMT[+-][0-9]{4}/);
+    let timeZone= '';
+    if (tzMatch) {
+      // tzMatch[0] has the folllowing format "GMT<offset>" e.g. GMT-0700 or GMT+0200. Extract the offset from it
+      const offset = tzMatch[0].substring(3);
+      // if the offset ends in 00 remove it from offset
+        if (offset.endsWith('00')) {
+          const o = offset.substring(1, offset.length - 2);
+          const sign = offset.startsWith('-') ? '+' : '-';
+          // remove any leading zeroes from o e.g. -0700 becomes -7
+          timeZone = `Etc/GMT${sign}${o.replace(/^0+/, '')}`;
+
+          console.log('date:', dateString, ' timeZone: ', timeZone);
+        } else {
+            timeZone = timezoneMap[offset];
+            console.log('Odd offset found: ', offset);
+        }
     }
+
+    const dateObj = new Date(dateString);
+
+    console.log('date in seconds ', dateObj.getTime(), ' Date object: ', dateObj);
+
+      // format date to mm/dd/yyyy
+      meta['Publication Date'] = dateObj.toLocaleDateString(
+          'en-US',
+          { day: '2-digit', month: '2-digit', year: 'numeric' , timeZone},
+      );
+  }
 
     // Keywords
     const keywords = document.querySelector('meta[name="keywords"]');
