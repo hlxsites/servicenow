@@ -27,7 +27,7 @@ nav#blogheader li {
   border-right: 1px solid white;
   color: white;
   text-align: center;
-  padding: 1.5rem 1.2rem;
+  padding: 1.5rem 0;
   width: calc(55rem / var(--number-of-menu-items));
 }
 
