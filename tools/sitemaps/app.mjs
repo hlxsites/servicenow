@@ -6,7 +6,6 @@ import { Readable } from 'stream';
 import { finished } from 'stream/promises';
 import * as path from 'path';
 
-
 /*
 Usage:
 node app.mjs diff
@@ -19,11 +18,45 @@ paste into redirects.xls
   click on Ctrl (paste options) > Text to columns > Select 'Comma' > Apply
 */
 
+const SKIP_URLS = `
+https://www.servicenow.com/blogs/topics/work-better.html
+https://www.servicenow.com/blogs/topics/talent-and-engagement.html
+https://www.servicenow.com/blogs/topics/strategy.html
+https://www.servicenow.com/blogs/topics/service-delivery-and-management.html
+https://www.servicenow.com/blogs/topics/partners.html
+https://www.servicenow.com/blogs/topics/organizational-change-management.html
+https://www.servicenow.com/blogs/topics/operations-and-uptime.html
+https://www.servicenow.com/blogs/topics/low-code.html
+https://www.servicenow.com/blogs/topics/life-at-now.html
+https://www.servicenow.com/blogs/topics/knowledge.html
+https://www.servicenow.com/blogs/topics/knowledge-2020.html
+https://www.servicenow.com/blogs/topics/industry.html
+https://www.servicenow.com/blogs/topics/global-impact.html
+https://www.servicenow.com/blogs/topics/diversity-inclusion-and-belonging.html
+https://www.servicenow.com/blogs/topics/digital-workflows.html
+https://www.servicenow.com/blogs/topics/data-and-analytics.html
+https://www.servicenow.com/blogs/topics/customer-service.html
+https://www.servicenow.com/blogs/topics/creatorcon.html
+https://www.servicenow.com/blogs/topics/covid-19.html
+https://www.servicenow.com/blogs/topics/corporate-announcement.html
+https://www.servicenow.com/blogs/topics/asset-and-cost-management.html
+https://www.servicenow.com/blogs/topics.html
+https://www.servicenow.com/blogs/category.html
+https://www.servicenow.com/blogs/blogs/2023/leader-low-code-no-code-development.html
+https://www.servicenow.com/blogs/blogs/2022/leader-low-code-development-platforms.html
+https://www.servicenow.com/blogs/blogs/2021/leader-in-low-code-development-platforms.html
+https://www.servicenow.com/blogs/author.html
+`;
+
 const LANGUAGES = ['us', 'uk', 'fr', 'de', 'nl'];
 const DATA_OLD = 'data_old';
 const DATA_NEW = 'data_new';
 
 function old2newLink(pathname) {
+  const ext = '.html';
+  if (!pathname.toLowerCase().endsWith(ext)) {
+    throw new Error(`${pathname} does not contain .html`);
+  }
   return `${pathname.substring(0, pathname.lastIndexOf('.html')).toLowerCase()}`;
 }
 
@@ -245,6 +278,8 @@ program.command('diff')
   .action(async () => {
     const oldLinks = [];
     const newLinks = [];
+    const skipLinks = SKIP_URLS.split('\n').filter((u) => u).map((u) => { const url = new URL(u); return old2newLink(url.pathname); });
+    // console.log(skipLinks);
 
     // eslint-disable-next-line no-restricted-syntax
     for await (const lang of LANGUAGES) {
@@ -265,11 +300,15 @@ program.command('diff')
       newLinks.push(url.pathname);
     }
 
-    const differenceOldNew = oldLinks.filter((x) => !newLinks.includes(x));
+    const differenceOldNew = oldLinks
+      .filter((x) => !newLinks.includes(x))
+      .filter((x) => !skipLinks.includes(x));
     console.log(`oldLinks - newLinks = ${differenceOldNew.length}`);
     console.dir(differenceOldNew, { maxArrayLength: null });
 
-    const differenceNewOld = newLinks.filter((x) => !oldLinks.includes(x));
+    const differenceNewOld = newLinks
+      .filter((x) => !oldLinks.includes(x))
+      .filter((x) => !skipLinks.includes(x));
     console.log(`newLinks - oldLinks = ${differenceNewOld.length}`);
     console.dir(differenceNewOld, { maxArrayLength: null });
   });
