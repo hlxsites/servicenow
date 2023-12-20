@@ -27,9 +27,9 @@ function debounce(func, delay) {
 const isDesktop = window.matchMedia('(min-width: 768px)');
 const CHUNK_SIZE = 250;
 
-function toggleMenu(nav, desktop) {
+function toggleMenu(nav, desktop, changedScreenSize) {
   const expanded = nav.getAttribute('aria-expanded') === 'true';
-  const expand = !expanded || desktop.matches;
+  const expand = (!changedScreenSize && !expanded) || desktop.matches;
 
   nav.setAttribute('aria-expanded', !!expand);
   nav.style.visibility = expand ? 'visible' : 'hidden';
@@ -231,7 +231,7 @@ export default async function decorate(block) {
       ),
     );
 
-    isDesktop.addEventListener('change', () => toggleMenu(navSections, isDesktop));
+    isDesktop.onchange = () => toggleMenu(navSections, isDesktop, true);
 
     block.append(blogHeader);
   }
