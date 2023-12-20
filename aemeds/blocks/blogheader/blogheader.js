@@ -30,7 +30,6 @@ const CHUNK_SIZE = 250;
 function toggleMenu(nav, desktop, changedScreenSize) {
   const expanded = nav.getAttribute('aria-expanded') === 'true';
   const expand = (!changedScreenSize && !expanded) || desktop.matches;
-  console.log('Expand :', expand);
 
   nav.setAttribute('aria-expanded', !!expand);
   nav.style.visibility = expand ? 'visible' : 'hidden';
