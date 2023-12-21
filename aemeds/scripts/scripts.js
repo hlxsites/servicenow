@@ -103,7 +103,7 @@ const LOCALE_INFO = {
     urlPrefix: '',
     placeholdersPrefix: '/blogs',
   },
-  'en-UK': {
+  'en-GB': {
     urlPrefix: '/uk',
     placeholdersPrefix: '/uk/blogs',
   },

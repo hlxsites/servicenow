@@ -15,7 +15,7 @@ const liveURL = (path) => {
 
 const LOCALES = [
     'en-US',
-    'en-UK',
+    'en-GB',
     'de-DE',
     'fr-FR',
     'nl-NL',
