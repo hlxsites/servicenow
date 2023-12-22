@@ -1,0 +1,17 @@
+{
+  "name": "sitemaps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "app": "app.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "filereader": "^0.10.3",
+    "xmldom": "^0.6.0"
+  }
+}
