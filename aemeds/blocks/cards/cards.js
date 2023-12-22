@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { createOptimizedPicture, readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { a, div, h5 } from '../../scripts/dom-helpers.js';
 import ffetch from '../../scripts/ffetch.js';
@@ -15,6 +16,7 @@ import {
 
 const TRENDS_AND_RESEARCH = toClassName('Trends and Research');
 const RESEARCH_CATEGORY = toClassName('ServiceNow Research');
+const PLACEHOLDER_IMAGE = '/blogs/assets/servicenow-placeholder.png';
 
 async function waitForEagerImageLoad(img) {
   if (!img) return;
@@ -97,12 +99,18 @@ function clickTrack(card) {
   return card;
 }
 
+function isNotEmpty(field) {
+  return field && field !== '0' && field !== '#N/A';
+}
+
 export async function renderCard(post, renderTopic = true) {
   return (
     div({ class: 'card' },
       div({ class: 'card-thumbnail' },
         a({ href: post.path },
-          createOptimizedPicture(new URL(post.image, window.origin).toString(), post.header),
+          isNotEmpty(post.image)
+            ? createOptimizedPicture(new URL(post.image, window.origin).toString(), post.header)
+            : createOptimizedPicture(new URL(PLACEHOLDER_IMAGE, window.origin).toString(), post.header),
         ),
         renderTopic && post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
