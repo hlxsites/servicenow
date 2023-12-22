@@ -113,6 +113,17 @@ https://www.servicenow.com/nl/blogs/topics/business-impact.html
 https://www.servicenow.com/nl/blogs/topics.html
 https://www.servicenow.com/nl/blogs/category.html
 https://www.servicenow.com/nl/blogs/author.html
+https://www.servicenow.com/blogs/2015.html
+https://www.servicenow.com/blogs/2014.html
+https://www.servicenow.com/de/blogs/topics/covid-19.html
+https://www.servicenow.com/blogs/2021/meet-yannis-servicenow-france-leader.html
+https://www.servicenow.com/de/blogs/author.html
+https://www.servicenow.com/blogs/category/home.html
+https://www.servicenow.com/blogs/category/home.html
+https://www.servicenow.com/de/blogs/category/home.html
+https://www.servicenow.com/fr/blogs/category/home.html
+https://www.servicenow.com/nl/blogs/category/home.html
+https://www.servicenow.com/uk/blogs/category/home.html
 `;
 
 const LANGUAGES = ['us', 'uk', 'fr', 'de', 'nl'];
@@ -336,7 +347,7 @@ program.command('download_old')
 program.command('download_new')
   .description('Downloads the ESD sitemap.xml')
   .action(async () => {
-    const url = 'https://main--servicenow--hlxsites.hlx.live/blogs/sitemap.xml';
+    const url = 'https://main--aemeds--servicenow-martech.hlx.live/blogs/sitemap.xml';
     await downloadFile(url, `./${DATA_NEW}/sitemap.xml`);
   });
 
@@ -376,8 +387,8 @@ program.command('diff')
     const differenceNewOld = newLinks
       .filter((x) => !oldLinks.includes(x))
       .filter((x) => !skipLinks.includes(x));
-    console.log(`newLinks - oldLinks = ${differenceNewOld.length}`);
-    console.dir(differenceNewOld, { maxArrayLength: null });
+    // console.log(`newLinks - oldLinks = ${differenceNewOld.length}`);
+    // console.dir(differenceNewOld, { maxArrayLength: null });
   });
 
 program.parse(process.argv);
