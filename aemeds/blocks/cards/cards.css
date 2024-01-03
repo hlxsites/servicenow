@@ -77,6 +77,12 @@
   text-align: left;
 }
 
+@media (max-width: 767px) {
+  .card .card-thumbnail .topic-tag {
+    max-width: 12.7rem;
+  }
+}
+
 /* VARIANTS */
 
 /* TEASER */
@@ -98,6 +104,10 @@
 .cards.teaser .card .card-text {
   background: #fff;
   padding: 3rem 2rem;
+}
+
+.cards.teaser .card .card-text h5 {
+  margin: 0;
 }
 
 /* SIDEBAR */
@@ -132,5 +142,24 @@
   .cards.sidebar .card .card-text {
     padding-left: 1rem;
     flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .cards.sidebar .card .card-thumbnail {
+    padding-left: 1rem;
+    flex: 0 0 auto;
+    width: 13.7rem;
+    height: 12.7rem;;
+  }
+
+  .cards.sidebar .card .card-thumbnail a,
+  .cards.sidebar .card .card-thumbnail picture {
+    height: 100%;
+  }
+
+  .cards.sidebar .card .card-thumbnail img {
+    aspect-ratio: unset;
+    height: 100%;
   }
 }
