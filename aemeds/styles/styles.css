@@ -18,9 +18,10 @@
   /* colors */
   --arc-color-brandblue-900: #032d42;
   --arc-color-brandgreen-500: #62d84e;
+  --arc-color-brandgreen-400: #81df71;
+  --arc-color-brandgreen-300: #9fe793;
   --arc-color-neutral-900: #1d1d1d;
   --arc-color-black: #000;
-  --link-hover-color: #136ff6;
   --background-color: #f7f7f7;
   --overlay-background-color: #eee;
   --highlight-background-color: #ccc;
@@ -266,40 +267,61 @@ main a:hover {
 /* stylelint-enable no-descending-specificity */
 
 /* buttons */
-a.button:any-link, button {
-  font-family: var(--body-font-family);
-  display: inline-block;
-  box-sizing: border-box;
-  text-decoration: none;
-  border: 2px solid transparent;
-  padding: 5px 30px;
-  text-align: center;
+main a.button:any-link,
+main button {
+  --transition-onhover: 0.2s linear;
+  --background-default: var(--arc-color-brandgreen-500);
+  --background-hover: var(--arc-color-brandgreen-300);
+  --background-active: var(--arc-color-brandgreen-400);
+  --border-color-default: var(--arc-color-brandgreen-500);
+  --border-color-hover: var(--arc-color-brandgreen-300);
+  --border-color-active: var(--arc-color-brandgreen-400);
+
+  display: inline-flex;
+  align-items: center;
+  background: var(--background-default);
+  border: 2px solid var(--border-color-default);
+  border-radius: 50rem;
+  color: var(--arc-color-neutral-900);
+  cursor: pointer;
+  font-family: var(--ff-gilroy-semibold);
   font-style: normal;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--background-color);
-  background-color: var(--link-color);
-  margin: 16px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-radius: 30px;
+  justify-content: center;
+  padding: 0 2.2rem;
+  height: 4.8rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color var(--transition-onhover),border-color var(--transition-onhover),color var(--transition-onhover);
 }
 
-a.button:hover, a.button:focus, button:hover, button:focus  {
-  background-color: var(--link-hover-color);
-  cursor: pointer;
+main a.button:hover,
+main a.button:focus,
+main button:hover,
+main button:focus  {
+  background: var(--background-hover);
+  border: 2px solid var(--border-color-hover);
 }
 
-button:disabled, button:disabled:hover {
+main a.button:active,
+main button:active {
+  background: var(--background-active);
+  border: 2px solid var(--border-color-active);
+}
+
+main button:disabled,
+main button:disabled:hover {
   background-color: var(--overlay-background-color);
   cursor: unset;
 }
 
-a.button.secondary, button.secondary {
-  background-color: unset;
-  border: 2px solid currentcolor;
-  color: var(--text-color)
+main a.button.primary,
+main button.primary {
+  border: 2px solid #FFF !important;
+}
+
+main a.button.secondary,
+main button.secondary {
+  --background-default: transparent;
 }
 
 main input {
