@@ -115,7 +115,9 @@ export async function renderCard(post, renderTopic = true) {
         renderTopic && post.topic ? div({ class: 'topic-tag' }, div(await localizedTopic(post.topic))) : '',
       ),
       div({ class: 'card-text' },
-        h5(post.header),
+        a({ href: post.path },
+          h5(post.header),
+        ),
       ),
     )
   );
