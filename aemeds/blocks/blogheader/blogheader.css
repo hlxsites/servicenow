@@ -280,14 +280,20 @@ nav#blogheader li.blogsearch-menu-container {
   right: 0;
   color: white;
   margin-bottom: 0.8rem;
-  padding-left: 0.4rem;
+  padding-left: 0.6rem;
 }
 
-.blogheader-hamburger button {
+.blogheader-hamburger button,
+.blogheader-hamburger button:hover,
+.blogheader-hamburger button:focus,
+.blogheader-hamburger button:active {
   margin: 0;
   text-align: left;
   padding: 0;
-  background-color: inherit;
+  background: none;
+  color: var(--background-color);
+  border: none;
+  height: unset;
 }
 
 .blogheader-hamburger button::after {
