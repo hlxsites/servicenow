@@ -267,7 +267,8 @@ main a:hover {
 /* stylelint-enable no-descending-specificity */
 
 /* buttons */
-main a.button:any-link, button {
+main a.button:any-link,
+main button {
   --transition-onhover: 0.2s linear;
   --background-default: var(--arc-color-brandgreen-500);
   --background-hover: var(--arc-color-brandgreen-300);
@@ -293,26 +294,33 @@ main a.button:any-link, button {
   transition: background-color var(--transition-onhover),border-color var(--transition-onhover),color var(--transition-onhover);
 }
 
-main a.button:hover, a.button:focus, button:hover, button:focus  {
+main a.button:hover,
+main a.button:focus,
+main button:hover,
+main button:focus  {
   background: var(--background-hover);
   border: 2px solid var(--border-color-hover);
 }
 
-main a.button:active, button:active {
+main a.button:active,
+main button:active {
   background: var(--background-active);
   border: 2px solid var(--border-color-active);
 }
 
-main button:disabled, button:disabled:hover {
+main button:disabled,
+main button:disabled:hover {
   background-color: var(--overlay-background-color);
   cursor: unset;
 }
 
-main a.button.primary, button.primary {
+main a.button.primary,
+main button.primary {
   border: 2px solid #FFF !important;
 }
 
-main a.button.secondary, button.secondary {
+main a.button.secondary,
+main button.secondary {
   --background-default: transparent;
 }
 
