@@ -69,6 +69,10 @@
   flex: 1 0 auto;
 }
 
+.card .card-text a {
+  background: none;
+}
+
 .card .card-text h5 {
   font-size: 1.8rem;
   line-height: 2.3rem;

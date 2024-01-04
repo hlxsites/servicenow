@@ -42,10 +42,6 @@
   flex: 1 1 auto;
 }
 
-.blog-list .card .card-text a {
-  background: none;
-}
-
 .blog-list .card .card-text .card-date {
   display: inline-block;
   margin-top: 0.5rem;
