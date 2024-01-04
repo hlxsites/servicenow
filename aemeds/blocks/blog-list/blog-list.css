@@ -139,6 +139,13 @@
   }
 }
 
+@media (max-width: 480px) {
+  .blog-list .card .card-text .card-cta {
+    position: static;
+    text-align: right;
+  }
+}
+
 @media only screen and (min-width: 1024px) {
   .blog-list .card .card-text .card-cta a .card-arrow {
     margin-left: .5rem;
