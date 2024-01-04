@@ -42,6 +42,10 @@
   flex: 1 1 auto;
 }
 
+.blog-list .card .card-text a {
+  background: none;
+}
+
 .blog-list .card .card-text .card-date {
   display: inline-block;
   margin-top: 0.5rem;
@@ -140,9 +144,15 @@
 }
 
 @media (max-width: 480px) {
+  .blog-list .card .card-text {
+    display: flex;
+    flex-direction: column;
+  }
+
   .blog-list .card .card-text .card-cta {
     position: static;
     text-align: right;
+    margin-top: auto;
   }
 }
 
