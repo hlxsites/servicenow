@@ -14,11 +14,11 @@ const liveURL = (path) => {
 }
 
 const LOCALES = [
-    'en-US',
-    'en-GB',
-    'de-DE',
-    'fr-FR',
-    'nl-NL',
+    { display: 'US', key: 'en-US' },
+    { display: 'UK', key: 'en-GB' },
+    { display: 'DE', key: 'de-DE' },
+    { display: 'FR', key: 'fr-FR' },
+    { display: 'NL', key: 'nl-NL' },
 ];
 
 const getItems = async (folderKey, page = 1) => {
@@ -36,14 +36,15 @@ const getItems = async (folderKey, page = 1) => {
 
     if (folderKey === 'Authors') {
         return LOCALES.map((locale) => ({
-            key : `Authors/${locale}`,
-            name: locale,
+            key : `Authors/${locale.display}`,
+            name: locale.display,
         }));
     }
 
     if (folderKey && folderKey.startsWith('Authors/')) {
-        const locale = folderKey.split('/')[1];
-        return getAuthors(locale);
+        const localeDisplay = folderKey.split('/')[1];
+        const locale = LOCALES.find((locale) => locale.display === localeDisplay);
+        return getAuthors(locale?.key);
     }
 
     return [
