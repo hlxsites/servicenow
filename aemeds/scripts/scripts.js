@@ -476,6 +476,7 @@ function restoreScrollPosition() {
   }
 
   if (history.state && history.state.data && history.state.data.documentScroll ) {
+    console.log('restoring scroll position', history.state.data.documentScroll);
     window.scrollTo(0, history.state.data.documentScroll);
   }
 
