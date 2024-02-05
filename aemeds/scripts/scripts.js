@@ -480,10 +480,16 @@ function restoreScrollPosition() {
     window.scrollTo(0, history.state.data.documentScroll);
   }
 
+  let scrollTimer = null;
   window.addEventListener('scrollend', () => {
-    var documentScroll = window.scrollY;
-    var stateObj = { data: { documentScroll } };
-    history.replaceState(stateObj, "");
+    if (scrollTimer) {
+      clearTimeout(scrollTimer);
+    }
+    setTimeout(() => {
+      var documentScroll = window.scrollY;
+      var stateObj = { data: { documentScroll } };
+      history.replaceState(stateObj, "");
+    }, 1000);
  });
 }
 
