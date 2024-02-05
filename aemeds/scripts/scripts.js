@@ -480,7 +480,7 @@ function restoreScrollPosition() {
     window.scrollTo(0, history.state.data.documentScroll);
   }
 
-  window.addEventListener('scroll', () => {
+  window.addEventListener('scrollend', () => {
     var documentScroll = window.scrollY;
     var stateObj = { data: { documentScroll } };
     history.replaceState(stateObj, "");
