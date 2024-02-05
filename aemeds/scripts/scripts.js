@@ -470,6 +470,22 @@ function decorateLinks(main) {
   });
 }
 
+function restoreScrollPosition() {
+  if (getTemplate() !== 'blog-article'  || !history.replaceState) {
+    return;
+  }
+
+  if (history.state && history.state.data && history.state.data.documentScroll ) {
+    window.scrollTo(0, history.state.data.documentScroll);
+  }
+
+  window.addEventListener('scroll', () => {
+    var documentScroll = window.scrollY;
+    var stateObj = { data: { documentScroll } };
+    history.replaceState(stateObj, "");
+ });
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -533,6 +549,7 @@ async function loadLazy(doc) {
     await loadHeader(doc.querySelector('header'));
     await loadFooter(doc.querySelector('footer'));
   }
+  restoreScrollPosition();
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
