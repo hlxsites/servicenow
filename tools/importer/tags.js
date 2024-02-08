@@ -28,6 +28,14 @@ function getOriginalTags(jsonRendition) {
   return jsonRendition['jcr:content']['cq:tags'];
 }
 
+function getCanonicalUrl(jsonRendition) {
+  const canonicalUrl = jsonRendition['jcr:content']['canonicalUrl'];
+  if (canonicalUrl === undefined) {
+    return '';
+  }
+  return canonicalUrl;
+}
+
 // get sitemap content and parse it to Document Object Model
 function getXMLSitemapObject(sitemapFile, callback) {
   const xhttp = new XMLHttpRequest();
@@ -182,6 +190,8 @@ for (let j = 0; j < sitemaps.length; j++) {
             const correctedDate = getCorrectedDate(publishedDate);
             const previousDate = getPreviousDate(publishedDate);
 
+            const canonicalUrl = getCanonicalUrl(jsonRendition);
+
             const wrongDate = previousDate !== correctedDate;
 
             all.push({
@@ -193,6 +203,7 @@ for (let j = 0; j < sitemaps.length; j++) {
               previousDate,
               correctedDate,
               wrongDate,
+              canonicalUrl,
             });
           } else {
             console.log('originalTags is undefined');
@@ -209,7 +220,7 @@ for (let j = 0; j < sitemaps.length; j++) {
     // itearte over all array and display properties loc and topic as csv line
     for (let k = 0; k < all.length; k++) {
       const element = all[k];
-      console.log(`${element.locale},${element.loc},${element.topic},${element.category},${element.newTrend},${element.previousDate},${element.correctedDate},${element.wrongDate}`);
+      console.log(`${element.locale},${element.loc},${element.topic},${element.category},${element.newTrend},${element.previousDate},${element.correctedDate},${element.wrongDate},${element.canonicalUrl}`);
     }
   });
 }
