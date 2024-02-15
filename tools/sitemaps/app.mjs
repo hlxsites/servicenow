@@ -124,6 +124,8 @@ https://www.servicenow.com/de/blogs/category/home.html
 https://www.servicenow.com/fr/blogs/category/home.html
 https://www.servicenow.com/nl/blogs/category/home.html
 https://www.servicenow.com/uk/blogs/category/home.html
+https://www.servicenow.com/blogs/blogs/2024/governance-genai-low-code-development.html
+https://www.servicenow.com/fr/blogs/author/olivier_pichon.html
 `;
 
 const LANGUAGES = ['us', 'uk', 'fr', 'de', 'nl'];
@@ -135,7 +137,7 @@ function old2newLink(pathname) {
   if (!pathname.toLowerCase().endsWith(ext)) {
     throw new Error(`${pathname} does not contain .html`);
   }
-  return `${pathname.substring(0, pathname.lastIndexOf('.html')).toLowerCase()}`;
+  return `${pathname.substring(0, pathname.lastIndexOf('.html')).toLowerCase().replace('_', '-')}`;
 }
 
 async function downloadFile(url, fileName) {

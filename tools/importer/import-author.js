@@ -37,6 +37,12 @@ function getPageUrl(link) {
     return new URL(new URL(link).pathname.replace('.html', ''), pageUrl);
 }
 
+function removeComments(document) {
+    document.body.innerHTML = document.body.innerHTML
+      // remove html comments
+      .replace(/>\s*<!--(?!>)[\S\s]*?-->/gm, '>');
+}
+
 const createMetadataBlock = (main, document, url) => {
 
     const meta = {};
@@ -119,6 +125,7 @@ export default {
                        // eslint-disable-next-line no-unused-vars
                        document, url, html, params,
                    }) => {
+        removeComments(document);
         const main = document.querySelector('body');
 
         console.debug(url);

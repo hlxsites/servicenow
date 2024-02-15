@@ -82,6 +82,10 @@ function getPageUrl(link) {
     return new URL(new URL(link.href).pathname.replace('.html', ''), pageUrl);
 }
 
+function removeComments(document) {
+    document.body.innerHTML = document.body.innerHTML
+      .replace(/>\s*<!--(?!>)[\S\s]*?-->/gm, '>');
+}
 
 const timezoneMap = {
     '+0530': 'Asia/Calcutta',
@@ -98,7 +102,7 @@ function makeProxySrc(imgSrc) {
     return `http://localhost:3001${u.pathname}${u.search}`;
 }
 
-const createMetadataBlock = (main, document, url) => {
+const createMetadataBlock = (main, document, url, params) => {
     const jsonRendition = JSON.parse(fetchSync('GET', jsonRenditionURL(url)).body);
     const allTags = getAllTags();
     const originalTags = getOriginalTags(jsonRendition) || [];
@@ -162,7 +166,9 @@ const createMetadataBlock = (main, document, url) => {
       // tzMatch[0] has the folllowing format "GMT<offset>" e.g. GMT-0700 or GMT+0200. Extract the offset from it
       const offset = tzMatch[0].substring(3);
       // if the offset ends in 00 remove it from offset
-        if (offset.endsWith('00')) {
+        if (offset.endsWith('0000')) {
+          timeZone = `Etc/GMT+0`;
+        } else if (offset.endsWith('00')) {
           const o = offset.substring(1, offset.length - 2);
           const sign = offset.startsWith('-') ? '+' : '-';
           // remove any leading zeroes from o e.g. -0700 becomes -7
@@ -184,7 +190,7 @@ const createMetadataBlock = (main, document, url) => {
           'en-US',
           { day: '2-digit', month: '2-digit', year: 'numeric' , timeZone},
       );
-  }
+    }
 
     // Keywords
     const keywords = document.querySelector('meta[name="keywords"]');
@@ -218,6 +224,24 @@ const createMetadataBlock = (main, document, url) => {
             }
         }
 
+    }
+
+    if (document.querySelector('link[rel="canonical"]')) {
+        let canonical = new URL(document.querySelector('link[rel="canonical"]').href);
+        console.log('canonical: ', canonical);
+        if (canonical.hostname === 'localhost') {
+            canonical.hostname = 'www.servicenow.com';
+            canonical.port = '';
+            canonical.protocol = 'https';
+        }
+
+        if (canonical.toString() !== params.originalURL) {
+            if (canonical.hostname === 'www.servicenow.com') {
+                canonical = new URL(canonical.toString().replace('.html', ''));
+            }
+
+            meta['Canonical'] = canonical.toString();
+        }
     }
 
     const block = WebImporter.Blocks.getMetadataBlock(document, meta);
@@ -275,10 +299,11 @@ export default {
                        // eslint-disable-next-line no-unused-vars
                        document, url, html, params,
                    }) => {
+        removeComments(document);
 
         const main = document.querySelector('body');
 
-        createMetadataBlock(main, document, url);
+        createMetadataBlock(main, document, url, params);
 
         // CLEANUP
         main.querySelectorAll('.legacyHTML, .social-sharing, .servicenow-blog-header, .blog-author-info, .component-tag-path, .aem-GridColumn--default--4').forEach(el => el.remove());
