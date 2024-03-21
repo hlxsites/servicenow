@@ -218,7 +218,6 @@ export default async function decorate(block) {
     navSections.appendChild(searchLi);
     navSections.setAttribute('aria-expanded', 'false');
 
-
     const menuText = placeholders.mobileMenu || 'Menu';
     blogHeader.prepend(
       div({
