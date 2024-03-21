@@ -197,6 +197,8 @@ export default async function decorate(block) {
       }, 350);
     };
 
+    const placeholders = await placeholdersPromise;
+
     const searchLi = li({ class: 'blogsearch-menu-container' },
       div({ class: 'blogsearch' }, form({},
         div({ class: 'search-container' },
@@ -204,6 +206,7 @@ export default async function decorate(block) {
           span({ class: 'search-indicator' }),
           input({
             type: 'text',
+            'aria-label': placeholders.search || 'Search',
             oninput: () => { debouncedSearch(); },
             onkeyup: (e) => { if (e.code === 'Escape') { delayedBlur(); } },
             onblur: () => { delayedBlur(); },
@@ -214,8 +217,6 @@ export default async function decorate(block) {
     const navSections = blogHeader.querySelector('ul');
     navSections.appendChild(searchLi);
     navSections.setAttribute('aria-expanded', 'false');
-
-    const placeholders = await placeholdersPromise;
 
     const menuText = placeholders.mobileMenu || 'Menu';
     blogHeader.prepend(
