@@ -180,6 +180,7 @@ async function sidebarFeaturedRule(blogs, cardInfos, idx) {
   cardInfos[idx] = await blogs
     .filter(BLOG_FILTERS.locale)
     .filter((blog) => !BLOG_FILTERS.trend(TRENDS_AND_RESEARCH, blog))
+    .filter((blog) => blog.path !== window.location.pathname)
     .limit(3)
     .all();
 }
@@ -187,6 +188,7 @@ async function sidebarFeaturedRule(blogs, cardInfos, idx) {
 async function sidebarTrendsAndResearchRule(blogs, cardInfos, idx) {
   cardInfos[idx] = await blogs.filter(BLOG_FILTERS.locale)
     .filter((blog) => BLOG_FILTERS.trend(TRENDS_AND_RESEARCH, blog))
+    .filter((blog) => blog.path !== window.location.pathname)
     .limit(3)
     .all();
 }
