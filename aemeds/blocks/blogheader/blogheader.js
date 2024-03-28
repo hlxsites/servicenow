@@ -149,7 +149,7 @@ function addClickTracking(link, block) {
             destination: link.href,
             ctaText: link.textContent,
             pageArea: 'body',
-            section: 'heading',
+            section: 'headingTest',
           },
         },
       },
