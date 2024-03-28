@@ -137,6 +137,7 @@ async function handleSearch(block) {
 
 function addClickTracking(link, block) {
   link.addEventListener('click', (e) => {
+    e.preventDefault();
     analyticsGlobalClickTrack(
       {
         event: {
