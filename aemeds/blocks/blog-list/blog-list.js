@@ -22,6 +22,7 @@ const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 function clickTrack(card) {
   card.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', (e) => {
+      e.preventDefault();
       const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
       const cardTitle = analyticsCanonicStr(card.querySelector('h5')?.textContent);
       const ctaText = analyticsCanonicStr(card.querySelector('.cta-readmore')?.textContent);
