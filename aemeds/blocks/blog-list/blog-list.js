@@ -28,20 +28,20 @@ function clickTrack(card) {
       const ctaText = analyticsCanonicStr(card.querySelector('.cta-readmore')?.textContent);
       const eVar22 = `${h1}:${cardTitle}:${ctaText}`;
 
-      analyticsGlobalClickTrack({
-        event: {
-          pageArea: 'body',
-          eVar22,
-          eVar30: getAnalyticsSiteName(),
-          click: {
-            componentName: 'blog-list',
-            destination: link.href,
-            ctaText,
-            pageArea: 'body',
-            section: h1,
-          },
-        },
-      }, e);
+      // analyticsGlobalClickTrack({
+      //   event: {
+      //     pageArea: 'body',
+      //     eVar22,
+      //     eVar30: getAnalyticsSiteName(),
+      //     click: {
+      //       componentName: 'blog-list',
+      //       destination: link.href,
+      //       ctaText,
+      //       pageArea: 'body',
+      //       section: h1,
+      //     },
+      //   },
+      // }, e);
     });
   });
 
