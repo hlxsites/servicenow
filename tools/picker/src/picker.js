@@ -74,7 +74,9 @@ const Picker = props => {
     };
 
     const onDateChange = (date) => {
-        copyToClipboard(`${date.month}/${date.day}/${date.year}`)
+        const month = date.month < 10 ? `0${date.month}` : date.month;
+        const day = date.day < 10 ? `0${date.day}` : date.day;
+        copyToClipboard(`${month}/${day}/${date.year}`)
     }
 
     const getPath = () => {
