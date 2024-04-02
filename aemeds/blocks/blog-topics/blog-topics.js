@@ -42,6 +42,7 @@ export function clickTrack(block) {
             componentName: block.classList[0],
             destination: link.href,
             pageArea: 'body',
+            ctaText,
             section,
           },
         },
