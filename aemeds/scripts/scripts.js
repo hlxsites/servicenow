@@ -48,12 +48,12 @@ export function analyticsGlobalClickTrack(digitalData, event) {
     event,
   };
   window.appEventData.push(data);
-  // if (event.currentTarget.href) {
-  //   event.preventDefault();
-  //   const destination = event.currentTarget.href;
-  //   console.log('delaying navigation to', destination);
-  //   setTimeout(() =>  window.location.href = destination, 1000);
-  // }
+  if (event.currentTarget.href) {
+    event.preventDefault();
+    const destination = event.currentTarget.href;
+    console.log('delaying navigation to', destination);
+    setTimeout(() =>  window.location.href = destination, 1000);
+  }
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(data, undefined, 4));
 }
