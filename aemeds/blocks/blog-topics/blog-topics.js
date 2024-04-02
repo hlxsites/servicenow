@@ -43,7 +43,6 @@ export function clickTrack(block) {
             destination: link.href,
             ctaText,
             pageArea: 'body',
-            ctaText,
             section,
           },
         },
