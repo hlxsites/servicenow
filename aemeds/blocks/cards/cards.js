@@ -85,13 +85,13 @@ function clickTrack(card) {
           pageArea: 'body',
           eVar22,
           eVar30: getAnalyticsSiteName(),
-          click: {
-            componentName: 'cards',
-            destination: link.href,
-            pageArea: 'body',
-            ctaText: cardTitle,
-            section,
-          },
+          // click: {
+          //   componentName: 'cards',
+          //   destination: link.href,
+          //   pageArea: 'body',
+          //   ctaText: cardTitle,
+          //   section,
+          // },
         },
       }, e);
     });
