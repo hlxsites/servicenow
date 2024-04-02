@@ -50,9 +50,9 @@ export function analyticsGlobalClickTrack(digitalData, event) {
   window.appEventData.push(data);
   if (event.currentTarget.href) {
     event.preventDefault();
-    const href = event.currentTarget.href;
-    console.log('delaying navigation to', event.currentTarget.href);
-    setTimeout(() =>  window.location.href = event.currentTarget.href, 2000);
+    const destination = event.currentTarget.href;
+    console.log('delaying navigation to', destination);
+    setTimeout(() =>  window.location.href = destination, 2000);
   }
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(data, undefined, 4));
