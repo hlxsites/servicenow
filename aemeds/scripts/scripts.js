@@ -52,7 +52,7 @@ export function analyticsGlobalClickTrack(digitalData, event) {
     event.preventDefault();
     const destination = event.currentTarget.href;
     console.log('delaying navigation to', destination);
-    setTimeout(() =>  window.location.href = destination, 1500);
+    setTimeout(() =>  window.location.href = destination, 2000);
   }
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(data, undefined, 4));
