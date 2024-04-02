@@ -89,7 +89,6 @@ function clickTrack(card) {
             componentName: 'cards',
             destination: link.href,
             pageArea: 'body',
-            ctaText: cardTitle,
             section,
           },
         },
