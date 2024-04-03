@@ -163,7 +163,7 @@ const getVideoElement = (source, autoplay) => {
   video.append(sourceEl);
 
   return video;
-}
+};
 
 const loadEmbed = (block, link, blockConfig, autoplay) => {
   if (block.classList.contains('embed-is-loaded')) {
