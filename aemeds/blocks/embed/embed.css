@@ -66,3 +66,7 @@ main .embed .embed-placeholder-play button::before {
   width: 100%;
   padding-bottom: 56.25%;
 }
+
+main .embed.embed-mp4 video {
+  width: 100%;
+}

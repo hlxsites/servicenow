@@ -146,6 +146,25 @@ const embedBrightcove = (videoid, account, player) => {
   return embedHTML;
 };
 
+const getVideoElement = (source, autoplay) => {
+  const video = document.createElement('video');
+  video.setAttribute('controls', '');
+  video.dataset.loading = 'true';
+  video.addEventListener('loadedmetadata', () => delete video.dataset.loading);
+  if (autoplay) {
+    video.muted = true;
+    video.setAttribute('loop', '');
+    video.setAttribute('autoplay', '');
+  }
+
+  const sourceEl = document.createElement('source');
+  sourceEl.setAttribute('src', source);
+  sourceEl.setAttribute('type', `video/${source.split('.').pop()}`);
+  video.append(sourceEl);
+
+  return video;
+}
+
 const loadEmbed = (block, link, blockConfig, autoplay) => {
   if (block.classList.contains('embed-is-loaded')) {
     return;
@@ -172,8 +191,12 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
 
   const config = EMBEDS_CONFIG.find((e) => e.match.some((match) => link.includes(match)));
   const url = link ? new URL(link) : '';
+  const isMp4 = url && url.pathname.endsWith('.mp4');
 
-  if (config) {
+  if (isMp4) {
+    block.append(getVideoElement(link, autoplay || block.classList.contains('autoplay')));
+    block.classList = 'block embed embed-mp4';
+  } else if (config) {
     block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (block.classList.contains('brightcove')) {
