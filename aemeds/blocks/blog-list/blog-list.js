@@ -12,7 +12,7 @@ import {
   analyticsCanonicStr,
 } from '../../scripts/scripts.js';
 import {
-  a, div, li, span, ul,
+  a, button, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
 import ffetch from '../../scripts/ffetch.js';
@@ -77,6 +77,8 @@ export async function renderFilterCard(post, showDescription) {
 }
 
 async function renderChunk(cardList, blogs, showDescription) {
+  cardList.parentElement.querySelector('button.load-more')?.remove();
+
   let done = false;
   const chunk = [];
   for (let i = 0; i < 20; i += 1) {
@@ -94,16 +96,17 @@ async function renderChunk(cardList, blogs, showDescription) {
   );
 
   cardList.append(...cards.map(clickTrack));
-
   if (done) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    if (entries.some((e) => e.isIntersecting)) {
-      observer.disconnect();
-      renderChunk(cardList, blogs, showDescription);
-    }
-  });
-  observer.observe(cardList.children[cardList.children.length - 1]);
+  cardList.parentElement.append(
+    button(
+      { 
+        class: 'button secondary load-more',
+        'aria-label': 'Load more',
+        onclick: () => renderChunk(cardList, blogs, showDescription),
+      }, 
+      'Load more'
+    ),
+  )
 }
 
 export default async function decorate(block) {
