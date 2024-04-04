@@ -104,10 +104,10 @@ async function renderChunk(cardList, blogs, showDescription) {
     button(
       {
         class: 'button secondary load-more',
-        'aria-label': 'Load more',
+        'aria-label': 'Load More',
         onclick: () => renderChunk(cardList, blogs, showDescription),
       },
-      'Load more',
+      'Load More',
     ),
   );
 }
