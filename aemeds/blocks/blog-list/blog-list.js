@@ -77,7 +77,10 @@ export async function renderFilterCard(post, showDescription) {
 }
 
 async function renderChunk(cardList, blogs, showDescription) {
-  cardList.parentElement.querySelector('button.load-more')?.remove();
+  const loadMoreButton = cardList.parentElement.querySelector('button.load-more');
+  if (loadMoreButton) {
+    loadMoreButton.remove();
+  }
 
   let done = false;
   const chunk = [];
@@ -99,14 +102,14 @@ async function renderChunk(cardList, blogs, showDescription) {
   if (done) return;
   cardList.parentElement.append(
     button(
-      { 
+      {
         class: 'button secondary load-more',
         'aria-label': 'Load more',
         onclick: () => renderChunk(cardList, blogs, showDescription),
-      }, 
-      'Load more'
+      },
+      'Load more',
     ),
-  )
+  );
 }
 
 export default async function decorate(block) {
