@@ -115,7 +115,7 @@
   transform: translate(-0.5rem,0);
 }
 
-.blog-list .load-more {
+.blog-list .cta-loadmore {
   display: block;
   margin: 0 auto;
 }
@@ -143,7 +143,7 @@
     font-size: 1.4rem;
   }
 
-  .blog-list .load-more {
+  .blog-list .cta-loadmore {
     margin-bottom: 2rem;
   }
 }

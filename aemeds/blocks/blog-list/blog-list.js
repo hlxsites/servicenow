@@ -47,8 +47,30 @@ function clickTrack(card) {
   return card;
 }
 
+function loadMoreClickTrack(e, loadMoreText) {
+  const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+  const ctaText = analyticsCanonicStr(loadMoreText);
+  const eVar22 = `${h1}:${ctaText}`;
+
+  analyticsGlobalClickTrack({
+    event: {
+      pageArea: 'body',
+      eVar22,
+      eVar30: getAnalyticsSiteName(),
+      click: {
+        componentName: 'blog-list',
+        ctaText,
+        pageArea: 'body',
+        section: h1,
+      },
+    },
+  }, e);
+}
+
 export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
+  const readMoreText = placeholders.readMore || 'Read More';
+
   let publicationDate = '';
   if (post.publicationDate) {
     const date = new Date(0);
@@ -66,8 +88,8 @@ export async function renderFilterCard(post, showDescription) {
     showDescription
       ? span({ class: 'card-description' }, post.description)
       : div({ class: 'card-cta' },
-        a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
-          placeholders.readMore,
+        a({ class: 'cta-readmore', href: post.path, 'aria-label': readMoreText },
+          readMoreText,
           cardArrow,
         ),
       ),
@@ -77,7 +99,7 @@ export async function renderFilterCard(post, showDescription) {
 }
 
 async function renderChunk(cardList, blogs, showDescription) {
-  const loadMoreButton = cardList.parentElement.querySelector('button.load-more');
+  const loadMoreButton = cardList.parentElement.querySelector('button.cta-loadmore');
   if (loadMoreButton) {
     loadMoreButton.remove();
   }
@@ -99,15 +121,25 @@ async function renderChunk(cardList, blogs, showDescription) {
   );
 
   cardList.append(...cards.map(clickTrack));
+
   if (done) return;
+
+  const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
+  const loadMoreText = placeholders.loadMore || 'Load More';
+
   cardList.parentElement.append(
     button(
       {
-        class: 'button secondary load-more',
-        'aria-label': 'Load More',
-        onclick: () => renderChunk(cardList, blogs, showDescription),
+        class: 'button secondary cta-loadmore',
+        'aria-label': loadMoreText,
+        onclick: (e) => {
+          try {
+            loadMoreClickTrack(e, loadMoreText);
+          } catch (err) {}
+          renderChunk(cardList, blogs, showDescription);
+        }
       },
-      'Load More',
+      loadMoreText,
     ),
   );
 }
