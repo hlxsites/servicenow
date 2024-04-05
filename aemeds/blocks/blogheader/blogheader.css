@@ -186,6 +186,10 @@ nav#blogheader li.blogsearch-menu-container {
     width: 0;
   }
 
+  nav#blogheader ul {
+    margin-top: 0;
+  }
+
   nav#blogheader li.blogsearch-menu-container {
     flex-flow: row wrap;
     justify-content: flex-end;
@@ -232,6 +236,7 @@ nav#blogheader li.blogsearch-menu-container {
 @media (max-width: 767px) {
   div.blogheader-wrapper div.blogheader {
     position: relative;
+    padding-bottom: 6.5rem;
   }
 
   nav#blogheader {
