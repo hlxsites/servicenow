@@ -59,6 +59,7 @@ function loadMoreClickTrack(e, loadMoreText) {
       eVar30: getAnalyticsSiteName(),
       click: {
         componentName: 'blog-list',
+        destination: window.location.href,
         ctaText,
         pageArea: 'body',
         section: h1,
