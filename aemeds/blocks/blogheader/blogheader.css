@@ -106,7 +106,7 @@ nav#blogheader li.blogsearch-menu-container {
 }
 
 .blogsearch form.searching div span.search-indicator {
-     display: block;
+  display: block;
 }
 
 /* stylelint-disable */
@@ -179,11 +179,61 @@ nav#blogheader li.blogsearch-menu-container {
   font-family: var(--ff-gilroy-semibold);
 }
 
+.blogheader-hamburger {
+  display: block;
+  width: 7rem;
+  height: 2.5rem;
+  float: right;
+  border-radius: 0.5rem;
+  background: var(--text-color);
+  position: relative;
+  right: 2.4rem;
+  color: white;
+  margin-bottom: 0.8rem;
+  padding-left: 0.6rem;
+}
+
+.blogheader-hamburger button,
+.blogheader-hamburger button:hover,
+.blogheader-hamburger button:focus,
+.blogheader-hamburger button:active {
+  margin: 0;
+  text-align: left;
+  padding: 0;
+  background: none;
+  color: var(--background-color);
+  border: none;
+  height: unset;
+  font-size: 1.4rem;
+}
+
+.blogheader-hamburger button::after {
+  right: 10px;
+  margin: auto;
+  position: absolute;
+  top: 0.6rem;
+  opacity: 1;
+  cursor: pointer;
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(45deg);
+  transition: all 500ms;
+  transform-origin: center center;
+}
+
 @media (min-width: 768px) {
-  div.blogheader-hamburger {
+  nav#blogheader .blogheader-hamburger {
     display: none;
     visibility: hidden;
     width: 0;
+  }
+
+  nav#blogheader .blogheader-sections {
+    width: 100%;
   }
 
   nav#blogheader ul {
@@ -202,12 +252,12 @@ nav#blogheader li.blogsearch-menu-container {
     left: unset;
     top: 5.3rem;
     min-width: unset;
-    width: 18rem;
+    width: 24rem;
     overflow: scroll;
   }
 
   nav#blogheader .blogsearch {
-    width: 18rem;
+    width: 24rem;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -234,6 +284,10 @@ nav#blogheader li.blogsearch-menu-container {
 }
 
 @media (max-width: 767px) {
+  div.blogheader-wrapper {
+    padding: 0;
+  }
+
   div.blogheader-wrapper div.blogheader {
     position: relative;
     padding-bottom: 6.5rem;
@@ -272,51 +326,14 @@ nav#blogheader li.blogsearch-menu-container {
     font-size: 1.6rem;
     border-bottom: 0.1rem solid #f7f7f7;
   }
-}
 
-.blogheader-hamburger {
-  display: block;
-  width: 7rem;
-  height: 2.5rem;
-  float: right;
-  border-radius: 0.5rem;
-  background: var(--text-color);
-  position: relative;
-  right: 0;
-  color: white;
-  margin-bottom: 0.8rem;
-  padding-left: 0.6rem;
-}
+  nav#blogheader .blogsearch {
+    padding: 0.8rem;
+  }
 
-.blogheader-hamburger button,
-.blogheader-hamburger button:hover,
-.blogheader-hamburger button:focus,
-.blogheader-hamburger button:active {
-  margin: 0;
-  text-align: left;
-  padding: 0;
-  background: none;
-  color: var(--background-color);
-  border: none;
-  height: unset;
-}
-
-.blogheader-hamburger button::after {
-  right: 10px;
-  margin: auto;
-  position: absolute;
-  top: 0.6rem;
-  opacity: 1;
-  cursor: pointer;
-  content: "";
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-bottom: 2px solid #fff;
-  border-right: 2px solid #fff;
-  transform: rotate(45deg);
-  transition: all 500ms;
-  transform-origin: center center;
+  nav#blogheader .blogsearch form {
+    padding-right: 0;
+  }
 }
 
 main.has-sidebar > div.blogheader-container {
