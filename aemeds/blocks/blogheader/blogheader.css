@@ -253,12 +253,12 @@ nav#blogheader li.blogsearch-menu-container {
     left: unset;
     top: 5.3rem;
     min-width: unset;
-    width: 24rem;
+    width: 14rem;
     overflow: scroll;
   }
 
   nav#blogheader .blogsearch {
-    width: 24rem;
+    width: 14rem;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -281,6 +281,16 @@ nav#blogheader li.blogsearch-menu-container {
   nav .blogsearch form div.search-active i.search-icon {
     left: 1.3rem;
     right: unset;
+  }
+}
+
+@media (min-width: 992px) {
+  nav#blogheader div.search-results {
+    width: 24rem;
+  }
+
+  nav#blogheader .blogsearch {
+    width: 24rem;
   }
 }
 
