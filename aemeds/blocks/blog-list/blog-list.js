@@ -135,9 +135,11 @@ async function renderChunk(cardList, blogs, showDescription) {
         onclick: (e) => {
           try {
             loadMoreClickTrack(e, loadMoreText);
-          } catch (err) {}
+          } catch (err) {
+            // no-op
+          }
           renderChunk(cardList, blogs, showDescription);
-        }
+        },
       },
       loadMoreText,
     ),
