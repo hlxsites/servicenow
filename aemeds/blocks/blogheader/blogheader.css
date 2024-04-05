@@ -181,8 +181,8 @@ nav#blogheader li.blogsearch-menu-container {
 
 .blogheader-hamburger {
   display: block;
-  width: 7rem;
-  height: 2.5rem;
+  width: 8rem;
+  height: 3rem;
   float: right;
   border-radius: 0.5rem;
   background: var(--text-color);
@@ -205,14 +205,14 @@ nav#blogheader li.blogsearch-menu-container {
   color: var(--background-color);
   border: none;
   height: unset;
-  font-size: 1.4rem;
+  font-size: 1.8rem;
 }
 
 .blogheader-hamburger button::after {
   right: 10px;
   margin: auto;
   position: absolute;
-  top: 0.3rem;
+  top: 0.6rem;
   opacity: 1;
   cursor: pointer;
   content: "";
