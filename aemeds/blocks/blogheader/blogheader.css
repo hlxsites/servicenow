@@ -286,6 +286,7 @@ nav#blogheader li.blogsearch-menu-container {
 @media (max-width: 767px) {
   div.blogheader-wrapper {
     padding: 0;
+    margin-top: 2.4rem;
   }
 
   div.blogheader-wrapper div.blogheader {
