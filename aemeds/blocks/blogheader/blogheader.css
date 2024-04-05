@@ -191,6 +191,7 @@ nav#blogheader li.blogsearch-menu-container {
   color: white;
   margin-bottom: 0.8rem;
   padding-left: 0.6rem;
+  cursor: pointer;
 }
 
 .blogheader-hamburger button,
