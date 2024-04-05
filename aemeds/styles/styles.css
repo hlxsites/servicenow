@@ -50,6 +50,12 @@
   --nav-height: 80px;
 }
 
+@media (max-width: 1023px) {
+  :root {
+    --nav-height: 56px;
+  }
+}
+
 @font-face {
   font-family: GilroyRegularFallback;
   size-adjust: 100.06%; /* TODO finetune */

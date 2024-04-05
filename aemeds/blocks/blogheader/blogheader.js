@@ -220,15 +220,16 @@ export default async function decorate(block) {
 
     const menuText = placeholders.mobileMenu || 'Menu';
     blogHeader.prepend(
-      div({
-        class: 'blogheader-hamburger',
-      },
-      button({
-        type: 'button',
-        'aria-controls': 'blogheader',
-        'aria-label': menuText,
-        onclick: () => toggleMenu(navSections, isDesktop),
-      }, menuText),
+      div(
+        {
+          class: 'blogheader-hamburger',
+          onclick: () => toggleMenu(navSections, isDesktop),
+        },
+        button({
+          type: 'button',
+          'aria-controls': 'blogheader',
+          'aria-label': menuText,
+        }, menuText),
       ),
     );
 
