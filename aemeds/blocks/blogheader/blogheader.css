@@ -211,13 +211,13 @@ nav#blogheader li.blogsearch-menu-container {
   right: 10px;
   margin: auto;
   position: absolute;
-  top: 0.6rem;
+  top: 0.3rem;
   opacity: 1;
   cursor: pointer;
   content: "";
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-bottom: 2px solid #fff;
   border-right: 2px solid #fff;
   transform: rotate(45deg);
