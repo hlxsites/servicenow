@@ -115,6 +115,11 @@
   transform: translate(-0.5rem,0);
 }
 
+.blog-list .cta-loadmore {
+  display: block;
+  margin: 0 auto;
+}
+
 @media (max-width: 1024px) {
   .blog-list .card .card-text .card-cta a {
     font-size: 1.6rem;
@@ -136,6 +141,10 @@
 @media (max-width: 768px) {
   .blog-list .card .card-text .card-cta a {
     font-size: 1.4rem;
+  }
+
+  .blog-list .cta-loadmore {
+    margin-bottom: 2rem;
   }
 }
 

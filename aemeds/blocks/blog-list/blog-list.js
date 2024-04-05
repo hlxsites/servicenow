@@ -12,7 +12,7 @@ import {
   analyticsCanonicStr,
 } from '../../scripts/scripts.js';
 import {
-  a, div, li, span, ul,
+  a, button, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
 import ffetch from '../../scripts/ffetch.js';
@@ -47,8 +47,31 @@ function clickTrack(card) {
   return card;
 }
 
+function loadMoreClickTrack(e, loadMoreText) {
+  const h1 = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+  const ctaText = analyticsCanonicStr(loadMoreText);
+  const eVar22 = `${h1}:${ctaText}`;
+
+  analyticsGlobalClickTrack({
+    event: {
+      pageArea: 'body',
+      eVar22,
+      eVar30: getAnalyticsSiteName(),
+      click: {
+        componentName: 'blog-list',
+        destination: window.location.href,
+        ctaText,
+        pageArea: 'body',
+        section: h1,
+      },
+    },
+  }, e);
+}
+
 export async function renderFilterCard(post, showDescription) {
   const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
+  const readMoreText = placeholders.readMore || 'Read More';
+
   let publicationDate = '';
   if (post.publicationDate) {
     const date = new Date(0);
@@ -66,8 +89,8 @@ export async function renderFilterCard(post, showDescription) {
     showDescription
       ? span({ class: 'card-description' }, post.description)
       : div({ class: 'card-cta' },
-        a({ class: 'cta-readmore', href: post.path, 'aria-label': placeholders.readMore },
-          placeholders.readMore,
+        a({ class: 'cta-readmore', href: post.path, 'aria-label': readMoreText },
+          readMoreText,
           cardArrow,
         ),
       ),
@@ -77,6 +100,11 @@ export async function renderFilterCard(post, showDescription) {
 }
 
 async function renderChunk(cardList, blogs, showDescription) {
+  const loadMoreButton = cardList.parentElement.querySelector('button.cta-loadmore');
+  if (loadMoreButton) {
+    loadMoreButton.remove();
+  }
+
   let done = false;
   const chunk = [];
   for (let i = 0; i < 20; i += 1) {
@@ -97,13 +125,26 @@ async function renderChunk(cardList, blogs, showDescription) {
 
   if (done) return;
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries.some((e) => e.isIntersecting)) {
-      observer.disconnect();
-      renderChunk(cardList, blogs, showDescription);
-    }
-  });
-  observer.observe(cardList.children[cardList.children.length - 1]);
+  const placeholders = await fetchPlaceholders(getLocaleInfo().placeholdersPrefix);
+  const loadMoreText = placeholders.loadMore || 'Load More';
+
+  cardList.parentElement.append(
+    button(
+      {
+        class: 'button secondary cta-loadmore',
+        'aria-label': loadMoreText,
+        onclick: (e) => {
+          try {
+            loadMoreClickTrack(e, loadMoreText);
+          } catch (err) {
+            // no-op
+          }
+          renderChunk(cardList, blogs, showDescription);
+        },
+      },
+      loadMoreText,
+    ),
+  );
 }
 
 export default async function decorate(block) {
