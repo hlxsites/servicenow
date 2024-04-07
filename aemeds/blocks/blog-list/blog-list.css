@@ -85,7 +85,6 @@
 
 .blog-list .card .card-text .card-cta a .card-arrow {
   display: inline-block;
-  margin-left: -0.2rem;
   vertical-align: bottom;
   line-height: 0;
   position: relative;
@@ -164,16 +163,12 @@
 
 @media only screen and (min-width: 1024px) {
   .blog-list .card .card-text .card-cta a .card-arrow {
-    margin-left: .5rem;
+    margin-left: .8rem;
     transform: scale(1);
   }
 }
 
 @media only screen and (min-width: 1700px) {
-  .blog-list .card .card-text .card-cta a {
-      padding: 1.5rem 4rem;
-  }
-
   .blog-list .card .card-text .card-cta a .card-arrow {
       margin-left: .8rem;
   }
