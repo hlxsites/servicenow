@@ -169,10 +169,6 @@
 }
 
 @media only screen and (min-width: 1700px) {
-  .blog-list .card .card-text .card-cta a {
-      padding: 1.5rem 4rem;
-  }
-
   .blog-list .card .card-text .card-cta a .card-arrow {
       margin-left: .8rem;
   }
