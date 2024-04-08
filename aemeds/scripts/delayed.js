@@ -32,4 +32,4 @@ async function loadAdobeDTM() {
   }
 }
 
-loadAdobeDTM();
+// loadAdobeDTM();
