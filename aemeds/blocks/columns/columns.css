@@ -1,7 +1,6 @@
 .columns > div {
   display: flex;
-  flex-direction: row;
-  gap: 24px;
+  flex-direction: column;
 }
 
 .columns img {
@@ -14,7 +13,6 @@
 
 .columns > div > .columns-img-col {
   order: 0;
-  flex: 0 0 25%;
 }
 
 .columns > div > .columns-img-col img {
