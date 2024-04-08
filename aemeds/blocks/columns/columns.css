@@ -20,11 +20,14 @@
 }
 
 .columns.blog-authors > div > div.columns-img-col {
+  flex: 0 0 25%;
   padding-bottom: 20px;
 }
 
 .columns.blog-authors > div {
   font-size: 1.4rem;
+  flex-direction: row;
+  gap: 24px;
 }
 
 @media (min-width: 900px) {
