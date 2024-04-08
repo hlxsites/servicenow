@@ -2,12 +2,30 @@
 <script src="/aemeds/scripts/aem.js" type="module"></script>
 <script src="/aemeds/scripts/scripts.js" type="module"></script>
 <link rel="stylesheet" href="/aemeds/styles/styles.css" />
+<script src="/scripts/jquery-3.7.1.min.js"></script>
 <link rel="dns-prefetch" href="https://www.servicenow.com/" />
 <script>
-  import { loadScript } from "./aem.js";
+  async function loadScript(src, attrs) {
+    return new Promise((resolve, reject) => {
+      if (!document.querySelector(`head > script[src="${src}"]`)) {
+        const script = document.createElement("script");
+        script.src = src;
+        if (attrs) {
+          // eslint-disable-next-line no-restricted-syntax, guard-for-in
+          for (const attr in attrs) {
+            script.setAttribute(attr, attrs[attr]);
+          }
+        }
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.append(script);
+      } else {
+        resolve();
+      }
+    });
+  }
 
   async function loadAdobeDTM() {
-    await loadScript(`${window.hlx.codeBasePath}/scripts/jquery-3.7.1.min.js`);
     const prod =
       "https://assets.adobedtm.com/a441b904b50e/7a4facbbcffb/launch-039be8795dc8.min.js";
     const stage =
