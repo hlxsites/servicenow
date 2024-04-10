@@ -17,7 +17,7 @@ nav#blogheader ul {
   table-layout: fixed;
   list-style-type: none;
   padding: 0;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
   width: 100%;
   background-color: var(--arc-color-brandblue-900);
 }
