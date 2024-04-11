@@ -21,6 +21,14 @@ import {
 } from './dom-helpers.js';
 import ffetch from './ffetch.js';
 
+let phase = 'init';
+window.addEventListener('DOMContentLoaded', () => {
+  console.log('DOMContentLoaded Event', phase);
+});
+window.addEventListener('load', () => {
+  console.log('load Event', phase);
+});
+
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 const LCP_WAIT_SKIP_TEMPLATE = [
   'blog-home-page',
@@ -500,10 +508,12 @@ async function loadEager(doc) {
     decorateMain(main);
     await loadEagerBlocks(main);
     await detectSidebar(main);
+    phase = 'eager:appear';
     document.body.classList.add('appear');
     if (!LCP_WAIT_SKIP_TEMPLATE.includes(getTemplate())) {
       await waitForLCP(LCP_BLOCKS);
     }
+    phase = 'eager:lcp';
   }
 
   try {
@@ -553,8 +563,11 @@ function loadDelayed() {
 }
 
 export async function loadPage() {
+  phase = 'eager';
   await loadEager(document);
+  phase = 'lazy';
   await loadLazy(document);
+  phase = 'delayed';
   loadDelayed();
 }
 
