@@ -564,10 +564,13 @@ function loadDelayed() {
 
 export async function loadPage() {
   phase = 'eager';
+  console.log(phase);
   await loadEager(document);
   phase = 'lazy';
+  console.log(phase);
   await loadLazy(document);
   phase = 'delayed';
+  console.log(phase);
   loadDelayed();
 }
 
