@@ -537,19 +537,26 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
+  phase = 'lazy:loadblocks:init';
   await loadBlocks(main);
+  phase = 'lazy:loadblocks:blocks';
 
   if (new URLSearchParams(window.location.search).get('naas') !== 'disabled') {
     await loadHeader(doc.querySelector('header'));
+    phase = 'lazy:loadblocks:header';
     await loadFooter(doc.querySelector('footer'));
+    phase = 'lazy:loadblocks:footer';
   }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
+  phase = 'lazy:lazy-styles';
   loadFonts();
+  phase = 'lazy:load-fonts';
 
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
+  phase = 'lazy:end';
 }
 
 /**
