@@ -22,10 +22,12 @@ import {
 import ffetch from './ffetch.js';
 
 let phase = 'init';
+let exit = false;
 window.addEventListener('DOMContentLoaded', () => {
   console.log('DOMContentLoaded Event', phase);
 });
 window.addEventListener('load', () => {
+  exit = true;
   console.log('load Event', phase);
 });
 
@@ -500,20 +502,26 @@ export function decorateMain(main) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
+  phase = 'eager:locale'; if (exit) return;
   getLocale(); // set document.documentElement.lang for SEO
+  phase = 'eager:title'; if (exit) return;
   document.title += ' - ServiceNow Blog';
+  phase = 'eager:template'; if (exit) return;
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
+    phase = 'eager:decorateMain'; if (exit) return;
     decorateMain(main);
+    phase = 'eager:eagerblocks'; if (exit) return;
     await loadEagerBlocks(main);
+    phase = 'eager:sidebar'; if (exit) return;
     await detectSidebar(main);
-    phase = 'eager:appear';
+    phase = 'eager:appear'; if (exit) return;
     document.body.classList.add('appear');
     if (!LCP_WAIT_SKIP_TEMPLATE.includes(getTemplate())) {
       await waitForLCP(LCP_BLOCKS);
     }
-    phase = 'eager:lcp';
+    phase = 'eager:lcp'; if (exit) return;
   }
 
   try {
@@ -537,26 +545,26 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  phase = 'lazy:loadblocks:init';
+  phase = 'lazy:loadblocks:init'; if (exit) return;
   await loadBlocks(main);
-  phase = 'lazy:loadblocks:blocks';
+  phase = 'lazy:loadblocks:blocks'; if (exit) return;
 
   if (new URLSearchParams(window.location.search).get('naas') !== 'disabled') {
     await loadHeader(doc.querySelector('header'));
-    phase = 'lazy:loadblocks:header';
+    phase = 'lazy:loadblocks:header'; if (exit) return;
     await loadFooter(doc.querySelector('footer'));
-    phase = 'lazy:loadblocks:footer';
+    phase = 'lazy:loadblocks:footer'; if (exit) return;
   }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  phase = 'lazy:lazy-styles';
+  phase = 'lazy:lazy-styles'; if (exit) return;
   loadFonts();
-  phase = 'lazy:load-fonts';
+  phase = 'lazy:load-fonts'; if (exit) return;
 
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
-  phase = 'lazy:end';
+  phase = 'lazy:end'; if (exit) return;
 }
 
 /**
@@ -570,13 +578,13 @@ function loadDelayed() {
 }
 
 export async function loadPage() {
-  phase = 'eager';
+  phase = 'eager'; if (exit) return;
   console.log(phase);
   await loadEager(document);
-  phase = 'lazy';
+  phase = 'lazy'; if (exit) return;
   console.log(phase);
   await loadLazy(document);
-  phase = 'delayed';
+  phase = 'delayed'; if (exit) return;
   console.log(phase);
   loadDelayed();
 }
