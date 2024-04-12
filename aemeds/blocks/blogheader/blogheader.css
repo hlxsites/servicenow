@@ -264,11 +264,11 @@ nav#blogheader li.blogsearch-menu-container {
     transform: translateY(-50%);
   }
 
-  .blogsearch form div.search-container input {
+  nav .blogsearch form div.search-container input {
     width: 4rem;
   }
 
-  nav .blogsearch form div.search-active input:focus {
+  nav .blogsearch form div.search-container.search-active input {
     width: 100%;
   }
 

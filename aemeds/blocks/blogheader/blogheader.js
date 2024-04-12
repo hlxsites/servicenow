@@ -194,7 +194,7 @@ export default async function decorate(block) {
     const delayedBlur = () => {
       setTimeout(() => {
         blurSearch(block);
-      }, 350);
+      }, 200);
     };
 
     const placeholders = await placeholdersPromise;
