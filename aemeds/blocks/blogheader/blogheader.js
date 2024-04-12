@@ -127,7 +127,7 @@ async function handleSearch(block) {
   searchResults.style.display = 'block';
   searchResults.innerHTML = '';
 
-  const searchTerms = searchValue.toLowerCase().split(/\s+/).filter((term) => term.length === 0);
+  const searchTerms = searchValue.toLowerCase().split(/\s+/).filter(item => item !== "");
   const blogs = ffetch(BLOG_QUERY_INDEX)
     .chunks(CHUNK_SIZE)
     .sheet('blogs-content');
