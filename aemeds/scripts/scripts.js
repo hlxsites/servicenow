@@ -448,7 +448,7 @@ function isSameDomainOrPdf(url) {
   return (
     !isPdf
     && (window.location.hostname === ancUrl.hostname
-      || ancUrl.hostname.toLowerCase().endsWith('servicenow.com')
+      || ancUrl.hostname.toLowerCase() === 'www.servicenow.com'
       || ancUrl.hostname.toLowerCase().endsWith('.hlx.live')
       || ancUrl.hostname.toLowerCase().endsWith('.hlx.page'))
   );
