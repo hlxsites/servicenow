@@ -78,10 +78,13 @@ main .embed.embed-brightcove .video-js .vjs-big-play-button:active,
 main .embed.embed-brightcove .video-js .vjs-big-play-button:focus,
 main .embed.embed-brightcove .video-js .vjs-menu-button-popup .vjs-menu .vjs-menu-item.vjs-selected,
 main .embed.embed-brightcove .video-js .vjs-play-progress,
-main .embed.embed-brightcove .video-js .vjs-volume-level,
+main .embed.embed-brightcove .video-js .vjs-volume-level {
+  background-color: var(--arc-color-brandgreen-300);
+}
+
 main .embed.embed-brightcove .video-js:active .vjs-big-play-button,
 main .embed.embed-brightcove .video-js:hover .vjs-big-play-button {
-  background-color: var(--arc-color-brandgreen-300);
+  background-color: var(--arc-color-brandgreen-500);
 }
 
 main .embed.embed-mp4 video {
