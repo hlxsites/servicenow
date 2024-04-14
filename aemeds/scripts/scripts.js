@@ -15,6 +15,7 @@ import {
   waitForLCP,
   loadBlock,
   readBlockConfig,
+  loadScript,
 } from './aem.js';
 import {
   a, div, p, span,
