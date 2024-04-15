@@ -329,7 +329,6 @@ function articleLinksClickTrack(main) {
         event: {
           pageArea: 'body',
           eVar22,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: link.closest('.block')?.classList[0] || 'default-content-wrapper',
             destination: link.href,

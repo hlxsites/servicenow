@@ -37,7 +37,6 @@ export function clickTrack(block) {
         event: {
           pageArea: 'body',
           eVar22,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: block.classList[0],
             destination: link.href,

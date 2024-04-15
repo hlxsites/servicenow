@@ -142,7 +142,6 @@ function addClickTracking(link, block) {
         event: {
           pageArea: 'body',
           eVar22: `blogs:heading:${analyticsCanonicStr(link.textContent)}`,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: block.classList[0],
             destination: link.href,
