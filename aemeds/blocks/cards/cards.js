@@ -9,7 +9,6 @@ import {
   getTopicTags,
   getTemplate,
   BLOG_QUERY_INDEX,
-  getAnalyticsSiteName,
   analyticsGlobalClickTrack,
   analyticsCanonicStr,
 } from '../../scripts/scripts.js';

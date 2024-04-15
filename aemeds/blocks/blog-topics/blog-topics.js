@@ -4,7 +4,6 @@ import {
   BLOG_FILTERS,
   analyticsCanonicStr,
   analyticsGlobalClickTrack,
-  getAnalyticsSiteName,
 } from '../../scripts/scripts.js';
 import { p, a } from '../../scripts/dom-helpers.js';
 

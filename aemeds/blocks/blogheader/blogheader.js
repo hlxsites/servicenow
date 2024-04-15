@@ -7,7 +7,6 @@ import {
   BLOG_QUERY_INDEX,
   analyticsCanonicStr,
   analyticsGlobalClickTrack,
-  getAnalyticsSiteName,
   getLocale,
   getLocaleInfo,
 } from '../../scripts/scripts.js';

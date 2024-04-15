@@ -55,7 +55,6 @@ export function analyticsGlobalClickTrack(digitalData, event) {
     event,
   };
 
-
   window.appEventData.push(data);
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(data, undefined, 4));

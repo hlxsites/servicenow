@@ -7,7 +7,6 @@ import {
   formatDate,
   getLocaleInfo,
   serviceNowDefaultOrigin,
-  getAnalyticsSiteName,
   analyticsGlobalClickTrack,
   analyticsCanonicStr,
 } from '../../scripts/scripts.js';
