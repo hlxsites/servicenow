@@ -6,7 +6,7 @@ import {
 } from '../../scripts/scripts.js';
 
 // FIXME: update date before launch
-const esdCutOff = new Date('2024-03-30'); // 30 March 2024
+const esdCutOff = new Date('2024-04-15'); // 15th of April 2024
 
 function socialShareTracking(block) {
   block.addEventListener('click', (e) => {
