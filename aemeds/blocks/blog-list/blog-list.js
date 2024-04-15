@@ -7,7 +7,6 @@ import {
   formatDate,
   getLocaleInfo,
   serviceNowDefaultOrigin,
-  getAnalyticsSiteName,
   analyticsGlobalClickTrack,
   analyticsCanonicStr,
 } from '../../scripts/scripts.js';
@@ -31,7 +30,6 @@ function clickTrack(card) {
         event: {
           pageArea: 'body',
           eVar22,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: 'blog-list',
             destination: link.href,
@@ -56,7 +54,6 @@ function loadMoreClickTrack(e, loadMoreText) {
     event: {
       pageArea: 'body',
       eVar22,
-      eVar30: getAnalyticsSiteName(),
       click: {
         componentName: 'blog-list',
         destination: window.location.href,

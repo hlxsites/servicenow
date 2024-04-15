@@ -44,9 +44,17 @@ export function analyticsGlobalClickTrack(digitalData, event) {
   window.appEventData = window.appEventData || [];
   const data = {
     name: 'global_click',
-    digitalData,
+    digitalData: {
+      page: {
+        category: {
+          primaryCategory: getAnalyticsSiteName(),
+        },
+      },
+      ...digitalData,
+    },
     event,
   };
+
   window.appEventData.push(data);
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(data, undefined, 4));
@@ -320,7 +328,6 @@ function articleLinksClickTrack(main) {
         event: {
           pageArea: 'body',
           eVar22,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: link.closest('.block')?.classList[0] || 'default-content-wrapper',
             destination: link.href,

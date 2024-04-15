@@ -7,7 +7,6 @@ import {
   BLOG_QUERY_INDEX,
   analyticsCanonicStr,
   analyticsGlobalClickTrack,
-  getAnalyticsSiteName,
   getLocale,
   getLocaleInfo,
 } from '../../scripts/scripts.js';
@@ -142,7 +141,6 @@ function addClickTracking(link, block) {
         event: {
           pageArea: 'body',
           eVar22: `blogs:heading:${analyticsCanonicStr(link.textContent)}`,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: block.classList[0],
             destination: link.href,

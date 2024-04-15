@@ -4,7 +4,6 @@ import {
   BLOG_FILTERS,
   analyticsCanonicStr,
   analyticsGlobalClickTrack,
-  getAnalyticsSiteName,
 } from '../../scripts/scripts.js';
 import { p, a } from '../../scripts/dom-helpers.js';
 
@@ -37,7 +36,6 @@ export function clickTrack(block) {
         event: {
           pageArea: 'body',
           eVar22,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: block.classList[0],
             destination: link.href,
