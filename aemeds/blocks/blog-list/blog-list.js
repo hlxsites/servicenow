@@ -31,7 +31,6 @@ function clickTrack(card) {
         event: {
           pageArea: 'body',
           eVar22,
-          eVar30: getAnalyticsSiteName(),
           click: {
             componentName: 'blog-list',
             destination: link.href,

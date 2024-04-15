@@ -44,9 +44,18 @@ export function analyticsGlobalClickTrack(digitalData, event) {
   window.appEventData = window.appEventData || [];
   const data = {
     name: 'global_click',
-    digitalData,
+    digitalData: {
+      page: {
+        category: {
+          primaryCategory: getAnalyticsSiteName(),
+        },
+      },
+      ...digitalData,
+    },
     event,
   };
+
+
   window.appEventData.push(data);
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(data, undefined, 4));
