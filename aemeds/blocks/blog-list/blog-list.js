@@ -35,7 +35,7 @@ function clickTrack(card) {
             destination: link.href,
             ctaText,
             pageArea: 'body',
-            section: h1,
+            section: `${h1}:${cardTitle}`,
           },
         },
       }, e);
