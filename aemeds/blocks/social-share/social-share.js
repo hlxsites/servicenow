@@ -9,27 +9,29 @@ const esdCutOff = new Date('2024-04-16'); // 16 April 2024
 
 function socialShareTracking(block) {
   block.addEventListener('click', (e) => {
-    const button = e.target.parentElement;
-    console.log(button);
-
-    if (button.classList.contains('st-btn')) {
-      const section = analyticsCanonicStr(document.querySelector('h1')?.textContent);
-      const networkLabel = button.getAttribute('data-network');
-      const ctaText = `sharethis-link:${networkLabel}`;
-
-      analyticsGlobalClickTrack({
-        event: {
-          pageArea: 'social-sharing',
-          eVar22: ctaText,
-          click: {
-            componentName: block.classList[0],
-            pageArea: 'social-sharing',
-            section,
-            ctaText,
-          },
-        },
-      }, e);
+    let button = e.target;
+    if (!button.classList.contains('st-btn')) {
+      button = button.closest('.st-btn');
     }
+    if (!button) return;
+
+    const section = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+    const networkLabel = button.getAttribute('data-network');
+    const ctaText = `sharethis-link:${networkLabel}`;
+
+    analyticsGlobalClickTrack({
+      event: {
+        pageArea: 'social-sharing',
+        eVar22: ctaText,
+        click: {
+          componentName: block.classList[0],
+          pageArea: 'social-sharing',
+          section,
+          ctaText,
+        },
+      },
+    }, e);
+
   });
 }
 
