@@ -15,16 +15,16 @@ function socialShareTracking(block) {
     }
     if (!button) return;
 
-    const section = `${analyticsCanonicStr(document.querySelector('h1')?.textContent)}:sharethis-link`;
-    const ctaText = button.getAttribute('data-network');
+    const section = analyticsCanonicStr(document.querySelector('h1')?.textContent);
+    const ctaText = `sharethis-link:${button.getAttribute('data-network')}`;
 
     analyticsGlobalClickTrack({
       event: {
-        pageArea: 'social-sharing',
+        pageArea: 'body',
         eVar22: ctaText,
         click: {
           componentName: block.classList[0],
-          pageArea: 'social-sharing',
+          pageArea: 'body',
           section,
           ctaText,
           destination: window.location.href,
