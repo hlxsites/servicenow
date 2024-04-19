@@ -2,7 +2,6 @@ import { loadScript, getMetadata } from '../../scripts/aem.js';
 import {
   analyticsCanonicStr,
   analyticsGlobalClickTrack,
-  getAnalyticsSiteName,
 } from '../../scripts/scripts.js';
 
 // FIXME: update date before launch
@@ -11,6 +10,7 @@ const esdCutOff = new Date('2024-04-16'); // 16 April 2024
 function socialShareTracking(block) {
   block.addEventListener('click', (e) => {
     const button = e.target.parentElement;
+    console.log(button);
 
     if (button.classList.contains('st-btn')) {
       const section = analyticsCanonicStr(document.querySelector('h1')?.textContent);
