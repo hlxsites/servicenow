@@ -56,6 +56,7 @@ export function analyticsGlobalClickTrack(digitalData, event) {
   };
 
   window.appEventData.push(data);
+  console.log('appEventData', data);
 }
 
 export async function fetchAPI(path) {
