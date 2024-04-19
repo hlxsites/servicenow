@@ -27,6 +27,7 @@ function socialShareTracking(block) {
           pageArea: 'social-sharing',
           section,
           ctaText,
+          destination: window.location.href,
         },
       },
     }, e);
