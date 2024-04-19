@@ -15,16 +15,17 @@ function socialShareTracking(block) {
     if (button.classList.contains('st-btn')) {
       const section = analyticsCanonicStr(document.querySelector('h1')?.textContent);
       const networkLabel = button.getAttribute('data-network');
+      const ctaText = `sharethis-link:${networkLabel}`;
 
       analyticsGlobalClickTrack({
         event: {
           pageArea: 'social-sharing',
-          eVar22: `sharethis-link:${networkLabel}`,
-          eVar30: getAnalyticsSiteName(),
+          eVar22: ctaText,
           click: {
             componentName: block.classList[0],
             pageArea: 'social-sharing',
             section,
+            ctaText,
           },
         },
       }, e);
