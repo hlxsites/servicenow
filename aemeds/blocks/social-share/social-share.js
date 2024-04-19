@@ -31,7 +31,6 @@ function socialShareTracking(block) {
         },
       },
     }, e);
-
   });
 }
 
