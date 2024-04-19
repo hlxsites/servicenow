@@ -26,6 +26,9 @@
   }
 
   async function loadAdobeDTM() {
+    window.targetGlobalSettings = {
+      bodyHidingEnabled: false,
+    };
     const prod =
       "https://assets.adobedtm.com/a441b904b50e/7a4facbbcffb/launch-039be8795dc8.min.js";
     const stage =
