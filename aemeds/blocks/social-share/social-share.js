@@ -15,9 +15,8 @@ function socialShareTracking(block) {
     }
     if (!button) return;
 
-    const section = analyticsCanonicStr(document.querySelector('h1')?.textContent);
-    const networkLabel = button.getAttribute('data-network');
-    const ctaText = `sharethis-link:${networkLabel}`;
+    const section = `${analyticsCanonicStr(document.querySelector('h1')?.textContent)}:sharethis-link`;
+    const ctaText = button.getAttribute('data-network');
 
     analyticsGlobalClickTrack({
       event: {
