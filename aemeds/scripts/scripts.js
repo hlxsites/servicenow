@@ -513,11 +513,6 @@ async function loadEager(doc) {
   }
 
   try {
-    // otherwise load Adobe Launch Delayed
-    if (sessionStorage.getItem('adobeLaunchCached')) {
-      loadAdobeDTM();
-    }
-
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
     if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
       loadFonts();
