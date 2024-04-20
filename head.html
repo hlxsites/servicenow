@@ -61,5 +61,7 @@
     }
   }
 
-  loadAdobeDTM();
+  if (sessionStorage.getItem('adobeLaunchCached')) {
+    loadAdobeDTM();
+  }
 </script>
