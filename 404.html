@@ -4,25 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Page not found</title>
-  <style>
-    #snow-error-frame {
-      overflow: hidden;
-      overflow-x: hidden;
-      overflow-y: hidden;
-      height: 100%;
-      width: 100%;
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      right: 0px;
-      bottom: 0px;
-    }
-  </style>
   <script type="text/javascript">
     window.isErrorPage = true;
     window.errorCode = '404';
     document.addEventListener('DOMContentLoaded', function () {
       const path = window.location.pathname;
+
       let locale = '';
 
       const match = path.match(/^\/(uk|de|fr|nl)\//);
@@ -30,16 +17,8 @@
         locale = `/${match[1]}`;
       }
       const snowErrorPage = `https://servicenow.com${locale}/page-not-found.html`;
-      if (window.location.pathname.endsWith('/test404') && // canary to test in the prod domain
-        (window.location.hostname.endsWith('.servicenow.com') || window.location.hostname === 'servicenow.com')) {
-        document.body.innerHTML = '';
-        const iframe = document.createElement('iframe');
-        iframe.id = 'snow-error-frame';
-        iframe.src = snowErrorPage;
-        document.body.appendChild(iframe);
-      } else {
-        window.location.href = snowErrorPage;
-      }
+
+      window.location.href = snowErrorPage;
     });
   </script>
 </head>
