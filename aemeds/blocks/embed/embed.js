@@ -203,14 +203,18 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
     block.innerHTML = config.embed(url, autoplay);
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (block.classList.contains('brightcove')) {
-    const { videoid } = blockConfig;
+    let { videoid } = blockConfig;
+    // Safari Mobile thinks that the video id is a phone number
+    videoid = videoid.replaceAll('tel:', ''); 
     console.log('here1', videoid);
     if (!videoid) {
       // eslint-disable-next-line no-console
       console.error('Brightcove video id is not provided');
       return;
     }
-    const account = blockConfig.account || '5703385908001';
+
+    // Safari Mobile thinks that the video id is a phone number
+    const account = (blockConfig.account || '5703385908001').replaceAll('tel:', '');
     const player = blockConfig.player || 'default';
     block.innerHTML = embedBrightcove(videoid, account, player);
     const script = document.createElement('script');
@@ -230,7 +234,6 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
 };
 
 export default function decorate(block) {
-  console.log('here0', block.innerHTML);
   const placeholder = block.querySelector('picture');
   const link = block.querySelector('a') ? block.querySelector('a').href : '';
   const blockConfig = readBlockConfig(block);
