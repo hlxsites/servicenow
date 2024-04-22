@@ -130,7 +130,6 @@ function videoTracking(block) {
 }
 
 const embedBrightcove = (videoid, account, player) => {
-  console.log('here2', videoid);
   const embedHTML = `
    <div class="brightcove-video-wrapper">
    <video-js
@@ -145,7 +144,6 @@ const embedBrightcove = (videoid, account, player) => {
    </div>
   `;
 
-  console.log('here3', embedHTML);
   return embedHTML;
 };
 
@@ -206,7 +204,6 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
     let { videoid } = blockConfig;
     // Safari Mobile thinks that the video id is a phone number
     videoid = videoid.replaceAll('tel:', ''); 
-    console.log('here1', videoid);
     if (!videoid) {
       // eslint-disable-next-line no-console
       console.error('Brightcove video id is not provided');
