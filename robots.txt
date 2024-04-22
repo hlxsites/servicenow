@@ -1,7 +1,4 @@
-User-Agent: facebookexternalhit
-Allow: /de/blogs/2024/mitarbeiter-treiber-fur-den-klimaschutz
-Allow: /blogs/*/media_*?*
-Allow: /de/blogs/*/media_*?*
-Allow: /fr/blogs/*/media_*?*
-Allow: /nl/blogs/*/media_*?*
-Allow: /uk/blogs/*/media_*?*
+user-agent: *
+disallow: /
+
+Sitemap: https://main--servicenow--hlxsites.hlx.live/blogs/sitemap-index.xml
