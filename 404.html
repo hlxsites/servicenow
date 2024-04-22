@@ -30,22 +30,19 @@
         locale = `/${match[1]}`;
       }
       const snowErrorPage = `https://servicenow.com${locale}/page-not-found.html`;
-      if (window.location.pathname.endsWith('/test404') && // canary to test in the prod domain
-        (window.location.hostname.endsWith('.servicenow.com') || window.location.hostname === 'servicenow.com')) {
+      if (window.location.hostname.endsWith('.servicenow.com') || window.location.hostname === 'servicenow.com') {
         document.body.innerHTML = '';
         const iframe = document.createElement('iframe');
         iframe.id = 'snow-error-frame';
         iframe.src = snowErrorPage;
         document.body.appendChild(iframe);
-      } else {
-        window.location.href = snowErrorPage;
       }
     });
   </script>
 </head>
 
 <body>
-  Not found
+  Page Not Found
 </body>
 
 </html>
