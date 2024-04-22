@@ -1,6 +1,7 @@
 user-agent: *
 disallow: /
 
+User-Agent: facebookexternalhit
 Allow: /de/blogs/2024/mitarbeiter-treiber-fur-den-klimaschutz
 Allow: /blogs/*/media_*?*
 Allow: /de/blogs/*/media_*?*
