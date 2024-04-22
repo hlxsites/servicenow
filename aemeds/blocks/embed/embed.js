@@ -203,12 +203,12 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
   } else if (block.classList.contains('brightcove')) {
     let { videoid } = blockConfig;
     // Safari Mobile thinks that the video id is a phone number
-    videoid = videoid.replaceAll('tel:', ''); 
     if (!videoid) {
       // eslint-disable-next-line no-console
       console.error('Brightcove video id is not provided');
       return;
     }
+    videoid = videoid.replaceAll('tel:', ''); 
 
     // Safari Mobile thinks that the video id is a phone number
     const account = (blockConfig.account || '5703385908001').replaceAll('tel:', '');
