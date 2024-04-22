@@ -202,15 +202,14 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (block.classList.contains('brightcove')) {
     let { videoid } = blockConfig;
-    // Safari Mobile thinks that the video id is a phone number
     if (!videoid) {
       // eslint-disable-next-line no-console
       console.error('Brightcove video id is not provided');
       return;
     }
-    videoid = videoid.replaceAll('tel:', ''); 
 
-    // Safari Mobile thinks that the video id is a phone number
+    // Safari Mobile thinks that the video and accound ids are a phone numbers
+    videoid = videoid.replaceAll('tel:', '');
     const account = (blockConfig.account || '5703385908001').replaceAll('tel:', '');
     const player = blockConfig.player || 'default';
     block.innerHTML = embedBrightcove(videoid, account, player);
