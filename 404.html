@@ -29,7 +29,7 @@
       if (match) {
         locale = `/${match[1]}`;
       }
-      const snowErrorPage = `https://servicenow.com${locale}/page-not-found.html`;
+      const snowErrorPage = `https://www.servicenow.com${locale}/page-not-found.html`;
       if (window.location.hostname.endsWith('.servicenow.com') || window.location.hostname === 'servicenow.com') {
         document.body.innerHTML = '';
         const iframe = document.createElement('iframe');
