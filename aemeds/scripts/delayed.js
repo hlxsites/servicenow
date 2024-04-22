@@ -5,9 +5,9 @@ import { sampleRUM } from './aem.js';
 sampleRUM('cwv');
 // add more delayed functionality here
 
-if (!window.sessionStorage.getItem('adobeLaunchCached')) {
+if (!window.sessionStorage.getItem('com.adobe.reactor.adobeLaunchCached')) {
   // defined in the head of the page
   // eslint-disable-next-line no-undef
   loadAdobeDTM();
-  sessionStorage.setItem('adobeLaunchCached', 'true');
+  sessionStorage.setItem('com.adobe.reactor.adobeLaunchCached', 'true');
 }
