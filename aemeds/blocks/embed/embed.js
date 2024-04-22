@@ -130,6 +130,7 @@ function videoTracking(block) {
 }
 
 const embedBrightcove = (videoid, account, player) => {
+  console.log('here2', videoid);
   const embedHTML = `
    <div class="brightcove-video-wrapper">
    <video-js
@@ -143,6 +144,8 @@ const embedBrightcove = (videoid, account, player) => {
    </video-js>
    </div>
   `;
+
+  console.log('here3', embedHTML);
   return embedHTML;
 };
 
@@ -201,6 +204,7 @@ const loadEmbed = (block, link, blockConfig, autoplay) => {
     block.classList = `block embed embed-${config.match[0]}`;
   } else if (block.classList.contains('brightcove')) {
     const { videoid } = blockConfig;
+    console.log('here1', videoid);
     if (!videoid) {
       // eslint-disable-next-line no-console
       console.error('Brightcove video id is not provided');
