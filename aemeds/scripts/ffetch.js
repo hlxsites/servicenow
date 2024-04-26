@@ -179,3 +179,100 @@ export default function ffetch(url) {
 
   return assignOperations(generator, context);
 }
+
+
+
+async function* binaryrequest(url, context) {
+  const {chunkSize, key, sheetName, fetch} = context;
+
+  let total = 0;
+
+  // read number of records
+  let params = new URLSearchParams('offset=0&limit=1');
+  if (sheetName) params.append('sheet', sheetName);
+  let resp = await fetch(`${url}?${params.toString()}`);
+
+  if (resp.ok) {
+    const json = await resp.json();
+    total = json.total;
+    context.total = total;
+  } else {
+    return;
+  }
+
+  const authorName = key.split('/').pop().toLowerCase();
+
+  const letterNumber = authorName.charCodeAt(0) - 'a'.charCodeAt(0);
+
+  let offset = Math.floor(((letterNumber / 26) * total) / chunkSize) * chunkSize;
+  offset = Math.min(offset, total - chunkSize);
+
+  let done = false;
+  let json = null;
+
+  do {
+    params = new URLSearchParams(`offset=${offset}&limit=${chunkSize}`);
+    if (sheetName) params.append('sheet', sheetName);
+    resp = await fetch(`${url}?${params.toString()}`);
+    if (resp.ok) {
+      json = await resp.json();
+      total = json.total;
+      context.total = total;
+
+      if (key.localeCompare(json.data[0]['authorUrl']) <= 0) {
+        offset = Math.max(0, offset - chunkSize);
+        if (offset === 0) {
+          done = true;
+        }
+      } else if (key.localeCompare(json.data[json.data.length - 1]['authorUrl']) > 0) {
+        offset += chunkSize;
+        if (offset >= total) {
+          done = true;
+        }
+      } else { // author is on this page
+        done = true;
+      }
+    } else {
+      done = true;
+    }
+  } while (!done); // found starting offset and first page is loaded in rsp
+
+  // offset is the starting point that contains the key
+  done = false;
+  do {
+    params = new URLSearchParams(`offset=${offset}&limit=${chunkSize}`);
+    if (sheetName) params.append('sheet', sheetName);
+    resp = await fetch(`${url}?${params.toString()}`);
+    if (resp.ok) {
+      json = await resp.json();
+      total = json.total;
+      context.total = total;
+
+      const records = json.data.filter((entry) => entry.authorUrl === key);
+
+      for (const entry of records) {
+        yield entry;
+      }
+    } else {
+      return;
+    }
+    done = key.localeCompare(json.data[json.data.length - 1]['authorUrl']) < 0;
+  } while (!done); // load all pages
+}
+
+export function binaryfetch(url, key) {
+  let chunkSize = 255;
+  const fetch = (...rest) => window.fetch.apply(null, rest);
+
+  try {
+    if ('connection' in window.navigator && window.navigator.connection.saveData === true) {
+      // request smaller chunks in save data mode
+      chunkSize = 64;
+    }
+  } catch (e) { /* ignore */ }
+
+  const context = { chunkSize, key, fetch };
+  const generator = binaryrequest(url, context);
+
+  return assignOperations(generator, context);
+}
