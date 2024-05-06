@@ -7,8 +7,14 @@ export default async function decorate(block) {
   const copyrightPromise = fetch(`${localeInfo.urlPrefix}/blogs/fragments/article-copyright.plain.html`);
 
   const publicationDate = getMetadata('publication-date');
+
   const d = new Date(publicationDate);
-  const year = d.toLocaleDateString('en', { year: 'numeric' });
+  let year = d.toLocaleDateString('en', { year: 'numeric' });
+
+  const copyrightOverride = getMetadata('copyright');
+  if (copyrightOverride) {
+    year = copyrightOverride;
+  }
 
   const copyrightFragment = await copyrightPromise;
   if (!copyrightFragment.ok) {
