@@ -200,6 +200,7 @@ export function formatDate(date) {
   const d = new Date(date);
   const locale = getLocale();
   return d.toLocaleDateString(locale, {
+    timeZone: 'UTC',
     month: 'long',
     day: '2-digit',
     year: 'numeric',
