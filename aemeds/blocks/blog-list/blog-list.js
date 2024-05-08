@@ -4,11 +4,11 @@ import {
 import {
   BLOG_QUERY_INDEX,
   BLOG_FILTERS,
-  formatDate,
   getLocaleInfo,
   serviceNowDefaultOrigin,
   analyticsGlobalClickTrack,
   analyticsCanonicStr,
+  formatDate,
 } from '../../scripts/scripts.js';
 import {
   a, button, div, li, span, ul,

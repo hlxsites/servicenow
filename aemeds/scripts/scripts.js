@@ -232,7 +232,7 @@ function buildArticleHeader(main) {
     authorHref = `/author/${toClassName(author)}`;
   }
 
-  const publicationDate = formatDate(getMetadata('publication-date'));
+  const publicationDate = formatDate(`${getMetadata('publication-date')} UTC`);
   //
   main.prepend(div(buildBlock('article-header', [
     [main.querySelector('h1')],
