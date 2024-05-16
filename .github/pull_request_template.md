@@ -3,5 +3,10 @@ Please always provide the [GitHub issue(s)](../issues) your PR is for, as well a
 Fix #<gh-issue-id>
 
 Test URLs:
-- Before: https://main--servicenow--hlxsites.hlx.live/
-- After: https://<branch>--servicenow--hlxsites.hlx.live/
+With Launch
+- Before: https://main--aemeds--servicenow-martech.hlx.live/blogs
+- After: https://<branch>--aemeds--servicenow-martech.hlx.live/blogs
+
+With Launch Disabled
+- Before: https://main--aemeds--servicenow-martech.hlx.live/blogs?disableLaunch=true
+- After: https://<branch>--aemeds--servicenow-martech.hlx.live/blogs?disableLaunch=true
