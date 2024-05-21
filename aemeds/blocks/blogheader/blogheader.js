@@ -70,6 +70,7 @@ async function processChunk(block, blogs, searchTerms, container) {
   const foundInHeader = [];
   const foundInMeta = [];
   const foundInContent = [];
+  const foundInAuthor = [];
 
   for (let idx = 0; idx < CHUNK_SIZE; idx += 1) {
     // eslint-disable-next-line no-await-in-loop
@@ -81,6 +82,21 @@ async function processChunk(block, blogs, searchTerms, container) {
 
     const result = generate.value;
     if (result.locale !== locale) {
+      continue;
+    }
+
+    // partial match of author
+    if (searchTerms.some((term) => result.author.toLowerCase().includes(term))) {
+      const link = a({ href: result.path }, result.header);
+      foundInAuthor.push(link);
+
+      // check if author link is already displayed
+      const authorElement = container.querySelector(`a[href='${result.authorUrl}']`);
+      if (!authorElement) {
+        const authorLink = a({ href: result.authorUrl }, result.author);
+        markSearchTerms(authorLink, searchTerms);
+        container.appendChild(authorLink);
+      }
       continue;
     }
 
@@ -102,7 +118,8 @@ async function processChunk(block, blogs, searchTerms, container) {
     }
   }
 
-  container.append(...[...foundInHeader, ...foundInMeta, ...foundInContent]);
+  container.append(...[...foundInAuthor, ...foundInHeader, ...foundInMeta, ...foundInContent]);
+
   if (done) {
     unindicateSearch(block);
   } else {
@@ -110,13 +127,22 @@ async function processChunk(block, blogs, searchTerms, container) {
   }
 }
 
-async function handleSearch(block) {
+async function handleSearch(block, force = false) {
   const searchValue = block.querySelector('input').value;
-  const searchResults = block.querySelector('.search-results');
+  const oldSearchResults = block.querySelector('.search-results');
+
+  // eslint-disable-next-line prefer-destructuring
+  const parentElement = oldSearchResults.parentElement;
+  oldSearchResults.remove();
+
+  div({ class: 'search-results' });
+
+  const searchResults = div({ class: 'search-results' });
+  parentElement.appendChild(searchResults);
 
   focusSearch(block);
 
-  if (searchValue.length < 3) {
+  if (!force && searchValue.length < 3) {
     searchResults.style.display = 'none';
     return;
   }
@@ -124,7 +150,6 @@ async function handleSearch(block) {
   indicateSearch(block);
 
   searchResults.style.display = 'block';
-  searchResults.innerHTML = '';
 
   const searchTerms = searchValue.toLowerCase().split(/\s+/).filter((item) => item !== '');
   const blogs = ffetch(BLOG_QUERY_INDEX)
@@ -206,6 +231,7 @@ export default async function decorate(block) {
             type: 'text',
             'aria-label': placeholders.search || 'Search',
             oninput: () => { debouncedSearch(); },
+            onkeydown: (e) => { if (e.code === 'Enter') { e.preventDefault(); handleSearch(block, true); } },
             onkeyup: (e) => { if (e.code === 'Escape') { delayedBlur(); } },
             onblur: () => { delayedBlur(); },
             onfocus: () => { focusSearch(block); },
