@@ -60,5 +60,8 @@
     }
   }
 
-  loadAdobeDTM();
+  // otherwise to load Adobe Launch Delayed
+  if (sessionStorage.getItem('com.adobe.reactor.adobeLaunchCached')) {
+    loadAdobeDTM();
+  }
 </script>
