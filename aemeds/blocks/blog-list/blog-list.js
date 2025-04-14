@@ -14,7 +14,7 @@ import {
   a, button, div, li, span, ul,
 } from '../../scripts/dom-helpers.js';
 import { fetchHtml, renderCard } from '../cards/cards.js';
-import ffetch from '../../scripts/ffetch.js';
+import ffetch, { binaryfetch } from '../../scripts/ffetch.js';
 
 const arrowSvg = fetchHtml(`${window.hlx.codeBasePath}/icons/card-arrow.svg`);
 
@@ -170,12 +170,22 @@ export default async function decorate(block) {
     return;
   }
 
-  // retrieve and filter blog entries
-  const blogs = ffetch(BLOG_QUERY_INDEX)
-    .chunks(250)
-    .sheet('blogs')
-    .filter(BLOG_FILTERS.locale)
-    .filter((blog) => filter(filterValue, blog));
+  let blogs = null;
+
+  if (filterKey === 'author') {
+    blogs = binaryfetch(BLOG_QUERY_INDEX, filterValue)
+      .chunks(250)
+      .sheet('byauthor')
+      .filter(BLOG_FILTERS.locale)
+      .filter((blog) => filter(filterValue, blog));
+  } else {
+    // retrieve and filter blog entries
+    blogs = ffetch(BLOG_QUERY_INDEX)
+      .chunks(250)
+      .sheet('blogs')
+      .filter(BLOG_FILTERS.locale)
+      .filter((blog) => filter(filterValue, blog));
+  }
 
   // render
   block.classList.add(filterKey);
