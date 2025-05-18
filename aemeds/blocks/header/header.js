@@ -102,7 +102,6 @@ export default async function decorate(block) {
     });
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log('EEEEEErrrrroooorrrrr')
     console.error(e);
   }
 }
