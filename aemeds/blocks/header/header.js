@@ -56,36 +56,53 @@ export default async function decorate(block) {
   try {
     block.append(
       section({
-        id: 'naas-header-old',
-        class: 'naas-header-old-section',
+        'id': 'naas-header-v3',
+        'class': 'cmp-nav__wrapper',
         'data-domain': dataDomain,
         'data-myaccount': 'hide',
         'data-search': 'hide',
-        'data-sourceId': 'blogs',
-        'data-lslinkshard': 'on',
+        'data-sourceId': 'www',
+        'data-lslinkshard':'on', 
+        'data-version':'v3', 
+        'role':'banner',
+        'data-theme':'dark',
       }),
     );
 
     // load NaaS header code
     await Promise.all([
-      loadCSS(`${dataDomain}/nas/csi/header/v1/headerOldCSR.bundle.css`),
-      loadScript(`${dataDomain}/nas/csi/header/v1/headerOldCSR.bundle.js`),
+      loadScript(`${dataDomain}/nas/csi/naas.csr.bundles.versioning.init.js`),
     ]);
 
-    // trigger and wait for NaaS header rendering
-    await new Promise((resolve) => {
-      document.addEventListener('nass-header-rendered', () => {
-        fixRelativeDAMImages(block, dataDomain);
-        (async () => {
-          await waitImagesLoad(block);
-          resolve();
-        })();
-      });
+    const head = document.head || document.getElementsByTagName('head')[0];
+    let headerCSS = document.createElement('script');
+    headerCSS.setAttribute('id', 'header-bundle-css');
+    head.appendChild(headerCSS);
+    let data = { id: 'header-bundle-css', type: 'header', version: 'v3', env: dataDomain, ext: 'css' };
+    let event = new CustomEvent('naas-create-bundle', { detail: data });
+    document.dispatchEvent(event);
 
-      document.dispatchEvent(new CustomEvent('naas-load-header'));
+
+    let headerJS = document.createElement('script');
+    headerJS.setAttribute('id', 'header-bundle-js');
+    head.appendChild(headerJS);
+    data = { id: 'header-bundle-js', type: 'header', version: 'v3', env: dataDomain, ext: 'js' };
+    event = new CustomEvent('naas-create-bundle', { detail: data });
+    document.dispatchEvent(event);
+
+    document.addEventListener("naas-load-header", function(){
+      let unifiedHeaderUtilsScriptSrc;
+      unifiedHeaderUtilsScriptSrc = dataDomain+'/nas/common/consumers/blogs/naas-right-side-utils.v1.0.js';
+      
+      const unifiedHeaderUtilsScript = document.createElement('script');
+      unifiedHeaderUtilsScript.src = unifiedHeaderUtilsScriptSrc;
+      unifiedHeaderUtilsScript.defer = true;
+      unifiedHeaderUtilsScript.charset = 'UTF-8';
+      head?.appendChild(unifiedHeaderUtilsScript);
     });
   } catch (e) {
     // eslint-disable-next-line no-console
+    console.log('EEEEEErrrrroooorrrrr')
     console.error(e);
   }
 }
